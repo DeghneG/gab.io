@@ -101,7 +101,7 @@ export default function Projects() {
         </div>
 
         {/* Project cards grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
         {filteredProjects.map((project, i) => (
           <Dialog key={project.slug || project.title}>
             <DialogTrigger
@@ -114,7 +114,7 @@ export default function Projects() {
                     relative w-full
                     bg-cream border-4 border-wine rounded-2xl
                     flex flex-col overflow-hidden text-left
-                    ${i === 0 ? "aspect-square md:aspect-[16/9]" : "aspect-[3/4]"}
+                    ${i === 0 ? "aspect-square md:aspect-[16/9]" : "aspect-square md:aspect-[4/3]"}
                     transition-all duration-100 ease-out
                     shadow-[6px_6px_0_0_#8C0027]
                     group-hover:translate-x-[2px] group-hover:translate-y-[2px] group-hover:shadow-[4px_4px_0_0_#8C0027]
@@ -128,7 +128,7 @@ export default function Projects() {
                         src={project.image}
                         alt={`Screenshot of the ${project.title} homepage`}
                         fill
-                        className="object-cover"
+                        className="object-cover object-left-top"
                       />
                     ) : (
                       <span className="text-6xl">🎞️</span>
