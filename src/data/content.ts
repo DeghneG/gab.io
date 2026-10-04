@@ -8,7 +8,7 @@ export const siteConfig = {
   handle: "gabz.io",
   role: "Front-end Developer",
   introLine:
-    "I build interfaces that feel alive, look intentional, and respect the people using them.",
+    "I'm Deghne Gabriel Agana, a third-year IT student at the University of San Agustin who builds front-end. Design got me in. Animation keeps me here.",
   heroPhoto: "/images/hero-photo.jpg", // replace with your actual photo
   resumeUrl: "/files/resume.pdf", // place your resume PDF in /public/files/
 } as const;

@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import ContourBackground from "@/components/contour-background";
 import { timeline, siteConfig } from "@/data/content";
 
 if (typeof window !== "undefined") {
@@ -57,9 +58,10 @@ export default function Experience() {
       ref={sectionRef}
       id="experience"
       aria-label="Experience and education"
-      className="relative py-20 md:py-32"
+      className="relative isolate overflow-hidden py-20 md:py-32"
     >
-      <div className="mx-auto max-w-6xl w-full px-6 md:px-8">
+      <ContourBackground variant="c" maskType="center" className="z-0" />
+      <div className="relative z-30 mx-auto max-w-6xl w-full px-6 md:px-8">
         <h2 className="text-3xl md:text-5xl text-wine mb-4">Experience</h2>
         <p
           className="text-wine/70 mb-8 md:mb-10 max-w-2xl text-base"
@@ -185,7 +187,7 @@ export default function Experience() {
       {/* Stripe band */}
       <div
         aria-hidden="true"
-        className="absolute bottom-0 left-0 right-0 stripe-band"
+        className="absolute z-10 bottom-0 left-0 right-0 stripe-band"
       />
     </section>
   );

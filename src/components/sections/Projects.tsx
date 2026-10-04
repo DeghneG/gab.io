@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import ContourBackground from "@/components/contour-background";
 import { projects } from "@/data/content";
 
 if (typeof window !== "undefined") {
@@ -63,9 +64,10 @@ export default function Projects() {
       ref={sectionRef}
       id="projects"
       aria-label="Projects"
-      className="relative py-20 md:py-32"
+      className="relative isolate overflow-hidden py-20 md:py-32"
     >
-      <div className="mx-auto max-w-6xl w-full px-6 md:px-8">
+      <ContourBackground variant="b" maskType="center" className="z-0" />
+      <div className="relative z-30 mx-auto max-w-6xl w-full px-6 md:px-8">
         {/* Section heading */}
         <div className="mb-10 md:mb-12">
           <h2 className="text-3xl md:text-5xl text-wine mb-4">Featured Projects</h2>
@@ -225,7 +227,7 @@ export default function Projects() {
       {/* ── Stripe band divider ──────────────────────── */}
       <div
         aria-hidden="true"
-        className="absolute bottom-0 left-0 right-0 stripe-band"
+        className="absolute z-10 bottom-0 left-0 right-0 stripe-band"
       />
     </section>
   );

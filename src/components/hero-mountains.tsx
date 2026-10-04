@@ -37,7 +37,7 @@ export default function HeroMountains() {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-x-0 bottom-[-1px] pointer-events-none z-0"
+      className="absolute inset-x-0 bottom-[-1px] pointer-events-none z-20"
       aria-hidden="true"
     >
       <svg
