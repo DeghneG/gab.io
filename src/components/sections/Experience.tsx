@@ -57,25 +57,26 @@ export default function Experience() {
       ref={sectionRef}
       id="experience"
       aria-label="Experience and education"
-      className="relative px-5 py-20 md:px-12 lg:px-20"
+      className="relative py-20 md:py-32"
     >
-      <h2 className="text-3xl md:text-5xl text-wine mb-4">Experience</h2>
-      <p
-        className="text-wine/70 mb-12 max-w-md text-base"
-        style={{ fontFamily: "var(--font-body)" }}
-      >
-        My journey so far.
-      </p>
+      <div className="mx-auto max-w-6xl w-full px-6 md:px-8">
+        <h2 className="text-3xl md:text-5xl text-wine mb-4">Experience</h2>
+        <p
+          className="text-wine/70 mb-8 md:mb-10 max-w-2xl text-base"
+          style={{ fontFamily: "var(--font-body)" }}
+        >
+          My journey so far.
+        </p>
 
-      {/* Vertical timeline */}
-      <div className="relative max-w-2xl mx-auto">
+        {/* Vertical timeline */}
+        <div className="relative max-w-2xl mx-auto">
         {/* Timeline line */}
         <div
           className="absolute left-6 md:left-8 top-0 bottom-0 w-1 bg-wine/20 rounded-full"
           aria-hidden="true"
         />
 
-        <ol className="flex flex-col gap-10">
+        <ol className="flex flex-col gap-8 md:gap-10">
           {timeline.map((entry, i) => (
             <li key={`${entry.org}-${entry.period}`} className="relative">
               <div
@@ -178,6 +179,7 @@ export default function Experience() {
           <span aria-hidden="true">📄</span>
           Download resume
         </a>
+      </div>
       </div>
 
       {/* Stripe band */}

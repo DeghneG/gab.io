@@ -59,18 +59,19 @@ export default function Skills() {
       ref={sectionRef}
       id="skills"
       aria-label="Skills"
-      className="relative px-5 py-12 md:px-12 lg:px-20 bg-wine"
+      className="relative py-20 md:py-32 bg-wine"
     >
-      <h2 className="text-2xl md:text-4xl text-cream mb-2">Skills</h2>
-      <p
-        className="text-cream/70 mb-8 max-w-md text-sm md:text-base"
-        style={{ fontFamily: "var(--font-body)" }}
-      >
-        My record collection of tools and technologies.
-      </p>
+      <div className="mx-auto max-w-6xl w-full px-6 md:px-8">
+        <h2 className="text-3xl md:text-5xl text-cream mb-2">Skills</h2>
+        <p
+          className="text-cream/70 mb-8 md:mb-10 max-w-2xl text-sm md:text-base"
+          style={{ fontFamily: "var(--font-body)" }}
+        >
+          My record collection of tools and technologies.
+        </p>
 
-      {/* Vinyl disc grid */}
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 md:gap-6 max-w-4xl pb-8">
+        {/* Vinyl disc grid */}
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-6 lg:gap-8">
         {skills.map((skill, i) => (
           <div
             key={skill.name}
@@ -135,6 +136,7 @@ export default function Skills() {
             </span>
           </div>
         ))}
+        </div>
       </div>
 
       {/* Stripe band */}

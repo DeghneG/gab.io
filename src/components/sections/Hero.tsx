@@ -90,12 +90,12 @@ export default function Hero() {
     <section
       id="hero"
       aria-label="About me"
-      className="relative min-h-dvh flex items-center overflow-hidden px-5 py-16 md:px-12 lg:px-20"
+      className="relative min-h-[90vh] flex items-center overflow-hidden py-20 md:py-32"
     >
       {/* ── Sunburst background disc ─────────────────── */}
       <div
         aria-hidden="true"
-        className="absolute -right-24 -top-24 w-[550px] h-[550px] md:w-[750px] md:h-[750px] lg:w-[900px] lg:h-[900px] opacity-50"
+        className="absolute -right-40 -top-40 md:-right-64 md:-top-64 w-[550px] h-[550px] md:w-[750px] md:h-[750px] lg:w-[900px] lg:h-[900px] opacity-40"
       >
         <div ref={sunburstRef} className="sunburst w-full h-full" />
       </div>
@@ -103,7 +103,7 @@ export default function Hero() {
       {/* ── Concentric arcs (decorative, bottom-left) ── */}
       <div
         aria-hidden="true"
-        className="absolute left-6 bottom-20 md:left-16 md:bottom-28"
+        className="absolute -left-10 bottom-10 md:-left-16 md:bottom-16"
       >
         <svg
           width="160"
@@ -133,10 +133,10 @@ export default function Hero() {
         </svg>
       </div>
 
-      {/* ── Hero card ────────────────────────────────── */}
+      {/* ── Hero card (Global Container) ─────────────── */}
       <div
         ref={cardRef}
-        className="relative z-10 flex flex-col gap-8 md:flex-row md:items-center md:gap-14 max-w-5xl w-full gsap-hero-card"
+        className="relative z-10 mx-auto max-w-6xl w-full px-6 md:px-8 flex flex-col gap-10 md:flex-row md:items-center md:gap-16 lg:gap-24 gsap-hero-card"
       >
         {/* Photo placeholder — tilted polaroid frame */}
         <div className="shrink-0 self-start">
@@ -164,13 +164,13 @@ export default function Hero() {
         </div>
 
         {/* Text content */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-6 md:gap-8 max-w-2xl">
           {/* Name — the main event */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl leading-[1.1] tracking-tight text-wine">
             {siteConfig.name}
           </h1>
 
-          {/* Role + handle badges */}
+          {/* Role + info badges */}
           <div className="flex flex-wrap items-center gap-3">
             <span
               className="inline-block px-4 py-1.5 bg-mustard text-wine text-sm md:text-base rounded-full border-3 border-wine"
@@ -182,10 +182,19 @@ export default function Hero() {
               {siteConfig.role}
             </span>
             <span
-              className="inline-block px-3 py-1 bg-teal text-cream text-xs md:text-sm rounded-full border-2 border-wine"
+              className="inline-block px-4 py-1.5 bg-orange text-cream text-sm md:text-base rounded-full border-3 border-wine"
+              style={{
+                fontFamily: "var(--font-display)",
+                boxShadow: "3px 3px 0 0 #8C0027",
+              }}
+            >
+              OPEN TO WORK
+            </span>
+            <span
+              className="inline-block px-3 py-1 bg-teal text-cream text-xs md:text-sm rounded-full border-2 border-wine flex items-center gap-1"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              {siteConfig.handle}
+              <span>📍</span> ILOILO CITY, PHILIPPINES
             </span>
           </div>
 
@@ -206,7 +215,7 @@ export default function Hero() {
           </noscript>
 
           {/* CTA buttons */}
-          <div className="flex flex-wrap gap-3 mt-2">
+          <div className="flex flex-wrap gap-4 mt-6 md:mt-8">
             <a
               href="#projects"
               className="

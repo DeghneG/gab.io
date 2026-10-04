@@ -52,28 +52,30 @@ export default function Projects() {
       ref={sectionRef}
       id="projects"
       aria-label="Projects"
-      className="relative px-5 py-20 md:px-12 lg:px-20"
+      className="relative py-20 md:py-32"
     >
-      {/* Section heading */}
-      <h2 className="text-3xl md:text-5xl text-wine mb-12">Projects</h2>
+      <div className="mx-auto max-w-6xl w-full px-6 md:px-8">
+        {/* Section heading */}
+        <h2 className="text-3xl md:text-5xl text-wine mb-8 md:mb-10">Projects</h2>
 
-      {/* Project cards grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl">
+        {/* Project cards grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
         {projects.map((project, i) => (
           <div
             key={project.title}
             ref={(el) => { cardsRef.current[i] = el; }}
-            className="group perspective-[800px]"
+            className={`group perspective-[800px] ${i === 0 ? "md:col-span-2" : ""}`}
           >
             {/* Flip container */}
             <div
-              className="
-                relative w-full aspect-[3/4]
+              className={`
+                relative w-full
                 transition-transform duration-500
                 [transform-style:preserve-3d]
                 group-hover:[transform:rotateY(180deg)]
                 group-focus-within:[transform:rotateY(180deg)]
-              "
+                ${i === 0 ? "aspect-square md:aspect-[16/9]" : "aspect-[3/4]"}
+              `}
               style={{ transitionTimingFunction: "var(--ease-out)" }}
             >
               {/* ── FRONT: polaroid frame ────────────────── */}
@@ -167,6 +169,7 @@ export default function Projects() {
             </div>
           </div>
         ))}
+        </div>
       </div>
 
       {/* ── Stripe band divider ──────────────────────── */}

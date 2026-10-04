@@ -246,15 +246,16 @@ export default function Contact() {
       ref={sectionRef}
       id="contact"
       aria-label="Contact"
-      className="relative px-5 py-20 md:px-12 lg:px-20 bg-wine overflow-hidden"
+      className="relative py-20 md:py-32 bg-wine overflow-hidden"
     >
-      <h2 className="text-3xl md:text-5xl text-cream mb-3">Get in touch</h2>
-      <p
-        className="text-cream/70 mb-10 max-w-md text-base"
-        style={{ fontFamily: "var(--font-body)" }}
-      >
-        Type your message on the typewriter below.
-      </p>
+      <div className="mx-auto max-w-6xl w-full px-6 md:px-8">
+        <h2 className="text-3xl md:text-5xl text-cream mb-4">Get in touch</h2>
+        <p
+          className="text-cream/70 mb-8 md:mb-10 max-w-2xl text-base"
+          style={{ fontFamily: "var(--font-body)" }}
+        >
+          Type your message on the typewriter below.
+        </p>
 
       {/* ══════════════════════════════════════════════════
           3D TYPEWRITER
@@ -926,7 +927,8 @@ export default function Contact() {
       </div>
 
       {/* ── Footer credits ───────────────────────────── */}
-      <footer className="mt-20 pt-8 border-t border-cream/10">
+      </div>
+      <footer className="mt-20 pt-8 border-t border-cream/10 pb-8 md:pb-12 text-center w-full max-w-6xl mx-auto px-6 md:px-8">
         <p
           className="text-cream/40 text-xs text-center"
           style={{ fontFamily: "var(--font-body)" }}
