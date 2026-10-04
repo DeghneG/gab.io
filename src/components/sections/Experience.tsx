@@ -11,12 +11,7 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-/** Icon per entry type */
-const typeIcon: Record<string, string> = {
-  education: "🎓",
-  work: "💼",
-  certification: "📜",
-};
+
 
 /**
  * Experience / Resume section.
@@ -97,9 +92,7 @@ export default function Experience() {
                   "
                   style={{ boxShadow: "3px 3px 0 0 #F1A512" }}
                   aria-hidden="true"
-                >
-                  {typeIcon[entry.type] || "📌"}
-                </div>
+                />
 
                 {/* Content card */}
                 <div
@@ -156,30 +149,24 @@ export default function Experience() {
         <a
           href={siteConfig.resumeUrl}
           download
-          className="
-            inline-flex items-center gap-2
-            px-7 py-3
-            bg-orange text-cream
-            text-base
-            rounded-2xl border-4 border-wine
-            transition-transform duration-150
-            hover:translate-x-[2px] hover:translate-y-[2px]
-            active:scale-[0.97]
-          "
+          className="group relative inline-flex items-center justify-center px-7 py-3 bg-orange text-cream text-base rounded-2xl border-4 border-wine outline-none focus-visible:ring-4 focus-visible:ring-mustard transition-transform active:scale-[0.97]"
           style={{
             fontFamily: "var(--font-display)",
             boxShadow: "4px 4px 0 0 #8C0027",
           }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.boxShadow = "none";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.boxShadow =
-              "4px 4px 0 0 #8C0027";
-          }}
         >
-          <span aria-hidden="true">📄</span>
-          Download resume
+          <div className="relative overflow-hidden h-[24px]">
+            <div className="flex flex-col transition-transform duration-200 ease-out group-hover:-translate-y-1/2">
+              {/* Frame 1 */}
+              <div className="flex items-center justify-center h-[24px]">
+                <span className="leading-none pt-1">Download resume</span>
+              </div>
+              {/* Frame 2 */}
+              <div className="flex items-center justify-center h-[24px] text-wine">
+                <span className="leading-none pt-1">Download resume</span>
+              </div>
+            </div>
+          </div>
         </a>
       </div>
       </div>

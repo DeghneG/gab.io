@@ -202,39 +202,28 @@ export default function Hero() {
           <div className="flex flex-wrap items-center gap-6 mt-8">
             <a
               href="#projects"
-              className="group relative inline-flex items-center justify-center px-6 py-3 bg-wine text-cream rounded-md outline-none focus-visible:ring-4 focus-visible:ring-mustard transition-all duration-100 ease-out"
+              className="group relative inline-flex items-center justify-center px-6 py-3 bg-wine text-cream rounded-md outline-none focus-visible:ring-4 focus-visible:ring-mustard transition-transform active:scale-[0.97]"
               style={{
                 fontFamily: "var(--font-display)",
                 maskImage: "radial-gradient(circle at 0 50%, transparent 6px, black 6.5px) 0 0 / 51% 100% no-repeat, radial-gradient(circle at 100% 50%, transparent 6px, black 6.5px) 100% 0 / 51% 100% no-repeat",
                 WebkitMaskImage: "radial-gradient(circle at 0 50%, transparent 6px, black 6.5px) 0 0 / 51% 100% no-repeat, radial-gradient(circle at 100% 50%, transparent 6px, black 6.5px) 100% 0 / 51% 100% no-repeat",
-                filter: "drop-shadow(5px 5px 0px #2BAF90)",
-                transform: "translate(0, 0) rotate(0deg)"
-              }}
-              onMouseEnter={(e) => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.filter = "drop-shadow(3px 3px 0px #2BAF90)";
-                el.style.transform = "translate(2px, 2px) rotate(0.5deg)";
-              }}
-              onMouseLeave={(e) => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.filter = "drop-shadow(5px 5px 0px #2BAF90)";
-                el.style.transform = "translate(0, 0) rotate(0deg)";
-              }}
-              onMouseDown={(e) => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.transitionDuration = "50ms"; // Snap down faster
-                el.style.filter = "drop-shadow(0px 0px 0px #2BAF90)";
-                el.style.transform = "translate(5px, 5px) rotate(0deg)";
-              }}
-              onMouseUp={(e) => {
-                const el = e.currentTarget as HTMLElement;
-                el.style.transitionDuration = "100ms"; // Normal speed back up
-                el.style.filter = "drop-shadow(3px 3px 0px #2BAF90)";
-                el.style.transform = "translate(2px, 2px) rotate(0.5deg)";
+                filter: "drop-shadow(4px 4px 0px #2BAF90)",
               }}
             >
-              <span className="pr-4 border-r-2 border-dashed border-cream/40 py-1">See my work</span>
-              <span className="pl-4 text-xl">→</span>
+              <div className="relative overflow-hidden h-[28px]">
+                <div className="flex flex-col transition-transform duration-200 ease-out group-hover:-translate-y-1/2">
+                  {/* Frame 1 */}
+                  <div className="flex items-center h-[28px]">
+                    <span className="pr-4 border-r-2 border-dashed border-cream/40">See my work</span>
+                    <span className="pl-4 text-xl leading-none">→</span>
+                  </div>
+                  {/* Frame 2 */}
+                  <div className="flex items-center h-[28px] text-mustard">
+                    <span className="pr-4 border-r-2 border-dashed border-mustard/40">See my work</span>
+                    <span className="pl-4 text-xl leading-none">→</span>
+                  </div>
+                </div>
+              </div>
             </a>
 
             <a
