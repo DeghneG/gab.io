@@ -59,7 +59,7 @@ export default function Skills() {
       ref={sectionRef}
       id="skills"
       aria-label="Skills"
-      className="relative py-20 md:py-32 bg-wine"
+      className="relative py-12 md:py-20 bg-wine"
     >
       <div className="mx-auto max-w-6xl w-full px-6 md:px-8">
         <h2 className="text-3xl md:text-5xl text-cream mb-2">Skills</h2>
@@ -71,13 +71,13 @@ export default function Skills() {
         </p>
 
         {/* Category Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 items-stretch">
           {(() => {
             let discCounter = 0;
             return skillCategories.map((category) => (
               <div
                 key={category.category}
-                className="bg-white/5 border-4 rounded-3xl p-6 lg:p-8 flex flex-col relative overflow-hidden"
+                className="bg-white/5 border-4 rounded-3xl p-5 lg:p-6 flex flex-col relative overflow-hidden"
                 style={{
                   borderColor: colorHex[category.accent],
                   boxShadow: `6px 6px 0 0 ${colorHex[category.accent]}`,
@@ -86,7 +86,7 @@ export default function Skills() {
                 {/* Card Header */}
                 <div className="mb-6 relative z-10">
                   <h3
-                    className="text-2xl md:text-3xl text-cream"
+                    className="text-xl md:text-2xl text-cream"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
                     {category.category}
@@ -101,7 +101,7 @@ export default function Skills() {
                 </div>
 
                 {/* Skills Inner Grid */}
-                <div className="grid grid-cols-2 gap-4 lg:gap-5 mt-auto relative z-10">
+                <div className="grid grid-cols-2 gap-3 lg:gap-4 mt-auto relative z-10">
                   {category.skills.map((skill) => {
                     const i = discCounter++;
                     return (
@@ -113,7 +113,7 @@ export default function Skills() {
                         {/* Vinyl disc */}
                         <div
                           className="
-                            relative w-14 h-14 md:w-16 md:h-16
+                            relative w-12 h-12 md:w-14 md:h-14
                             rounded-full
                             border-2 md:border-[3px]
                             flex items-center justify-center
@@ -131,7 +131,7 @@ export default function Skills() {
                           {/* Center label hole */}
                           <div
                             className="
-                              w-5 h-5 md:w-6 md:h-6
+                              w-4 h-4 md:w-5 md:h-5
                               rounded-full bg-cream
                               border-[1px] md:border-2
                               flex items-center justify-center
@@ -139,22 +139,22 @@ export default function Skills() {
                             style={{ borderColor: colorHex[skill.color] }}
                           >
                             <div
-                              className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full"
+                              className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full"
                               style={{ backgroundColor: colorHex[skill.color] }}
                             />
                           </div>
 
                           {/* Groove lines (subtle rings on the vinyl) */}
                           <div
-                            className="absolute inset-1.5 md:inset-2 rounded-full border border-white/5 pointer-events-none"
+                            className="absolute inset-1 md:inset-1.5 rounded-full border border-white/5 pointer-events-none"
                             aria-hidden="true"
                           />
                           <div
-                            className="absolute inset-3 md:inset-4 rounded-full border border-white/5 pointer-events-none"
+                            className="absolute inset-2 md:inset-2.5 rounded-full border border-white/5 pointer-events-none"
                             aria-hidden="true"
                           />
                           <div
-                            className="absolute inset-[18px] md:inset-6 rounded-full border border-white/5 pointer-events-none"
+                            className="absolute inset-3.5 md:inset-4 rounded-full border border-white/5 pointer-events-none"
                             aria-hidden="true"
                           />
                         </div>
