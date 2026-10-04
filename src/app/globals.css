@@ -1,26 +1,263 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * 70s GROOVY RETRO DESIGN SYSTEM
+ * ───────────────────────────────
+ * Palette: teal, mint, mustard, orange, wine
+ * Fonts:   Shrikhand (display), Special Elite (body/typewriter)
+ */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* ── Palette ────────────────────────────────────── */
+  --color-teal: #2BAF90;
+  --color-mint: #A1D4B1;
+  --color-mustard: #F1A512;
+  --color-orange: #DD4111;
+  --color-wine: #8C0027;
+
+  /* Tinted neutrals — warm, not sterile */
+  --color-cream: #F5F0E8;
+  --color-ink: #3A1520;
+
+  /* ── Shadcn semantic mapping (retro overrides) ── */
+  --color-background: var(--color-mint);
+  --color-foreground: var(--color-wine);
+  --color-card: var(--color-cream);
+  --color-card-foreground: var(--color-wine);
+  --color-popover: var(--color-cream);
+  --color-popover-foreground: var(--color-wine);
+  --color-primary: var(--color-teal);
+  --color-primary-foreground: var(--color-cream);
+  --color-secondary: var(--color-mustard);
+  --color-secondary-foreground: var(--color-wine);
+  --color-muted: #C8E4CF;
+  --color-muted-foreground: #6B3A4A;
+  --color-accent: var(--color-orange);
+  --color-accent-foreground: var(--color-cream);
+  --color-destructive: var(--color-orange);
+  --color-border: var(--color-wine);
+  --color-input: var(--color-cream);
+  --color-ring: var(--color-teal);
+
+  /* Chart (unused but required by shadcn) */
+  --color-chart-1: var(--color-teal);
+  --color-chart-2: var(--color-mustard);
+  --color-chart-3: var(--color-orange);
+  --color-chart-4: var(--color-wine);
+  --color-chart-5: var(--color-mint);
+
+  /* ── Radii — chunky retro rounds ──────────────── */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+  --radius-3xl: 2.5rem;
+  --radius-4xl: 3rem;
+
+  /* ── Fonts ─────────────────────────────────────── */
+  --font-display: var(--font-shrikhand);
+  --font-body: var(--font-special-elite);
+  --font-sans: var(--font-special-elite);
+  --font-mono: var(--font-special-elite);
+  --font-heading: var(--font-shrikhand);
+
+  /* ── Easing (from gemini.md motion doctrine) ──── */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* ── Sidebar (shadcn requirement) ─────────────── */
+  --color-sidebar: var(--color-cream);
+  --color-sidebar-foreground: var(--color-wine);
+  --color-sidebar-primary: var(--color-teal);
+  --color-sidebar-primary-foreground: var(--color-cream);
+  --color-sidebar-accent: var(--color-mustard);
+  --color-sidebar-accent-foreground: var(--color-wine);
+  --color-sidebar-border: var(--color-wine);
+  --color-sidebar-ring: var(--color-teal);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ═══════════════════════════════════════════════════
+   BASE STYLES
+   ═══════════════════════════════════════════════════ */
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-body;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-mint text-wine min-h-dvh;
+  }
+
+  /* Retro headings */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
+
+  /* Selection color */
+  ::selection {
+    background: var(--color-mustard);
+    color: var(--color-wine);
+  }
+
+  /* Keyboard focus: thick retro ring */
+  :focus-visible {
+    outline: 3px solid var(--color-teal);
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ═══════════════════════════════════════════════════
+   FILM GRAIN / PAPER TEXTURE OVERLAY
+   A subtle noise texture over the entire page.
+   ═══════════════════════════════════════════════════ */
+
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.06;
+  /* Inline SVG noise — no external file needed */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
+
+/* ═══════════════════════════════════════════════════
+   RETRO HARD-SHADOW UTILITY
+   Hard offset shadow instead of blurry CSS shadows.
+   ═══════════════════════════════════════════════════ */
+
+.retro-shadow {
+  box-shadow: 4px 4px 0 0 var(--color-wine);
+}
+
+.retro-shadow-lg {
+  box-shadow: 6px 6px 0 0 var(--color-wine);
+}
+
+.retro-shadow-teal {
+  box-shadow: 4px 4px 0 0 var(--color-teal);
+}
+
+.retro-shadow-mustard {
+  box-shadow: 4px 4px 0 0 var(--color-mustard);
+}
+
+/* ═══════════════════════════════════════════════════
+   THICK RETRO BORDERS
+   ═══════════════════════════════════════════════════ */
+
+.retro-border {
+  border: 3px solid var(--color-wine);
+}
+
+.retro-border-thick {
+  border: 4px solid var(--color-wine);
+}
+
+/* ═══════════════════════════════════════════════════
+   SUNBURST (pure CSS, for behind hero card)
+   Slowly rotates. Disabled on prefers-reduced-motion.
+   ═══════════════════════════════════════════════════ */
+
+.sunburst {
+  --ray-count: 16;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  /* Hardcoded hex — CSS vars don't resolve reliably in conic-gradient */
+  background: repeating-conic-gradient(
+    #F1A512 0deg,
+    #F1A512 11.25deg,
+    #DD4111 11.25deg,
+    #DD4111 22.5deg
+  );
+}
+
+/* ═══════════════════════════════════════════════════
+   BLINKING CURSOR for typewriter effect
+   ═══════════════════════════════════════════════════ */
+
+.typewriter-cursor::after {
+  content: "▌";
+  display: inline;
+  animation: blink-cursor 0.7s step-end infinite;
+  color: var(--color-teal);
+  margin-left: 1px;
+}
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Blinking cursor for the active typewriter field */
+.typewriter-field-cursor::after {
+  content: "▌";
+  display: inline;
+  animation: blink-cursor 0.7s step-end infinite;
+  color: var(--color-wine);
+  margin-left: 1px;
+  font-weight: normal;
+}
+
+/* Typewriter key press depth effect */
+.typewriter-key {
+  cursor: pointer;
+  user-select: none;
+}
+.typewriter-key:active {
+  transform: translateY(2px);
+  box-shadow: none !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   STRIPE BANDS (decorative section dividers)
+   ═══════════════════════════════════════════════════ */
+
+.stripe-band {
+  height: 16px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-teal) 0px,
+    var(--color-teal) 24px,
+    var(--color-mustard) 24px,
+    var(--color-mustard) 48px,
+    var(--color-orange) 48px,
+    var(--color-orange) 72px,
+    var(--color-wine) 72px,
+    var(--color-wine) 96px
+  );
+}
+
+/* ═══════════════════════════════════════════════════
+   REDUCED MOTION
+   ═══════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .typewriter-cursor::after {
+    animation: none;
+    opacity: 1;
+  }
+
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
