@@ -47,6 +47,7 @@ export const projects: Project[] = [
     tech: ["React", "Next.js", "Tailwind CSS"],
     liveUrl: "#",
     repoUrl: "https://github.com/DeghneG/FragranceVault",
+    image: "/projects/gabfrag-vault.png",
   },
   {
     slug: "quest-log",
