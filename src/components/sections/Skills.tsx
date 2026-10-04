@@ -71,28 +71,28 @@ export default function Skills() {
         </p>
 
         {/* Category Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 items-stretch">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5 items-stretch">
           {(() => {
             let discCounter = 0;
             return skillCategories.map((category) => (
               <div
                 key={category.category}
-                className="bg-white/5 border-4 rounded-3xl p-5 lg:p-6 flex flex-col relative overflow-hidden"
+                className="bg-white/5 border-[3px] rounded-2xl p-4 lg:p-5 flex flex-col relative overflow-hidden"
                 style={{
                   borderColor: colorHex[category.accent],
-                  boxShadow: `6px 6px 0 0 ${colorHex[category.accent]}`,
+                  boxShadow: `4px 4px 0 0 ${colorHex[category.accent]}`,
                 }}
               >
                 {/* Card Header */}
-                <div className="mb-6 relative z-10">
+                <div className="mb-4 relative z-10">
                   <h3
-                    className="text-xl md:text-2xl text-cream"
+                    className="text-lg md:text-xl text-cream"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
                     {category.category}
                   </h3>
                   {/* Decorative stripe under heading */}
-                  <div className="h-1 w-16 mt-3 rounded-full flex overflow-hidden">
+                  <div className="h-1 w-12 mt-2 rounded-full flex overflow-hidden">
                     <div className="flex-1" style={{ backgroundColor: colorHex.teal }}></div>
                     <div className="flex-1" style={{ backgroundColor: colorHex.mustard }}></div>
                     <div className="flex-1" style={{ backgroundColor: colorHex.orange }}></div>
@@ -101,21 +101,21 @@ export default function Skills() {
                 </div>
 
                 {/* Skills Inner Grid */}
-                <div className="grid grid-cols-2 gap-3 lg:gap-4 mt-auto relative z-10">
+                <div className="grid grid-cols-2 gap-2 lg:gap-3 mt-auto relative z-10">
                   {category.skills.map((skill) => {
                     const i = discCounter++;
                     return (
                       <div
                         key={skill.name}
                         ref={(el) => { discsRef.current[i] = el; }}
-                        className="flex flex-col items-center gap-3 group"
+                        className="flex flex-col items-center gap-2 group"
                       >
                         {/* Vinyl disc */}
                         <div
                           className="
-                            relative w-12 h-12 md:w-14 md:h-14
+                            relative w-10 h-10 md:w-12 md:h-12
                             rounded-full
-                            border-2 md:border-[3px]
+                            border-2
                             flex items-center justify-center
                             transition-transform duration-500
                             group-hover:rotate-[360deg]
@@ -131,7 +131,7 @@ export default function Skills() {
                           {/* Center label hole */}
                           <div
                             className="
-                              w-4 h-4 md:w-5 md:h-5
+                              w-3 h-3 md:w-4 md:h-4
                               rounded-full bg-cream
                               border-[1px] md:border-2
                               flex items-center justify-center
@@ -139,29 +139,29 @@ export default function Skills() {
                             style={{ borderColor: colorHex[skill.color] }}
                           >
                             <div
-                              className="w-1 h-1 md:w-1.5 md:h-1.5 rounded-full"
+                              className="w-1 h-1 rounded-full"
                               style={{ backgroundColor: colorHex[skill.color] }}
                             />
                           </div>
 
                           {/* Groove lines (subtle rings on the vinyl) */}
                           <div
-                            className="absolute inset-1 md:inset-1.5 rounded-full border border-white/5 pointer-events-none"
+                            className="absolute inset-[3px] md:inset-[4px] rounded-full border border-white/5 pointer-events-none"
                             aria-hidden="true"
                           />
                           <div
-                            className="absolute inset-2 md:inset-2.5 rounded-full border border-white/5 pointer-events-none"
+                            className="absolute inset-[6px] md:inset-[8px] rounded-full border border-white/5 pointer-events-none"
                             aria-hidden="true"
                           />
                           <div
-                            className="absolute inset-3.5 md:inset-4 rounded-full border border-white/5 pointer-events-none"
+                            className="absolute inset-[9px] md:inset-[12px] rounded-full border border-white/5 pointer-events-none"
                             aria-hidden="true"
                           />
                         </div>
 
                         {/* Skill name */}
                         <span
-                          className="text-sm text-cream text-center"
+                          className="text-xs text-cream/90 text-center"
                           style={{ fontFamily: "var(--font-body)" }}
                         >
                           {skill.name}
