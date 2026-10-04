@@ -40,17 +40,56 @@ export interface Skill {
   color: "teal" | "mustard" | "orange" | "wine";
 }
 
-export const skills: Skill[] = [
-  { name: "React", color: "teal" },
-  { name: "Next.js", color: "mustard" },
-  { name: "TypeScript", color: "orange" },
-  { name: "Tailwind CSS", color: "teal" },
-  { name: "Python", color: "wine" },
-  { name: "GitHub", color: "mustard" },
-  { name: "Canva", color: "orange" },
-  { name: "Supabase", color: "teal" },
-  { name: "WordPress", color: "wine" },
-  { name: "Vercel", color: "mustard" },
+export interface SkillCategory {
+  category: string;
+  accent: "teal" | "mustard" | "orange" | "wine";
+  skills: Skill[];
+}
+
+export const skillCategories: SkillCategory[] = [
+  {
+    category: "Frontend",
+    accent: "teal",
+    skills: [
+      { name: "React", color: "teal" },
+      { name: "Next.js", color: "mustard" },
+      { name: "TypeScript", color: "orange" },
+      { name: "Tailwind CSS", color: "teal" },
+    ],
+  },
+  {
+    category: "Backend",
+    accent: "mustard",
+    skills: [
+      { name: "Python", color: "wine" },
+      { name: "Supabase", color: "teal" },
+    ],
+  },
+  {
+    category: "CMS",
+    accent: "wine",
+    skills: [
+      { name: "WordPress", color: "wine" },
+    ],
+  },
+  {
+    category: "Developer Tools",
+    accent: "wine",
+    skills: [
+      { name: "GitHub", color: "mustard" },
+      { name: "Vercel", color: "mustard" },
+      { name: "Canva", color: "orange" },
+    ],
+  },
+  {
+    category: "AIs",
+    accent: "orange",
+    skills: [
+      { name: "Claude", color: "teal" },
+      { name: "ChatGPT", color: "mustard" },
+      { name: "Gemini", color: "wine" },
+    ],
+  },
 ];
 
 export interface TimelineEntry {

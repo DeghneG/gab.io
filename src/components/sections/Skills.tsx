@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { skills, type Skill } from "@/data/content";
+import { skillCategories, type Skill } from "@/data/content";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -70,72 +70,109 @@ export default function Skills() {
           My record collection of tools and technologies.
         </p>
 
-        {/* Vinyl disc grid */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-6 lg:gap-8">
-        {skills.map((skill, i) => (
-          <div
-            key={skill.name}
-            ref={(el) => { discsRef.current[i] = el; }}
-            className="flex flex-col items-center gap-3 group"
-          >
-            {/* Vinyl disc */}
-            <div
-              className="
-                relative w-14 h-14 md:w-16 md:h-16
-                rounded-full
-                border-2 md:border-[3px]
-                flex items-center justify-center
-                transition-transform duration-500
-                group-hover:rotate-[360deg]
-              "
-              style={{
-                borderColor: colorHex[skill.color],
-                background: `radial-gradient(circle at center, ${colorHex[skill.color]} 0%, ${colorHex[skill.color]} 18%, #1a1a1a 19%, #1a1a1a 22%, ${colorHex[skill.color]}33 23%, #2a2a2a 40%, #1a1a1a 60%, ${colorHex[skill.color]}44 80%, #2a2a2a 100%)`,
-                boxShadow: `2px 2px 0 0 ${colorHex[skill.color]}`,
-                transitionTimingFunction: "var(--ease-in-out)",
-              }}
-              aria-hidden="true"
-            >
-              {/* Center label hole */}
+        {/* Category Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 items-stretch">
+          {(() => {
+            let discCounter = 0;
+            return skillCategories.map((category) => (
               <div
-                className="
-                  w-5 h-5 md:w-6 md:h-6
-                  rounded-full bg-cream
-                  border-[1px] md:border-2
-                  flex items-center justify-center
-                "
-                style={{ borderColor: colorHex[skill.color] }}
+                key={category.category}
+                className="bg-white/5 border-4 rounded-3xl p-6 lg:p-8 flex flex-col relative overflow-hidden"
+                style={{
+                  borderColor: colorHex[category.accent],
+                  boxShadow: `6px 6px 0 0 ${colorHex[category.accent]}`,
+                }}
               >
-                <div
-                  className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full"
-                  style={{ backgroundColor: colorHex[skill.color] }}
-                />
+                {/* Card Header */}
+                <div className="mb-6 relative z-10">
+                  <h3
+                    className="text-2xl md:text-3xl text-cream"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    {category.category}
+                  </h3>
+                  {/* Decorative stripe under heading */}
+                  <div className="h-1 w-16 mt-3 rounded-full flex overflow-hidden">
+                    <div className="flex-1" style={{ backgroundColor: colorHex.teal }}></div>
+                    <div className="flex-1" style={{ backgroundColor: colorHex.mustard }}></div>
+                    <div className="flex-1" style={{ backgroundColor: colorHex.orange }}></div>
+                    <div className="flex-1" style={{ backgroundColor: colorHex.wine }}></div>
+                  </div>
+                </div>
+
+                {/* Skills Inner Grid */}
+                <div className="grid grid-cols-2 gap-4 lg:gap-5 mt-auto relative z-10">
+                  {category.skills.map((skill) => {
+                    const i = discCounter++;
+                    return (
+                      <div
+                        key={skill.name}
+                        ref={(el) => { discsRef.current[i] = el; }}
+                        className="flex flex-col items-center gap-3 group"
+                      >
+                        {/* Vinyl disc */}
+                        <div
+                          className="
+                            relative w-14 h-14 md:w-16 md:h-16
+                            rounded-full
+                            border-2 md:border-[3px]
+                            flex items-center justify-center
+                            transition-transform duration-500
+                            group-hover:rotate-[360deg]
+                          "
+                          style={{
+                            borderColor: colorHex[skill.color],
+                            background: `radial-gradient(circle at center, ${colorHex[skill.color]} 0%, ${colorHex[skill.color]} 18%, #1a1a1a 19%, #1a1a1a 22%, ${colorHex[skill.color]}33 23%, #2a2a2a 40%, #1a1a1a 60%, ${colorHex[skill.color]}44 80%, #2a2a2a 100%)`,
+                            boxShadow: `2px 2px 0 0 ${colorHex[skill.color]}`,
+                            transitionTimingFunction: "var(--ease-in-out)",
+                          }}
+                          aria-hidden="true"
+                        >
+                          {/* Center label hole */}
+                          <div
+                            className="
+                              w-5 h-5 md:w-6 md:h-6
+                              rounded-full bg-cream
+                              border-[1px] md:border-2
+                              flex items-center justify-center
+                            "
+                            style={{ borderColor: colorHex[skill.color] }}
+                          >
+                            <div
+                              className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full"
+                              style={{ backgroundColor: colorHex[skill.color] }}
+                            />
+                          </div>
+
+                          {/* Groove lines (subtle rings on the vinyl) */}
+                          <div
+                            className="absolute inset-1.5 md:inset-2 rounded-full border border-white/5 pointer-events-none"
+                            aria-hidden="true"
+                          />
+                          <div
+                            className="absolute inset-3 md:inset-4 rounded-full border border-white/5 pointer-events-none"
+                            aria-hidden="true"
+                          />
+                          <div
+                            className="absolute inset-[18px] md:inset-6 rounded-full border border-white/5 pointer-events-none"
+                            aria-hidden="true"
+                          />
+                        </div>
+
+                        {/* Skill name */}
+                        <span
+                          className="text-sm text-cream text-center"
+                          style={{ fontFamily: "var(--font-body)" }}
+                        >
+                          {skill.name}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-
-              {/* Groove lines (subtle rings on the vinyl) */}
-              <div
-                className="absolute inset-1.5 md:inset-2 rounded-full border border-white/5 pointer-events-none"
-                aria-hidden="true"
-              />
-              <div
-                className="absolute inset-3 md:inset-4 rounded-full border border-white/5 pointer-events-none"
-                aria-hidden="true"
-              />
-              <div
-                className="absolute inset-[18px] md:inset-6 rounded-full border border-white/5 pointer-events-none"
-                aria-hidden="true"
-              />
-            </div>
-
-            {/* Skill name */}
-            <span
-              className="text-sm text-cream text-center"
-              style={{ fontFamily: "var(--font-body)" }}
-            >
-              {skill.name}
-            </span>
-          </div>
-        ))}
+            ));
+          })()}
         </div>
       </div>
 
