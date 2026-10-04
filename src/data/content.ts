@@ -23,6 +23,7 @@ export interface Project {
   liveUrl?: string;
   repoUrl?: string;
   image?: string;
+  imageAlt?: string;
 }
 
 export const projects: Project[] = [
@@ -51,13 +52,15 @@ export const projects: Project[] = [
   },
   {
     slug: "quest-log",
-    title: "QuestLog",
+    title: "The Quest Log of Gab",
     type: "Personal Project",
     year: 2026,
     description: "A comprehensive compilation of competitive gaming logs, stats, and configurations across multiple titles.",
     tech: ["React", "Next.js", "Tailwind CSS"],
     liveUrl: "#",
     repoUrl: "https://github.com/DeghneG/QuestLog",
+    image: "/projects/quest-log.png",
+    imageAlt: "Screenshot of The Quest Log of Gab hero section",
   },
 ];
 

@@ -126,7 +126,7 @@ export default function Projects() {
                     {project.image ? (
                       <Image
                         src={project.image}
-                        alt={`Screenshot of the ${project.title} homepage`}
+                        alt={project.imageAlt || `Screenshot of the ${project.title} homepage`}
                         fill
                         className="object-cover object-left-top grayscale sepia-[.5] contrast-125 transition-all duration-150 group-hover:grayscale-0 group-hover:sepia-0 group-hover:contrast-100"
                       />
