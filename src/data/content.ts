@@ -24,6 +24,7 @@ export interface Project {
   repoUrl?: string;
   image?: string;
   imageAlt?: string;
+  imagePosition?: string;
 }
 
 export const projects: Project[] = [
@@ -49,6 +50,7 @@ export const projects: Project[] = [
     liveUrl: "#",
     repoUrl: "https://github.com/DeghneG/FragranceVault",
     image: "/projects/gabfrag-vault.png",
+    imagePosition: "object-left-top",
   },
   {
     slug: "quest-log",

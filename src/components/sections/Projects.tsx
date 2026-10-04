@@ -128,7 +128,7 @@ export default function Projects() {
                         src={project.image}
                         alt={project.imageAlt || `Screenshot of the ${project.title} homepage`}
                         fill
-                        className="object-cover object-left-top grayscale sepia-[.5] contrast-125 transition-all duration-150 group-hover:grayscale-0 group-hover:sepia-0 group-hover:contrast-100"
+                        className={`object-cover ${project.imagePosition || "object-center"} grayscale sepia-[.5] contrast-125 transition-all duration-150 group-hover:grayscale-0 group-hover:sepia-0 group-hover:contrast-100`}
                       />
                     ) : (
                       <span className="text-6xl transition-transform duration-150 group-hover:scale-110">🎞️</span>
