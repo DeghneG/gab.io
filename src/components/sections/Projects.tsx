@@ -128,16 +128,11 @@ export default function Projects() {
                         src={project.image}
                         alt={`Screenshot of the ${project.title} homepage`}
                         fill
-                        className="object-cover object-left-top"
+                        className="object-cover object-left-top grayscale sepia-[.5] contrast-125 transition-all duration-150 group-hover:grayscale-0 group-hover:sepia-0 group-hover:contrast-100"
                       />
                     ) : (
-                      <span className="text-6xl">🎞️</span>
+                      <span className="text-6xl transition-transform duration-150 group-hover:scale-110">🎞️</span>
                     )}
-                    
-                    {/* The Outline Shift Hover */}
-                    <div 
-                      className="absolute inset-4 border-4 border-transparent transition-all duration-100 ease-out group-hover:border-cream group-hover:-translate-x-1 group-hover:-translate-y-1 group-hover:shadow-[6px_6px_0_0_#8C0027] z-10 pointer-events-none" 
-                    />
                   </div>
                   {/* Title strip */}
                   <div className="p-4 flex items-center justify-between bg-cream">
