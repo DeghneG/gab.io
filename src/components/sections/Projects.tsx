@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useState, useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -20,6 +20,15 @@ if (typeof window !== "undefined") {
 export default function Projects() {
   const sectionRef = useRef<HTMLElement>(null);
   const cardsRef = useRef<(HTMLElement | null)[]>([]);
+  const [activeFilter, setActiveFilter] = useState("All");
+
+  const categories = ["All", "Personal", "Web Dev", "E-Commerce", "Educational"];
+
+  const filteredProjects = projects.filter(
+    (p) =>
+      activeFilter === "All" ||
+      (p.type && p.type.toLowerCase().includes(activeFilter.toLowerCase()))
+  );
 
   useGSAP(() => {
     const prefersReduced = window.matchMedia(
@@ -47,7 +56,7 @@ export default function Projects() {
         }
       );
     });
-  }, []);
+  }, { dependencies: [activeFilter] });
 
   return (
     <section
@@ -58,11 +67,40 @@ export default function Projects() {
     >
       <div className="mx-auto max-w-6xl w-full px-6 md:px-8">
         {/* Section heading */}
-        <h2 className="text-3xl md:text-5xl text-wine mb-8 md:mb-10">Projects</h2>
+        <div className="mb-10 md:mb-12">
+          <h2 className="text-3xl md:text-5xl text-wine mb-4">Featured Projects</h2>
+          <p
+            className="text-lg md:text-xl text-wine/80 max-w-2xl mb-8"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
+            A curated selection of my recent work, from personal side projects to full-stack applications and organizational websites.
+          </p>
+
+          {/* Sorter Pills */}
+          <div className="flex flex-wrap gap-3">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setActiveFilter(category)}
+                className={`
+                  px-4 py-2 rounded-full border-2 transition-all duration-300 font-bold text-sm uppercase tracking-wider
+                  ${
+                    activeFilter === category
+                      ? "bg-wine text-cream border-wine shadow-[4px_4px_0_0_#F1A512]"
+                      : "bg-cream/50 text-wine border-wine/20 hover:border-wine/50 hover:bg-cream"
+                  }
+                `}
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {/* Project cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-        {projects.map((project, i) => (
+        {filteredProjects.map((project, i) => (
           <Dialog key={project.slug || project.title}>
             <DialogTrigger
               ref={(el) => { cardsRef.current[i] = el; }}
