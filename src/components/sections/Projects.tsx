@@ -106,7 +106,7 @@ export default function Projects() {
           <Dialog key={project.slug || project.title}>
             <DialogTrigger
               ref={(el) => { cardsRef.current[i] = el; }}
-              className={`group outline-none focus-visible:ring-4 focus-visible:ring-mustard rounded-2xl transition-transform duration-300 hover:-translate-y-2 hover:rotate-1 active:scale-[0.98] ${i === 0 ? "md:col-span-2" : ""}`}
+              className={`group outline-none focus-visible:ring-4 focus-visible:ring-mustard rounded-2xl ${i === 0 ? "md:col-span-2" : ""}`}
               aria-label={`View details for ${project.title}`}
             >
               <div
@@ -115,8 +115,11 @@ export default function Projects() {
                     bg-cream border-4 border-wine rounded-2xl
                     flex flex-col overflow-hidden text-left
                     ${i === 0 ? "aspect-square md:aspect-[16/9]" : "aspect-[3/4]"}
+                    transition-all duration-100 ease-out
+                    shadow-[6px_6px_0_0_#8C0027]
+                    group-hover:translate-x-[2px] group-hover:translate-y-[2px] group-hover:shadow-[4px_4px_0_0_#8C0027]
+                    group-active:translate-x-[6px] group-active:translate-y-[6px] group-active:shadow-none
                   `}
-                  style={{ boxShadow: "6px 6px 0 0 #8C0027" }}
                 >
                   {/* Image area */}
                   <div className="flex-1 relative bg-mint/40 flex items-center justify-center border-b-4 border-wine overflow-hidden">
@@ -130,6 +133,11 @@ export default function Projects() {
                     ) : (
                       <span className="text-6xl">🎞️</span>
                     )}
+                    
+                    {/* The Outline Shift Hover */}
+                    <div 
+                      className="absolute inset-4 border-4 border-transparent transition-all duration-100 ease-out group-hover:border-cream group-hover:-translate-x-1 group-hover:-translate-y-1 group-hover:shadow-[6px_6px_0_0_#8C0027] z-10 pointer-events-none" 
+                    />
                   </div>
                   {/* Title strip */}
                   <div className="p-4 flex items-center justify-between bg-cream">
