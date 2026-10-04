@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { TextPlugin } from "gsap/TextPlugin";
+import HeroMountains from "@/components/hero-mountains";
 import { siteConfig } from "@/data/content";
 
 if (typeof window !== "undefined") {
@@ -132,6 +133,8 @@ export default function Hero() {
           />
         </svg>
       </div>
+
+      <HeroMountains />
 
       {/* ── Hero card (Global Container) ─────────────── */}
       <div
