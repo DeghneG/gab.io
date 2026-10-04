@@ -14,7 +14,10 @@ export const siteConfig = {
 } as const;
 
 export interface Project {
+  slug: string;
   title: string;
+  type?: string;
+  year?: number;
   description: string;
   tech: string[];
   liveUrl?: string;
@@ -24,13 +27,16 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    slug: "itsa-website",
     title: "ITSA Website",
+    type: "Organization site",
+    year: 2026,
     description:
-      "ITSA is the official academic association for IT students at the University of San Agustin. We exist to build community, skills, and opportunities in tech — turning coursework into practice, and students into professionals.",
+      "The official website of the Information Technology Student Association at the University of San Agustin. It helps students connect, learn, and grow together.",
     tech: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
     liveUrl: "#",
     repoUrl: "#",
-    image: "/images/project-itsa.jpg",
+    image: "/projects/itsa.png",
   },
 ];
 

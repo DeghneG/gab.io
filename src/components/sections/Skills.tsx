@@ -101,7 +101,7 @@ export default function Skills() {
                 </div>
 
                 {/* Skills Inner List */}
-                <div className="flex flex-col gap-3 mt-auto relative z-10">
+                <div className="flex flex-col gap-3 relative z-10">
                   {category.skills.map((skill) => {
                     const i = discCounter++;
                     return (

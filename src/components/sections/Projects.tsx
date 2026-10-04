@@ -4,6 +4,8 @@ import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { projects } from "@/data/content";
 
 if (typeof window !== "undefined") {
@@ -17,7 +19,7 @@ if (typeof window !== "undefined") {
  */
 export default function Projects() {
   const sectionRef = useRef<HTMLElement>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const cardsRef = useRef<(HTMLElement | null)[]>([]);
 
   useGSAP(() => {
     const prefersReduced = window.matchMedia(
@@ -61,72 +63,82 @@ export default function Projects() {
         {/* Project cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
         {projects.map((project, i) => (
-          <div
-            key={project.title}
-            ref={(el) => { cardsRef.current[i] = el; }}
-            className={`group perspective-[800px] ${i === 0 ? "md:col-span-2" : ""}`}
-          >
-            {/* Flip container */}
-            <div
-              className={`
-                relative w-full
-                transition-transform duration-500
-                [transform-style:preserve-3d]
-                group-hover:[transform:rotateY(180deg)]
-                group-focus-within:[transform:rotateY(180deg)]
-                ${i === 0 ? "aspect-square md:aspect-[16/9]" : "aspect-[3/4]"}
-              `}
-              style={{ transitionTimingFunction: "var(--ease-out)" }}
+          <Dialog key={project.slug || project.title}>
+            <DialogTrigger
+              ref={(el) => { cardsRef.current[i] = el; }}
+              className={`group outline-none focus-visible:ring-4 focus-visible:ring-mustard rounded-2xl transition-transform duration-300 hover:-translate-y-2 hover:rotate-1 active:scale-[0.98] ${i === 0 ? "md:col-span-2" : ""}`}
+              aria-label={`View details for ${project.title}`}
             >
-              {/* ── FRONT: polaroid frame ────────────────── */}
               <div
-                className="
-                  absolute inset-0
-                  [backface-visibility:hidden]
-                  bg-cream border-4 border-wine rounded-2xl
-                  flex flex-col overflow-hidden
-                "
-                style={{ boxShadow: "6px 6px 0 0 #8C0027" }}
-              >
-                {/* Image area */}
-                <div className="flex-1 bg-mint/40 flex items-center justify-center border-b-4 border-wine">
-                  <span className="text-6xl">🎞️</span>
-                </div>
-                {/* Title strip — like a polaroid caption */}
-                <div className="p-4 text-center">
-                  <h3
-                    className="text-xl text-wine"
-                    style={{ fontFamily: "var(--font-display)" }}
-                  >
-                    {project.title}
-                  </h3>
-                </div>
+                  className={`
+                    relative w-full
+                    bg-cream border-4 border-wine rounded-2xl
+                    flex flex-col overflow-hidden text-left
+                    ${i === 0 ? "aspect-square md:aspect-[16/9]" : "aspect-[3/4]"}
+                  `}
+                  style={{ boxShadow: "6px 6px 0 0 #8C0027" }}
+                >
+                  {/* Image area */}
+                  <div className="flex-1 relative bg-mint/40 flex items-center justify-center border-b-4 border-wine overflow-hidden">
+                    {project.image ? (
+                      <Image
+                        src={project.image}
+                        alt={`Screenshot of the ${project.title} homepage`}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <span className="text-6xl">🎞️</span>
+                    )}
+                  </div>
+                  {/* Title strip */}
+                  <div className="p-4 flex items-center justify-between bg-cream">
+                    <div className="flex items-center gap-3">
+                      <h3
+                        className="text-xl text-wine"
+                        style={{ fontFamily: "var(--font-display)" }}
+                      >
+                        {project.title}
+                      </h3>
+                      {project.type && (
+                        <span
+                          className="px-2 py-1 text-[10px] uppercase tracking-wider bg-mustard text-wine rounded-md border-2 border-wine/20 font-bold"
+                          style={{ fontFamily: "var(--font-body)" }}
+                        >
+                          {project.type}
+                        </span>
+                      )}
+                    </div>
+                    {project.year && (
+                      <span className="text-wine/60 text-sm font-bold" style={{ fontFamily: "var(--font-body)" }}>
+                        {project.year}
+                      </span>
+                    )}
+                  </div>
               </div>
+            </DialogTrigger>
 
-              {/* ── BACK: details ────────────────────────── */}
-              <div
-                className="
-                  absolute inset-0
-                  [backface-visibility:hidden]
-                  [transform:rotateY(180deg)]
-                  bg-wine text-cream border-4 border-mustard rounded-2xl
-                  flex flex-col p-6 justify-between
-                "
-                style={{ boxShadow: "6px 6px 0 0 #F1A512" }}
-              >
+            <DialogContent className="bg-wine text-cream border-4 border-mustard rounded-2xl p-6 sm:p-8 max-w-2xl" style={{ boxShadow: "8px 8px 0 0 #F1A512" }}>
+              <div className="flex flex-col gap-6">
                 <div>
-                  <h3
-                    className="text-xl mb-3"
-                    style={{ fontFamily: "var(--font-display)" }}
-                  >
+                  <DialogTitle className="text-3xl mb-2" style={{ fontFamily: "var(--font-display)" }}>
                     {project.title}
-                  </h3>
-                  <p
-                    className="text-sm leading-relaxed text-cream/90 mb-4"
-                    style={{ fontFamily: "var(--font-body)" }}
-                  >
+                  </DialogTitle>
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {project.type && (
+                      <span className="px-2 py-1 text-xs uppercase tracking-wider bg-mustard text-wine rounded-md border-2 border-wine/20 font-bold">
+                        {project.type}
+                      </span>
+                    )}
+                    {project.year && (
+                      <span className="px-2 py-1 text-xs uppercase tracking-wider bg-cream/20 text-cream rounded-md border-2 border-cream/20 font-bold">
+                        {project.year}
+                      </span>
+                    )}
+                  </div>
+                  <DialogDescription className="text-base leading-relaxed text-cream/90 mb-6" style={{ fontFamily: "var(--font-body)" }}>
                     {project.description}
-                  </p>
+                  </DialogDescription>
                   {/* Tech tags */}
                   <div className="flex flex-wrap gap-2">
                     {project.tech.map((t) => (
@@ -141,11 +153,11 @@ export default function Projects() {
                   </div>
                 </div>
                 {/* Links */}
-                <div className="flex gap-3 mt-4">
-                  {project.liveUrl && (
+                <div className="flex gap-4 pt-4 border-t border-cream/20">
+                  {project.liveUrl && project.liveUrl !== "#" && (
                     <a
                       href={project.liveUrl}
-                      className="text-sm px-4 py-2 bg-teal text-cream rounded-xl border-2 border-cream/30 transition-transform duration-150 hover:scale-[1.03] active:scale-[0.97]"
+                      className="text-sm px-6 py-3 bg-teal text-cream rounded-xl border-2 border-cream/30 transition-transform duration-150 hover:scale-[1.03] active:scale-[0.97]"
                       style={{ fontFamily: "var(--font-display)" }}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -153,10 +165,10 @@ export default function Projects() {
                       Live site
                     </a>
                   )}
-                  {project.repoUrl && (
+                  {project.repoUrl && project.repoUrl !== "#" && (
                     <a
                       href={project.repoUrl}
-                      className="text-sm px-4 py-2 bg-cream/20 text-cream rounded-xl border-2 border-cream/30 transition-transform duration-150 hover:scale-[1.03] active:scale-[0.97]"
+                      className="text-sm px-6 py-3 bg-cream/20 text-cream rounded-xl border-2 border-cream/30 transition-transform duration-150 hover:scale-[1.03] active:scale-[0.97]"
                       style={{ fontFamily: "var(--font-display)" }}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -166,8 +178,8 @@ export default function Projects() {
                   )}
                 </div>
               </div>
-            </div>
-          </div>
+            </DialogContent>
+          </Dialog>
         ))}
         </div>
       </div>
