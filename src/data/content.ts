@@ -38,6 +38,16 @@ export const projects: Project[] = [
     repoUrl: "#",
     image: "/projects/itsa.png",
   },
+  {
+    slug: "fragrance-vault",
+    title: "FragranceVault",
+    type: "Personal Project",
+    year: 2026,
+    description: "A digital catalog and personal vault for my fragrance collection.",
+    tech: ["React", "Next.js", "Tailwind CSS"],
+    liveUrl: "#",
+    repoUrl: "https://github.com/DeghneG/FragranceVault",
+  },
 ];
 
 export interface Skill {
