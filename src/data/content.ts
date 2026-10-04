@@ -48,6 +48,16 @@ export const projects: Project[] = [
     liveUrl: "#",
     repoUrl: "https://github.com/DeghneG/FragranceVault",
   },
+  {
+    slug: "quest-log",
+    title: "QuestLog",
+    type: "Personal Project",
+    year: 2026,
+    description: "A comprehensive compilation of competitive gaming logs, stats, and configurations across multiple titles.",
+    tech: ["React", "Next.js", "Tailwind CSS"],
+    liveUrl: "#",
+    repoUrl: "https://github.com/DeghneG/QuestLog",
+  },
 ];
 
 export interface Skill {
