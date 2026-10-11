@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { TextPlugin } from "gsap/TextPlugin";
@@ -16,32 +16,23 @@ if (typeof window !== "undefined") {
  * Hero / About section.
  *
  * Layout: left-aligned, asymmetric (DESIGN_VARIANCE > 4).
- * Sunburst disc rotates slowly behind the content.
+ * Static sunburst disc sits partly behind the mountains.
  * Intro line types out with GSAP TextPlugin.
  * Content is always visible; animation is progressive enhancement.
+ *
+ * TUNABLES (search these tokens to adjust):
+ *   GRAIN_OPACITY     — hero grain overlay opacity (0.07 = 7%)
+ *   CONTOUR_OPACITY   — contour lines opacity class (opacity-[0.05] = 5%)
+ *   SHADOW_OFFSET     — unified hard shadow "6px 6px 0 0"
+ *   SUN_POSITION      — sunburst top/right offsets
  */
 export default function Hero() {
   const introRef = useRef<HTMLSpanElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
-  const sunburstRef = useRef<HTMLDivElement>(null);
   const halfCircleRef = useRef<HTMLDivElement>(null);
-  const ticketBtnRef = useRef<HTMLAnchorElement>(null);
   const [hasAnimated, setHasAnimated] = useState(false);
 
-  /* Sunburst spin — separate effect so it's independent of
-     the main useGSAP scoping and the introRef early-return. */
-  useGSAP(() => {
-    if (!sunburstRef.current) return;
-
-    // Temporarily bypassing prefersReduced check here to guarantee it spins
-    // for the user regardless of OS settings.
-    gsap.to(sunburstRef.current, {
-      rotation: 360,
-      duration: 15,
-      ease: "none",
-      repeat: -1,
-    });
-  }, []);
+  /* ── No sunburst rotation — fully static ────────── */
 
   useGSAP(() => {
     const prefersReduced = window.matchMedia(
@@ -71,7 +62,7 @@ export default function Hero() {
       );
     }
 
-    /* Card entrance: scale from 0.95 and fade in */
+    /* Card entrance: fade in and slide up */
     if (cardRef.current) {
       gsap.fromTo(
         cardRef.current,
@@ -109,17 +100,16 @@ export default function Hero() {
       aria-label="About me"
       className="relative isolate min-h-[90vh] flex items-center overflow-hidden py-20 md:py-32"
     >
-      <ContourBackground variant="a" maskType="hero" className="z-0" />
+      {/* ── LAYER 1: Contour lines (very subtle) ─────── */}
+      {/* CONTOUR_OPACITY — change the opacity-[…] value to adjust */}
+      <ContourBackground variant="a" maskType="hero" className="z-0 opacity-[0.05]" />
 
-      {/* ── Half-circle (left-bleed, poster graphic) ─── */}
+      {/* ── LAYER 2: Half-circle (left-bleed) ────────── */}
       <div
         ref={halfCircleRef}
         aria-hidden="true"
         className="pointer-events-none absolute z-[5] hidden lg:block"
         style={{
-          /* 70vmin circle, center sits at screen left edge,
-             vertically at ~45% of the section so it aligns
-             with the text block middle */
           width: "70vmin",
           height: "70vmin",
           left: "-30vmin",
@@ -128,10 +118,9 @@ export default function Hero() {
         }}
       >
         {/* Solid teal disc */}
-        <div
-          className="absolute inset-0 rounded-full bg-teal"
-        />
-        {/* Concentric wine outline ring, 85% size, offset slightly */}
+        <div className="absolute inset-0 rounded-full bg-teal" />
+        {/* Concentric wine outline ring, 85% size, with 6px hard shadow */}
+        {/* SHADOW_OFFSET — ring shadow matches photo card direction */}
         <div
           className="absolute rounded-full border-[6px] border-wine"
           style={{
@@ -139,81 +128,52 @@ export default function Hero() {
             height: "85%",
             top: "10%",
             left: "6%",
+            boxShadow: "6px 6px 0 0 #8C0027",
           }}
         />
       </div>
 
-      {/* ── Sunburst background disc ─────────────────── */}
+      {/* ── LAYER 3: Sunburst (static, partly behind mountains) */}
+      {/* SUN_POSITION — adjust right/top to reposition the sun */}
       <div
         aria-hidden="true"
-        className="absolute z-10 -right-40 -top-40 md:-right-64 md:-top-64 w-[550px] h-[550px] md:w-[750px] md:h-[750px] lg:w-[900px] lg:h-[900px] opacity-40"
+        className="absolute z-10 w-[550px] h-[550px] md:w-[750px] md:h-[750px] lg:w-[900px] lg:h-[900px]"
+        style={{
+          right: "-10%",
+          top: "10%",
+          /* Edge fade: radial mask fades outer 15% to transparent */
+          maskImage: "radial-gradient(circle at center, black 60%, transparent 100%)",
+          WebkitMaskImage: "radial-gradient(circle at center, black 60%, transparent 100%)",
+        }}
       >
-        <div ref={sunburstRef} className="sunburst w-full h-full" />
+        <div className="sunburst w-full h-full" />
       </div>
 
-      {/* ── Concentric arcs (decorative, bottom-left) ── */}
-      <div
-        aria-hidden="true"
-        className="absolute z-10 -left-10 bottom-10 md:-left-16 md:bottom-16"
-      >
-        <svg
-          width="160"
-          height="160"
-          viewBox="0 0 180 180"
-          fill="none"
-          className="opacity-40"
-        >
-          <path
-            d="M10 170 A160 160 0 0 1 170 10"
-            stroke="#2BAF90"
-            strokeWidth="5"
-            fill="none"
-          />
-          <path
-            d="M35 170 A135 135 0 0 1 170 35"
-            stroke="#F1A512"
-            strokeWidth="5"
-            fill="none"
-          />
-          <path
-            d="M60 170 A110 110 0 0 1 170 60"
-            stroke="#DD4111"
-            strokeWidth="5"
-            fill="none"
-          />
-        </svg>
-      </div>
-
+      {/* ── LAYER 4: Mountains ───────────────────────── */}
       <HeroMountains />
 
-      {/* ── Vertical label (left edge, lg+ only) ─────── */}
+      {/* ── LAYER 5: Hero grain (above shapes, below content) */}
+      {/* GRAIN_OPACITY — change opacity to adjust grain strength */}
       <div
         aria-hidden="true"
-        className="hidden lg:flex fixed left-6 top-1/2 -translate-y-1/2 z-[101] flex-col items-center gap-3 pointer-events-none"
-      >
-        {/* Top line */}
-        <div className="w-[2px] h-20 bg-wine/50" />
-        <span
-          className="text-xs uppercase tracking-[0.25em] text-wine whitespace-nowrap"
-          style={{
-            fontFamily: "var(--font-body)",
-            writingMode: "vertical-rl",
-            transform: "rotate(180deg)",
-          }}
-        >
-          FRONT-END · IT STUDENT · 2026
-        </span>
-        {/* Bottom line */}
-        <div className="w-[2px] h-20 bg-wine/50" />
-      </div>
+        className="absolute inset-0 z-[25] pointer-events-none"
+        style={{
+          opacity: 0.07,
+          mixBlendMode: "multiply",
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "200px 200px",
+        }}
+      />
 
-      {/* ── Hero card (Global Container) ─────────────── */}
+      {/* ── LAYER 6: Hero content ────────────────────── */}
       <div
         ref={cardRef}
         className="relative z-30 mx-auto max-w-7xl w-full px-8 flex flex-col gap-10 md:flex-row md:items-center md:gap-16 lg:gap-24 gsap-hero-card"
       >
         {/* Photo placeholder — tilted polaroid frame */}
         <div className="shrink-0 self-start relative">
+          {/* SHADOW_OFFSET — 6px 6px hard wine shadow (already correct) */}
           <div
             className="
               w-44 h-56 md:w-56 md:h-72
@@ -237,6 +197,7 @@ export default function Hero() {
           </div>
 
           {/* ── Star / sparkle sticker ──────────────── */}
+          {/* SHADOW_OFFSET — 6px 6px to match unified direction */}
           <div
             aria-hidden="true"
             className="absolute -bottom-4 -right-4 md:-bottom-5 md:-right-5 rotate-12 pointer-events-none"
@@ -246,7 +207,7 @@ export default function Hero() {
               height="56"
               viewBox="0 0 56 56"
               fill="none"
-              className="md:w-[68px] md:h-[68px] drop-shadow-[2px_2px_0_rgba(140,0,39,1)]"
+              className="md:w-[68px] md:h-[68px] drop-shadow-[6px_6px_0_rgba(140,0,39,1)]"
             >
               {/* 4-pointed star */}
               <path
