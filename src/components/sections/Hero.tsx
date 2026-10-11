@@ -24,6 +24,7 @@ export default function Hero() {
   const introRef = useRef<HTMLSpanElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const sunburstRef = useRef<HTMLDivElement>(null);
+  const halfCircleRef = useRef<HTMLDivElement>(null);
   const ticketBtnRef = useRef<HTMLAnchorElement>(null);
   const [hasAnimated, setHasAnimated] = useState(false);
 
@@ -54,6 +55,20 @@ export default function Hero() {
       }
       setHasAnimated(true);
       return;
+    }
+
+    /* Half-circle fade in — synced with the entrance sequence */
+    if (halfCircleRef.current) {
+      gsap.fromTo(
+        halfCircleRef.current,
+        { opacity: 0 },
+        {
+          opacity: 1,
+          duration: 0.6,
+          ease: "power2.out",
+          delay: 0.15,
+        }
+      );
     }
 
     /* Card entrance: scale from 0.95 and fade in */
@@ -95,6 +110,38 @@ export default function Hero() {
       className="relative isolate min-h-[90vh] flex items-center overflow-hidden py-20 md:py-32"
     >
       <ContourBackground variant="a" maskType="hero" className="z-0" />
+
+      {/* ── Half-circle (left-bleed, poster graphic) ─── */}
+      <div
+        ref={halfCircleRef}
+        aria-hidden="true"
+        className="pointer-events-none absolute z-[5] hidden lg:block"
+        style={{
+          /* 70vmin circle, center sits at screen left edge,
+             vertically at ~45% of the section so it aligns
+             with the text block middle */
+          width: "70vmin",
+          height: "70vmin",
+          left: "-30vmin",
+          top: "50%",
+          transform: "translateY(-50%)",
+        }}
+      >
+        {/* Solid teal disc */}
+        <div
+          className="absolute inset-0 rounded-full bg-teal"
+        />
+        {/* Concentric wine outline ring, 85% size, offset slightly */}
+        <div
+          className="absolute rounded-full border-[6px] border-wine"
+          style={{
+            width: "85%",
+            height: "85%",
+            top: "10%",
+            left: "6%",
+          }}
+        />
+      </div>
 
       {/* ── Sunburst background disc ─────────────────── */}
       <div
@@ -139,13 +186,34 @@ export default function Hero() {
 
       <HeroMountains />
 
+      {/* ── Vertical label (left edge, lg+ only) ─────── */}
+      <div
+        aria-hidden="true"
+        className="hidden lg:flex fixed left-6 top-1/2 -translate-y-1/2 z-[101] flex-col items-center gap-3 pointer-events-none"
+      >
+        {/* Top line */}
+        <div className="w-[2px] h-20 bg-wine/50" />
+        <span
+          className="text-xs uppercase tracking-[0.25em] text-wine whitespace-nowrap"
+          style={{
+            fontFamily: "var(--font-body)",
+            writingMode: "vertical-rl",
+            transform: "rotate(180deg)",
+          }}
+        >
+          FRONT-END · IT STUDENT · 2026
+        </span>
+        {/* Bottom line */}
+        <div className="w-[2px] h-20 bg-wine/50" />
+      </div>
+
       {/* ── Hero card (Global Container) ─────────────── */}
       <div
         ref={cardRef}
-        className="relative z-30 mx-auto max-w-6xl w-full px-6 md:px-8 flex flex-col gap-10 md:flex-row md:items-center md:gap-16 lg:gap-24 gsap-hero-card"
+        className="relative z-30 mx-auto max-w-7xl w-full px-8 flex flex-col gap-10 md:flex-row md:items-center md:gap-16 lg:gap-24 gsap-hero-card"
       >
         {/* Photo placeholder — tilted polaroid frame */}
-        <div className="shrink-0 self-start">
+        <div className="shrink-0 self-start relative">
           <div
             className="
               w-44 h-56 md:w-56 md:h-72
@@ -167,28 +235,45 @@ export default function Hero() {
               </p>
             </div>
           </div>
+
+          {/* ── Star / sparkle sticker ──────────────── */}
+          <div
+            aria-hidden="true"
+            className="absolute -bottom-4 -right-4 md:-bottom-5 md:-right-5 rotate-12 pointer-events-none"
+          >
+            <svg
+              width="56"
+              height="56"
+              viewBox="0 0 56 56"
+              fill="none"
+              className="md:w-[68px] md:h-[68px] drop-shadow-[2px_2px_0_rgba(140,0,39,1)]"
+            >
+              {/* 4-pointed star */}
+              <path
+                d="M28 2 L33.5 20.5 L54 28 L33.5 35.5 L28 54 L22.5 35.5 L2 28 L22.5 20.5 Z"
+                fill="#F1A512"
+                stroke="#8C0027"
+                strokeWidth="3"
+                strokeLinejoin="round"
+              />
+              {/* Inner sparkle dot */}
+              <circle cx="28" cy="28" r="4" fill="#8C0027" />
+            </svg>
+          </div>
         </div>
 
         {/* Text content */}
         <div className="flex flex-col max-w-xl text-left">
-          {/* Brand/Kicker */}
-          <h1 
-            className="text-2xl md:text-3xl tracking-tight text-wine/90"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            gab.io
-          </h1>
-
           {/* 1. Headline */}
-          <h2
-            className="text-4xl md:text-5xl lg:text-6xl text-wine leading-[1.1] tracking-tight mt-4 min-h-[4rem] md:min-h-[5rem]"
+          <h1
+            className="text-4xl md:text-5xl lg:text-6xl text-wine leading-[1.1] tracking-tight min-h-[4rem] md:min-h-[5rem]"
             style={{ fontFamily: "var(--font-display)" }}
             aria-label="Designing interfaces that move."
           >
             <span ref={introRef} className={hasAnimated ? "" : "typewriter-cursor"}>
               Designing interfaces that move.
             </span>
-          </h2>
+          </h1>
 
           {/* 2. Intro paragraph */}
           <p
