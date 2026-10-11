@@ -24,7 +24,8 @@ if (typeof window !== "undefined") {
  *   GRAIN_OPACITY     — hero grain overlay opacity (0.07 = 7%)
  *   CONTOUR_OPACITY   — contour lines opacity class (opacity-[0.05] = 5%)
  *   SHADOW_OFFSET     — unified hard shadow "6px 6px 0 0"
- *   SUN_POSITION      — sunburst top/right offsets
+ *   RING_WIDTH        — 4px wine outline ring width
+ *   SUN_POSITION      — sunburst right/bottom offsets & mountain overlap
  */
 export default function Hero() {
   const introRef = useRef<HTMLSpanElement>(null);
@@ -104,7 +105,8 @@ export default function Hero() {
       {/* CONTOUR_OPACITY — change the opacity-[…] value to adjust */}
       <ContourBackground variant="a" maskType="hero" className="z-0 opacity-[0.05]" />
 
-      {/* ── LAYER 2: Half-circle (left-bleed) ────────── */}
+      {/* ── LAYER 2: Half-circle wine ring (left-bleed) ─ */}
+      {/* RING_WIDTH — 4px wine outline ring (teal fill removed for a calmer feel) */}
       <div
         ref={halfCircleRef}
         aria-hidden="true"
@@ -117,36 +119,25 @@ export default function Hero() {
           transform: "translateY(-50%)",
         }}
       >
-        {/* Solid teal disc */}
-        <div className="absolute inset-0 rounded-full bg-teal" />
-        {/* Concentric wine outline ring, 85% size, with 6px hard shadow */}
-        {/* SHADOW_OFFSET — ring shadow matches photo card direction */}
+        {/* Wine outline ring (4px) with 6px hard shadow — mint background shows through */}
         <div
-          className="absolute rounded-full border-[6px] border-wine"
+          className="absolute inset-0 rounded-full border-[4px] border-wine"
           style={{
-            width: "85%",
-            height: "85%",
-            top: "10%",
-            left: "6%",
             boxShadow: "6px 6px 0 0 #8C0027",
           }}
         />
       </div>
 
-      {/* ── LAYER 3: Sunburst (static, partly behind mountains) */}
-      {/* SUN_POSITION — adjust right/top to reposition the sun */}
+      {/* ── LAYER 3: Sunburst (static, 35% smaller, lower ⅓ behind mountains) */}
+      {/* SUN_POSITION — 48px+ clear of paragraph text, lower ⅓ behind mountains */}
       <div
         aria-hidden="true"
-        className="absolute z-10 w-[550px] h-[550px] md:w-[750px] md:h-[750px] lg:w-[900px] lg:h-[900px]"
+        className="absolute z-10 w-[360px] h-[360px] md:w-[490px] md:h-[490px] lg:w-[585px] lg:h-[585px] -right-24 md:-right-64 lg:-right-72 xl:-right-44 2xl:-right-24"
         style={{
-          right: "-10%",
-          top: "10%",
-          /* Edge fade: radial mask fades outer 15% to transparent */
-          maskImage: "radial-gradient(circle at center, black 60%, transparent 100%)",
-          WebkitMaskImage: "radial-gradient(circle at center, black 60%, transparent 100%)",
+          bottom: "4vh",
         }}
       >
-        <div className="sunburst w-full h-full" />
+        <div className="sunburst w-full h-full rounded-full" />
       </div>
 
       {/* ── LAYER 4: Mountains ───────────────────────── */}

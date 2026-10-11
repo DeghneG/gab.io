@@ -175,16 +175,25 @@
    ═══════════════════════════════════════════════════ */
 
 .sunburst {
-  --ray-count: 16;
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  /* Hardcoded hex — CSS vars don't resolve reliably in conic-gradient */
-  background: repeating-conic-gradient(
-    #F1A512 0deg,
-    #F1A512 11.25deg,
-    #DD4111 11.25deg,
-    #DD4111 22.5deg
+  /* 14 wide rays alternating two close mustard tones (#F1A512 & #E0950A) for calm, low-contrast retro feel */
+  background: conic-gradient(
+    #F1A512 0deg 25.714deg,
+    #E0950A 25.714deg 51.429deg,
+    #F1A512 51.429deg 77.143deg,
+    #E0950A 77.143deg 102.857deg,
+    #F1A512 102.857deg 128.571deg,
+    #E0950A 128.571deg 154.286deg,
+    #F1A512 154.286deg 180deg,
+    #E0950A 180deg 205.714deg,
+    #F1A512 205.714deg 231.429deg,
+    #E0950A 231.429deg 257.143deg,
+    #F1A512 257.143deg 282.857deg,
+    #E0950A 282.857deg 308.571deg,
+    #F1A512 308.571deg 334.286deg,
+    #E0950A 334.286deg 360deg
   );
 }
 
