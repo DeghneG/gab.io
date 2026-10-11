@@ -113,14 +113,8 @@ export default function Loader({ onComplete }: LoaderProps) {
   const [isDone, setIsDone] = useState(false);
 
   useEffect(() => {
-    // Prevent scrolling while loader is active WITHOUT modifying body overflow
-    // This guarantees the scrollbar never disappears or causes horizontal layout shift!
-    const preventScroll = (e: Event) => {
-      e.preventDefault();
-    };
-
-    window.addEventListener("wheel", preventScroll, { passive: false });
-    window.addEventListener("touchmove", preventScroll, { passive: false });
+    // Keep window at top while loader boots
+    window.scrollTo(0, 0);
 
     // Hard fallback safety timer (increased to fit relaxed 2.65s animation)
     const safetyTimer = setTimeout(() => {
@@ -129,8 +123,6 @@ export default function Loader({ onComplete }: LoaderProps) {
     }, 4500);
 
     return () => {
-      window.removeEventListener("wheel", preventScroll);
-      window.removeEventListener("touchmove", preventScroll);
       clearTimeout(safetyTimer);
     };
   }, [onComplete]);
