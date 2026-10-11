@@ -9,6 +9,32 @@ interface LoaderProps {
 }
 
 /* ───────────────────────────────────────────────────────────
+   LOADER CUSTOMIZATION SETTINGS
+   Tweak these values anytime to customize the loader!
+   ─────────────────────────────────────────────────────────── */
+export const LOADER_CONFIG = {
+  // 🏷️ Labels & Branding
+  brandName: "GAB-DECK 7000",
+  tapeType: "TYPE II • CrO₂",
+  counterLabel: "TAPE INDEX:",
+
+  // ⏱️ Timing & Durations (in seconds)
+  spinDuration: 1.15, // How long the reels spin
+  logoWipeDuration: 0.85, // How long the logo takes to wipe across
+  holdDuration: 0.2, // Pause after reaching 100 before opening
+  ejectDuration: 0.75, // How fast the split eject door opens
+
+  // 🎨 Colors
+  backgroundColor: "#F5EEDE", // Background cream
+  borderColor: "#8C0027", // Outline wine border
+  tapeWindowBg: "#EFE8D8", // Cassette well background
+  ledColor: "#DD4111", // Status indicator dot
+
+  // ⚙️ Behavior
+  playOncePerSession: false, // Set to true to only show on first visit
+};
+
+/* ───────────────────────────────────────────────────────────
    CLASSIC 6-COG VINTAGE CASSETTE SPOOL
    ─────────────────────────────────────────────────────────── */
 function CassetteSpool({
@@ -147,7 +173,7 @@ export default function Loader({ onComplete }: LoaderProps) {
         [leftSpoolRef.current, rightSpoolRef.current],
         {
           rotation: "+=720",
-          duration: 1.15,
+          duration: LOADER_CONFIG.spinDuration,
           ease: "power2.inOut",
         },
         0.15
@@ -159,7 +185,7 @@ export default function Loader({ onComplete }: LoaderProps) {
         {
           opacity: 1,
           clipPath: "inset(0 0% 0 0)",
-          duration: 0.85,
+          duration: LOADER_CONFIG.logoWipeDuration,
           ease: "power2.inOut",
         },
         0.2
@@ -171,7 +197,7 @@ export default function Loader({ onComplete }: LoaderProps) {
         counterVal,
         {
           val: 100,
-          duration: 0.95,
+          duration: LOADER_CONFIG.spinDuration * 0.85,
           ease: "power1.inOut",
           onUpdate: () => {
             if (counterRef.current) {
@@ -210,16 +236,20 @@ export default function Loader({ onComplete }: LoaderProps) {
       }
 
       // ── Step 3: Tape Stop / Mechanical Click Settle ────────────
-      tl.to(deckHousingRef.current, {
-        scale: 1.02,
-        duration: 0.08,
-        yoyo: true,
-        repeat: 1,
-        ease: "power1.inOut",
-      }, 1.15);
+      tl.to(
+        deckHousingRef.current,
+        {
+          scale: 1.02,
+          duration: 0.08,
+          yoyo: true,
+          repeat: 1,
+          ease: "power1.inOut",
+        },
+        LOADER_CONFIG.spinDuration
+      );
 
       // Brief hold for recognition
-      tl.to({}, { duration: 0.2 });
+      tl.to({}, { duration: LOADER_CONFIG.holdDuration });
 
       // ── Step 4: Cassette Door "EJECT" Split Wipe Reveal ────────
       // Housing fades slightly and pulls back
@@ -235,7 +265,7 @@ export default function Loader({ onComplete }: LoaderProps) {
         topPanelRef.current,
         {
           yPercent: -100,
-          duration: 0.75,
+          duration: LOADER_CONFIG.ejectDuration,
           ease: "power4.inOut",
         },
         "-=0.1"
@@ -244,7 +274,7 @@ export default function Loader({ onComplete }: LoaderProps) {
         bottomPanelRef.current,
         {
           yPercent: 100,
-          duration: 0.75,
+          duration: LOADER_CONFIG.ejectDuration,
           ease: "power4.inOut",
         },
         "<"
@@ -265,9 +295,13 @@ export default function Loader({ onComplete }: LoaderProps) {
       {/* ── TOP SHUTTER PANEL ──────────────────────────────── */}
       <div
         ref={topPanelRef}
-        className="absolute top-0 left-0 right-0 h-1/2 bg-[#F5EEDE] will-change-transform z-10"
+        className="absolute top-0 left-0 right-0 h-1/2 will-change-transform z-10"
+        style={{ backgroundColor: LOADER_CONFIG.backgroundColor }}
       >
-        <div className="grain-overlay opacity-10 pointer-events-none" aria-hidden="true" />
+        <div
+          className="grain-overlay opacity-10 pointer-events-none"
+          aria-hidden="true"
+        />
         {/* Retro Multi-Color Bottom Lip on Top Panel */}
         <div className="absolute bottom-0 left-0 right-0 h-1.5 flex w-full">
           <div className="h-full flex-1 bg-[#2BAF90]" />
@@ -281,9 +315,13 @@ export default function Loader({ onComplete }: LoaderProps) {
       {/* ── BOTTOM SHUTTER PANEL ───────────────────────────── */}
       <div
         ref={bottomPanelRef}
-        className="absolute bottom-0 left-0 right-0 h-1/2 bg-[#F5EEDE] will-change-transform z-10"
+        className="absolute bottom-0 left-0 right-0 h-1/2 will-change-transform z-10"
+        style={{ backgroundColor: LOADER_CONFIG.backgroundColor }}
       >
-        <div className="grain-overlay opacity-10 pointer-events-none" aria-hidden="true" />
+        <div
+          className="grain-overlay opacity-10 pointer-events-none"
+          aria-hidden="true"
+        />
         {/* Retro Multi-Color Top Lip on Bottom Panel */}
         <div className="absolute top-0 left-0 right-0 h-1.5 flex w-full">
           <div className="h-full flex-1 bg-[#8C0027]" />
@@ -300,23 +338,35 @@ export default function Loader({ onComplete }: LoaderProps) {
         className="relative z-20 flex flex-col items-center px-4 max-w-md w-full will-change-transform"
       >
         {/* Outer Cassette Deck Shell */}
-        <div className="w-full bg-[#F5EEDE] border-[3px] border-[#8C0027] rounded-3xl p-5 sm:p-6 shadow-[6px_6px_0px_0px_#8C0027] flex flex-col items-center gap-4">
+        <div
+          className="w-full border-[3px] rounded-3xl p-5 sm:p-6 shadow-[6px_6px_0px_0px_#8C0027] flex flex-col items-center gap-4"
+          style={{
+            backgroundColor: LOADER_CONFIG.backgroundColor,
+            borderColor: LOADER_CONFIG.borderColor,
+          }}
+        >
           {/* Deck Top Header: Deck Brand & Status LED */}
           <div className="w-full flex items-center justify-between border-b-2 border-[#8C0027]/20 pb-2.5 font-mono text-[11px] sm:text-xs text-[#8C0027]">
             <div className="flex items-center gap-2">
               <span
                 ref={recDotRef}
-                className="w-2.5 h-2.5 rounded-full bg-[#DD4111] animate-pulse"
+                className="w-2.5 h-2.5 rounded-full animate-pulse"
+                style={{ backgroundColor: LOADER_CONFIG.ledColor }}
               />
               <span className="font-bold tracking-widest uppercase">
-                GAB-DECK 7000
+                {LOADER_CONFIG.brandName}
               </span>
             </div>
-            <span className="tracking-wider opacity-75">TYPE II • CrO₂</span>
+            <span className="tracking-wider opacity-75">
+              {LOADER_CONFIG.tapeType}
+            </span>
           </div>
 
           {/* Tape Cassette Window */}
-          <div className="relative w-full bg-[#EFE8D8] border-2 border-[#8C0027] rounded-2xl p-4 sm:p-5 flex flex-col items-center overflow-hidden">
+          <div
+            className="relative w-full border-2 border-[#8C0027] rounded-2xl p-4 sm:p-5 flex flex-col items-center overflow-hidden"
+            style={{ backgroundColor: LOADER_CONFIG.tapeWindowBg }}
+          >
             {/* Guide Ruler Behind Tape */}
             <div className="w-full flex justify-between px-2 mb-2 text-[9px] font-mono text-[#8C0027]/40 tracking-widest">
               <span>| 100</span>
@@ -363,7 +413,7 @@ export default function Loader({ onComplete }: LoaderProps) {
             {/* Mechanical 3-Digit Tape Index Counter */}
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] tracking-wider uppercase font-bold text-[#8C0027]/70">
-                TAPE INDEX:
+                {LOADER_CONFIG.counterLabel}
               </span>
               <div className="bg-[#3A1520] text-[#F1A512] font-mono font-bold px-2 py-0.5 rounded tracking-widest text-xs border border-[#8C0027] shadow-inner">
                 [ <span ref={counterRef}>000</span> ]
