@@ -94,6 +94,7 @@
   html {
     @apply font-body;
     scroll-behavior: smooth;
+    scrollbar-gutter: stable;
   }
 
   body {

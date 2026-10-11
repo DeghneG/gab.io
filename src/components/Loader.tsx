@@ -113,19 +113,24 @@ export default function Loader({ onComplete }: LoaderProps) {
   const [isDone, setIsDone] = useState(false);
 
   useEffect(() => {
-    // Lock body scroll while loader is active
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    // Prevent scrolling while loader is active WITHOUT modifying body overflow
+    // This guarantees the scrollbar never disappears or causes horizontal layout shift!
+    const preventScroll = (e: Event) => {
+      e.preventDefault();
+    };
+
+    window.addEventListener("wheel", preventScroll, { passive: false });
+    window.addEventListener("touchmove", preventScroll, { passive: false });
 
     // Hard fallback safety timer (increased to fit relaxed 2.65s animation)
     const safetyTimer = setTimeout(() => {
-      document.body.style.overflow = "";
       setIsDone(true);
       onComplete?.();
     }, 4500);
 
     return () => {
-      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("wheel", preventScroll);
+      window.removeEventListener("touchmove", preventScroll);
       clearTimeout(safetyTimer);
     };
   }, [onComplete]);
@@ -137,7 +142,6 @@ export default function Loader({ onComplete }: LoaderProps) {
       const tl = gsap.timeline({
         onComplete: () => {
           setIsDone(true);
-          document.body.style.overflow = "";
           onComplete?.();
         },
       });
