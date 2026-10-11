@@ -14,15 +14,15 @@ interface LoaderProps {
    ─────────────────────────────────────────────────────────── */
 export const LOADER_CONFIG = {
   // 🏷️ Labels & Branding
-  brandName: "GAB-DECK 7000",
-  tapeType: "TYPE II • CrO₂",
+  brandName: "gab.io",
+  tapeType: "e-portfolio",
   counterLabel: "TAPE INDEX:",
 
   // ⏱️ Timing & Durations (in seconds)
-  spinDuration: 1.15, // How long the reels spin
-  logoWipeDuration: 0.85, // How long the logo takes to wipe across
-  holdDuration: 0.2, // Pause after reaching 100 before opening
-  ejectDuration: 0.75, // How fast the split eject door opens
+  spinDuration: 2.65, // Added +1.5s for a relaxed, deliberate tape reel spin
+  logoWipeDuration: 1.85, // Smooth logo reveal across the magnetic tape ribbon
+  holdDuration: 0.35, // Satisfying pause at index 100 before door ejects
+  ejectDuration: 0.75, // Snappy mechanical split door opening
 
   // 🎨 Colors
   backgroundColor: "#F5EEDE", // Background cream
@@ -117,12 +117,12 @@ export default function Loader({ onComplete }: LoaderProps) {
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
-    // Hard fallback safety timer
+    // Hard fallback safety timer (increased to fit relaxed 2.65s animation)
     const safetyTimer = setTimeout(() => {
       document.body.style.overflow = "";
       setIsDone(true);
       onComplete?.();
-    }, 2500);
+    }, 4500);
 
     return () => {
       document.body.style.overflow = prevOverflow;
@@ -168,11 +168,11 @@ export default function Loader({ onComplete }: LoaderProps) {
       );
 
       // ── Step 2: Spools Spin & Tape Reads ───────────────────────
-      // Spools spin smoothly as magnetic tape winds
+      // Spools spin smoothly as magnetic tape winds (4 full rotations over 2.65s)
       tl.to(
         [leftSpoolRef.current, rightSpoolRef.current],
         {
-          rotation: "+=720",
+          rotation: "+=1440",
           duration: LOADER_CONFIG.spinDuration,
           ease: "power2.inOut",
         },
@@ -215,8 +215,8 @@ export default function Loader({ onComplete }: LoaderProps) {
           vuLeftRef.current,
           {
             scaleX: 0.9,
-            duration: 0.18,
-            repeat: 4,
+            duration: 0.22,
+            repeat: 8,
             yoyo: true,
             ease: "sine.inOut",
           },
@@ -226,8 +226,8 @@ export default function Loader({ onComplete }: LoaderProps) {
           vuRightRef.current,
           {
             scaleX: 0.82,
-            duration: 0.22,
-            repeat: 3,
+            duration: 0.26,
+            repeat: 7,
             yoyo: true,
             ease: "sine.inOut",
           },
