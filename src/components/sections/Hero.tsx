@@ -92,7 +92,6 @@ export default function Hero() {
         onComplete: () => setHasAnimated(true),
       });
     }
-
   }, []);
 
   return (
