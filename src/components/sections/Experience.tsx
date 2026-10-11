@@ -19,34 +19,79 @@ if (typeof window !== "undefined") {
  */
 export default function Experience() {
   const sectionRef = useRef<HTMLElement>(null);
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const lineProgressRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const markersRef = useRef<(HTMLDivElement | null)[]>([]);
 
-  useGSAP(() => {
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (prefersReduced) return;
+  useGSAP(
+    () => {
+      // 1. Dynamic Scroll-Drawn Gradient Line
+      if (lineProgressRef.current && timelineRef.current) {
+        gsap.fromTo(
+          lineProgressRef.current,
+          { scaleY: 0 },
+          {
+            scaleY: 1,
+            ease: "none",
+            transformOrigin: "top center",
+            scrollTrigger: {
+              trigger: timelineRef.current,
+              start: "top 75%",
+              end: "bottom 75%",
+              scrub: 0.5,
+            },
+          }
+        );
+      }
 
-    itemsRef.current.forEach((item, i) => {
-      if (!item) return;
-      gsap.fromTo(
-        item,
-        { opacity: 0, x: i % 2 === 0 ? -40 : 40 },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 0.6,
-          delay: i * 0.1,
-          ease: "power3.out",
+      // 2. Milestone Node Stamp & Card Glide-In
+      itemsRef.current.forEach((item, i) => {
+        if (!item) return;
+        const marker = markersRef.current[i];
+        const card = item.querySelector(".experience-card");
+
+        const tl = gsap.timeline({
           scrollTrigger: {
             trigger: item,
-            start: "top 85%",
+            start: "top 82%",
             once: true,
           },
+        });
+
+        // Marker pops with tactile letterpress spring
+        if (marker) {
+          tl.fromTo(
+            marker,
+            { scale: 0.4, opacity: 0 },
+            {
+              scale: 1,
+              opacity: 1,
+              duration: 0.5,
+              ease: "back.out(1.7)",
+            }
+          );
         }
-      );
-    });
-  }, []);
+
+        // Card glides in smoothly
+        if (card) {
+          tl.fromTo(
+            card,
+            { opacity: 0, x: 35, y: 15 },
+            {
+              opacity: 1,
+              x: 0,
+              y: 0,
+              duration: 0.65,
+              ease: "power3.out",
+            },
+            "-=0.3"
+          );
+        }
+      });
+    },
+    { scope: sectionRef }
+  );
 
   return (
     <section
@@ -66,43 +111,70 @@ export default function Experience() {
         </p>
 
         {/* Vertical timeline */}
-        <div className="relative max-w-2xl mx-auto">
-        {/* Timeline line */}
-        <div
-          className="absolute left-6 md:left-8 top-0 bottom-0 w-1 bg-wine/20 rounded-full"
-          aria-hidden="true"
-        />
+        <div ref={timelineRef} className="relative max-w-2xl mx-auto">
+          {/* Timeline background track line */}
+          <div
+            className="absolute left-6 md:left-8 -translate-x-1/2 top-6 bottom-6 w-1 bg-wine/15 rounded-full"
+            aria-hidden="true"
+          />
 
-        <ol className="flex flex-col gap-8 md:gap-10">
-          {timeline.map((entry, i) => (
-            <li key={`${entry.org}-${entry.period}`} className="relative">
-              <div
-                ref={(el) => { itemsRef.current[i] = el; }}
-                className="flex gap-5 md:gap-7 items-start"
-              >
-                {/* Timeline marker */}
-                <div
-                  className="
-                    relative z-10 shrink-0
-                    w-12 h-12 md:w-16 md:h-16
-                    rounded-full
-                    bg-cream border-4 border-wine
-                    flex items-center justify-center
-                    text-xl md:text-2xl
-                  "
-                  style={{ boxShadow: "3px 3px 0 0 #F1A512" }}
-                  aria-hidden="true"
-                />
+          {/* Dynamic Scroll-Drawn Ink Line (Teal -> Mustard -> Orange gradient) */}
+          <div
+            ref={lineProgressRef}
+            className="absolute left-6 md:left-8 -translate-x-1/2 top-6 bottom-6 w-1.5 bg-gradient-to-b from-[#2BAF90] via-[#F1A512] to-[#DD4111] rounded-full will-change-transform shadow-[0_0_8px_rgba(241,165,18,0.35)]"
+            aria-hidden="true"
+          />
 
-                {/* Content card */}
+          <ol className="flex flex-col gap-8 md:gap-10">
+            {timeline.map((entry, i) => (
+              <li key={`${entry.org}-${entry.period}`} className="relative">
                 <div
-                  className="
-                    flex-1
-                    bg-cream border-3 border-wine rounded-2xl
-                    p-5 md:p-6
-                  "
-                  style={{ boxShadow: "4px 4px 0 0 #8C0027" }}
+                  ref={(el) => {
+                    itemsRef.current[i] = el;
+                  }}
+                  className="flex gap-5 md:gap-7 items-start"
                 >
+                  {/* Timeline marker with milestone numbers */}
+                  <div
+                    ref={(el) => {
+                      markersRef.current[i] = el;
+                    }}
+                    className="
+                      relative z-10 shrink-0
+                      w-12 h-12 md:w-16 md:h-16
+                      rounded-full
+                      bg-cream border-4 border-wine
+                      flex items-center justify-center
+                      text-base md:text-xl font-bold text-wine
+                      will-change-transform
+                    "
+                    style={{
+                      fontFamily: "var(--font-display)",
+                      boxShadow: "3px 3px 0 0 #F1A512",
+                    }}
+                    aria-hidden="true"
+                  >
+                    0{i + 1}
+                    {/* Live pulse indicator on the current / latest milestone */}
+                    {i === timeline.length - 1 && (
+                      <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange opacity-75" />
+                        <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-orange border border-cream" />
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Content card */}
+                  <div
+                    className="
+                      experience-card
+                      flex-1
+                      bg-cream border-3 border-wine rounded-2xl
+                      p-5 md:p-6
+                      will-change-transform
+                    "
+                    style={{ boxShadow: "4px 4px 0 0 #8C0027" }}
+                  >
                   <h3
                     className="text-lg md:text-xl text-wine mb-1"
                     style={{ fontFamily: "var(--font-display)" }}
