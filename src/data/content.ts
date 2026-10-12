@@ -157,6 +157,21 @@ export const timeline: TimelineEntry[] = [
   },
 ];
 
+export interface Certification {
+  title: string;
+  issuer: string;
+  year: string;
+  category: string;
+  url?: string;
+}
+
+export const certifications: Certification[] = [
+  { title: "Certification Title One", issuer: "Issuer Name", year: "2026", category: "Web Dev", url: "" },
+  { title: "Certification Title Two", issuer: "Issuer Name", year: "2025", category: "Design", url: "" },
+  { title: "Certification Title Three", issuer: "Issuer Name", year: "2025", category: "AI", url: "" },
+  { title: "Certification Title Four", issuer: "Issuer Name", year: "2024", category: "Tools", url: "" }
+];
+
 export const contact = {
   email: "deghneagana@gmail.com",
   github: "https://github.com/DeghneG",
