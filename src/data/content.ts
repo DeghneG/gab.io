@@ -95,12 +95,18 @@ export const skillCategories: SkillCategory[] = [
     skills: [
       { name: "Python", color: "wine" },
       { name: "Supabase", color: "teal" },
+    ],
+  },
+  {
+    category: "CMS",
+    accent: "orange",
+    skills: [
       { name: "WordPress", color: "orange" },
     ],
   },
   {
     category: "Developer Tools",
-    accent: "orange",
+    accent: "wine",
     skills: [
       { name: "GitHub", color: "mustard" },
       { name: "Vercel", color: "mustard" },
