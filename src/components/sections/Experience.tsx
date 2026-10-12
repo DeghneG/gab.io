@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ArrowUpRight } from "lucide-react";
 import ContourBackground from "@/components/contour-background";
 import { timeline, siteConfig, certifications } from "@/data/content";
 
@@ -23,6 +24,20 @@ export default function Experience() {
   const markersRef = useRef<(HTMLDivElement | null)[]>([]);
   const certsContainerRef = useRef<HTMLDivElement>(null);
   const certCardsRef = useRef<(HTMLLIElement | null)[]>([]);
+
+  // Tweakable settings for certifications block
+  const INITIAL_ROWS = 6;
+  const [showAll, setShowAll] = useState(false);
+
+  const sortedCertifications = [...certifications].sort((a, b) => {
+    const yearDiff = (parseInt(b.year, 10) || 0) - (parseInt(a.year, 10) || 0);
+    if (yearDiff !== 0) return yearDiff;
+    return a.title.localeCompare(b.title);
+  });
+
+  const displayedCertifications = showAll
+    ? sortedCertifications
+    : sortedCertifications.slice(0, INITIAL_ROWS);
 
   useGSAP(
     () => {
@@ -90,7 +105,7 @@ export default function Experience() {
         }
       });
 
-      // 3. Certifications Cards Staggered Entrance
+      // 3. Certifications Ticket-Stub Staggered Entrance
       if (certsContainerRef.current && certCardsRef.current.length > 0) {
         const prefersReduced =
           typeof window !== "undefined" &&
@@ -116,7 +131,7 @@ export default function Experience() {
         }
       }
     },
-    { scope: sectionRef }
+    { scope: sectionRef, dependencies: [showAll] }
   );
 
   return (
@@ -268,75 +283,126 @@ export default function Experience() {
             className="w-20 h-2 rounded-full stripe-band mb-8"
           />
 
-          {/* Certifications Grid */}
-          <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-stretch">
-            {certifications.map((cert, i) => (
+          {/* Ticket-Stub List */}
+          <ul className="flex flex-col gap-4">
+            {displayedCertifications.map((cert, i) => (
               <li
                 key={`${cert.title}-${cert.year}`}
                 ref={(el) => {
                   certCardsRef.current[i] = el;
                 }}
                 className="
-                  h-full
+                  relative flex items-stretch
                   bg-cream border-3 border-wine rounded-2xl
-                  p-5 md:p-6
-                  flex flex-col justify-between space-y-3
+                  overflow-hidden
+                  shadow-[4px_4px_0_0_#8C0027]
                   transition-all duration-100 ease-out
                 "
-                style={{ boxShadow: "4px 4px 0 0 #8C0027" }}
               >
-                <div className="space-y-1.5">
-                  <h4
-                    className="text-lg text-wine leading-snug break-words"
+                {/* 1. Left Stub (Year) */}
+                <div
+                  className="
+                    relative w-[72px] md:w-[88px] shrink-0
+                    bg-mustard text-wine
+                    flex items-center justify-center
+                    border-r-2 border-dashed border-wine/40
+                    p-2 select-none
+                  "
+                >
+                  <span
+                    className="text-base md:text-xl font-bold tracking-wider"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
-                    {cert.title}
-                  </h4>
-                  <p
-                    className="text-sm text-wine/75"
-                    style={{ fontFamily: "var(--font-body)" }}
-                  >
-                    {cert.issuer}
-                  </p>
+                    {cert.year}
+                  </span>
+
+                  {/* Semicircle notches at top and bottom of perforation */}
+                  <span
+                    aria-hidden="true"
+                    className="absolute -top-2.5 -right-2.5 w-5 h-5 rounded-full bg-mint border-b-2 border-wine z-10 pointer-events-none"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="absolute -bottom-2.5 -right-2.5 w-5 h-5 rounded-full bg-mint border-t-2 border-wine z-10 pointer-events-none"
+                  />
                 </div>
 
-                <div className="space-y-3 pt-2">
-                  {/* Chip row: year (mustard) and category (teal) */}
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span
-                      className="text-xs px-3 py-1 bg-mustard text-wine rounded-full border-2 border-wine/30 font-bold"
+                {/* 2 & 3. Middle Content & Right Credential Button */}
+                <div className="p-4 md:p-5 flex items-center justify-between gap-3 md:gap-4 flex-1 min-w-0">
+                  {/* Middle Info */}
+                  <div className="flex-1 min-w-0 flex flex-col justify-center gap-1.5">
+                    <h4
+                      className="text-base md:text-lg text-wine line-clamp-2 md:truncate leading-snug"
+                      style={{ fontFamily: "var(--font-display)" }}
+                      title={cert.title}
+                    >
+                      {cert.title}
+                    </h4>
+                    <p
+                      className="text-xs md:text-sm text-wine/75"
                       style={{ fontFamily: "var(--font-body)" }}
                     >
-                      {cert.year}
-                    </span>
+                      {cert.issuer}
+                    </p>
                     <span
-                      className="text-xs px-3 py-1 bg-teal text-cream rounded-full border-2 border-wine/30 font-bold"
+                      className="inline-flex w-fit text-[11px] md:text-xs px-2.5 py-0.5 bg-teal text-cream rounded-full border border-wine/30 font-bold"
                       style={{ fontFamily: "var(--font-body)" }}
                     >
                       {cert.category}
                     </span>
                   </div>
 
-                  {/* View credential link if URL exists */}
+                  {/* 3. Right Credential Button */}
                   {cert.url && cert.url.trim() !== "" && (
-                    <div>
-                      <a
-                        href={cert.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-sm text-wine underline decoration-orange underline-offset-4 font-bold hover:text-orange hover:decoration-wine focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mustard rounded"
-                        style={{ fontFamily: "var(--font-body)" }}
-                        aria-label={`View credential for ${cert.title}`}
-                      >
-                        View credential
-                        <span aria-hidden="true">↗</span>
-                      </a>
-                    </div>
+                    <a
+                      href={cert.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`View credential: ${cert.title}`}
+                      className="
+                        w-10 h-10 rounded-full shrink-0
+                        flex items-center justify-center
+                        border-2 border-wine bg-cream text-wine
+                        transition-all duration-150
+                        hover:bg-mustard hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#8C0027]
+                        active:translate-y-0 active:shadow-none
+                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mustard
+                      "
+                    >
+                      <ArrowUpRight className="w-5 h-5 stroke-[2.5]" />
+                    </a>
                   )}
                 </div>
               </li>
             ))}
           </ul>
+
+          {/* Show All / Show Less Toggle Button */}
+          {sortedCertifications.length > INITIAL_ROWS && (
+            <div className="flex justify-center mt-6">
+              <button
+                type="button"
+                onClick={() => setShowAll((prev) => !prev)}
+                aria-expanded={showAll}
+                className="
+                  px-5 py-2.5 rounded-full
+                  border-2 border-wine/30 bg-cream/60 text-wine
+                  hover:border-wine hover:bg-cream
+                  text-xs md:text-sm font-bold uppercase tracking-wider
+                  transition-all duration-200
+                  shadow-[2px_2px_0_0_#8C0027]
+                  active:translate-y-0.5 active:shadow-none
+                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mustard
+                  cursor-pointer
+                "
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                {showAll
+                  ? "Show less"
+                  : `Show all (${sortedCertifications.length})`}
+              </button>
+            </div>
+          )}
         </div>
       )}
 
