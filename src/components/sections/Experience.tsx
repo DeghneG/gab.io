@@ -27,7 +27,28 @@ export default function Experience() {
 
   // Tweakable settings for certifications block
   const INITIAL_ROWS = 6;
+  const STUB_WIDTH = 88; // 88px stub width
+  const BARCODE_WIDTH = 48; // 48px barcode width
   const [showAll, setShowAll] = useState(false);
+
+  const STUB_COLORS = [
+    { bg: "bg-mustard", text: "text-wine", label: "text-wine/70" },
+    { bg: "bg-teal", text: "text-cream", label: "text-cream/80" },
+    { bg: "bg-orange", text: "text-cream", label: "text-cream/80" },
+  ];
+
+  const ticketMaskStyle: React.CSSProperties = {
+    WebkitMaskImage: `radial-gradient(circle 10px at ${STUB_WIDTH}px 0px, transparent 9.5px, #000 10px), radial-gradient(circle 10px at ${STUB_WIDTH}px 100%, transparent 9.5px, #000 10px)`,
+    WebkitMaskComposite: "destination-in",
+    maskImage: `radial-gradient(circle 10px at ${STUB_WIDTH}px 0px, transparent 9.5px, #000 10px), radial-gradient(circle 10px at ${STUB_WIDTH}px 100%, transparent 9.5px, #000 10px)`,
+    maskComposite: "intersect",
+  };
+
+  const barcodeStyle: React.CSSProperties = {
+    width: `${BARCODE_WIDTH}px`,
+    background:
+      "repeating-linear-gradient(90deg, #8C0027 0px, #8C0027 2px, transparent 2px, transparent 4px, #8C0027 4px, #8C0027 5px, transparent 5px, transparent 8px, #8C0027 8px, #8C0027 11px, transparent 11px, transparent 13px, #8C0027 13px, #8C0027 14px, transparent 14px, transparent 16px)",
+  };
 
   const sortedCertifications = [...certifications].sort((a, b) => {
     const yearDiff = (parseInt(b.year, 10) || 0) - (parseInt(a.year, 10) || 0);
@@ -284,97 +305,120 @@ export default function Experience() {
           />
 
           {/* Ticket-Stub List */}
-          <ul className="flex flex-col gap-4">
-            {displayedCertifications.map((cert, i) => (
-              <li
-                key={`${cert.title}-${cert.year}`}
-                ref={(el) => {
-                  certCardsRef.current[i] = el;
-                }}
-                className="
-                  relative flex items-stretch
-                  bg-cream border-3 border-wine rounded-2xl
-                  overflow-hidden
-                  shadow-[4px_4px_0_0_#8C0027]
-                  transition-all duration-100 ease-out
-                "
-              >
-                {/* 1. Left Stub (Year) */}
-                <div
+          <ul className="flex flex-col gap-5">
+            {displayedCertifications.map((cert, i) => {
+              const stubColor = STUB_COLORS[i % STUB_COLORS.length];
+              const serialNo = `No. ${String(i + 1).padStart(3, "0")}`;
+
+              return (
+                <li
+                  key={`${cert.title}-${cert.year}`}
+                  ref={(el) => {
+                    certCardsRef.current[i] = el;
+                  }}
                   className="
-                    relative w-[72px] md:w-[88px] shrink-0
-                    bg-mustard text-wine
-                    flex items-center justify-center
-                    border-r-2 border-dashed border-wine/40
-                    p-2 select-none
+                    group relative
+                    transition-all duration-150 ease-out
+                    hover:-translate-y-[2px] hover:rotate-[0.8deg]
+                    motion-reduce:hover:translate-y-0 motion-reduce:hover:rotate-0
+                    [filter:drop-shadow(6px_6px_0_#8C0027)] hover:[filter:drop-shadow(8px_8px_0_#8C0027)]
                   "
                 >
-                  <span
-                    className="text-base md:text-xl font-bold tracking-wider"
-                    style={{ fontFamily: "var(--font-display)" }}
+                  <div
+                    className="relative flex items-stretch bg-cream border-3 border-wine rounded-2xl overflow-hidden"
+                    style={ticketMaskStyle}
                   >
-                    {cert.year}
-                  </span>
+                    {/* 1. Left Stub (Year + CERT label) */}
+                    <div
+                      className={`
+                        relative w-[88px] shrink-0
+                        ${stubColor.bg} ${stubColor.text}
+                        flex flex-col items-center justify-center
+                        border-r-2 border-dashed border-wine/40
+                        py-5 px-2 select-none gap-1.5
+                      `}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={`text-[10px] uppercase tracking-widest font-bold ${stubColor.label}`}
+                        style={{ fontFamily: "var(--font-body)" }}
+                      >
+                        CERT
+                      </span>
+                      <span
+                        className="text-2xl md:text-3xl font-bold [writing-mode:vertical-rl] rotate-180 tracking-wide"
+                        style={{ fontFamily: "var(--font-display)" }}
+                      >
+                        {cert.year}
+                      </span>
+                    </div>
 
-                  {/* Semicircle notches at top and bottom of perforation */}
-                  <span
-                    aria-hidden="true"
-                    className="absolute -top-2.5 -right-2.5 w-5 h-5 rounded-full bg-mint border-b-2 border-wine z-10 pointer-events-none"
-                  />
-                  <span
-                    aria-hidden="true"
-                    className="absolute -bottom-2.5 -right-2.5 w-5 h-5 rounded-full bg-mint border-t-2 border-wine z-10 pointer-events-none"
-                  />
-                </div>
+                    {/* 2 & 3. Middle Content & Right Barcode/Serial */}
+                    <div className="py-5 px-6 flex items-center justify-between gap-4 md:gap-6 flex-1 min-w-0">
+                      {/* Middle Info */}
+                      <div className="flex-1 min-w-0 flex flex-col justify-center gap-1.5">
+                        <h4
+                          className="text-lg md:text-xl text-wine line-clamp-2 md:truncate leading-snug"
+                          style={{ fontFamily: "var(--font-display)" }}
+                          title={cert.title}
+                        >
+                          {cert.title}
+                        </h4>
+                        <p
+                          className="text-xs md:text-sm text-wine/75"
+                          style={{ fontFamily: "var(--font-body)" }}
+                        >
+                          {cert.issuer}
+                        </p>
+                        <span
+                          className="inline-flex w-fit text-[11px] md:text-xs px-2.5 py-0.5 bg-teal text-cream rounded-full border border-wine/30 font-bold"
+                          style={{ fontFamily: "var(--font-body)" }}
+                        >
+                          {cert.category}
+                        </span>
+                      </div>
 
-                {/* 2 & 3. Middle Content & Right Credential Button */}
-                <div className="p-4 md:p-5 flex items-center justify-between gap-3 md:gap-4 flex-1 min-w-0">
-                  {/* Middle Info */}
-                  <div className="flex-1 min-w-0 flex flex-col justify-center gap-1.5">
-                    <h4
-                      className="text-base md:text-lg text-wine line-clamp-2 md:truncate leading-snug"
-                      style={{ fontFamily: "var(--font-display)" }}
-                      title={cert.title}
-                    >
-                      {cert.title}
-                    </h4>
-                    <p
-                      className="text-xs md:text-sm text-wine/75"
-                      style={{ fontFamily: "var(--font-body)" }}
-                    >
-                      {cert.issuer}
-                    </p>
-                    <span
-                      className="inline-flex w-fit text-[11px] md:text-xs px-2.5 py-0.5 bg-teal text-cream rounded-full border border-wine/30 font-bold"
-                      style={{ fontFamily: "var(--font-body)" }}
-                    >
-                      {cert.category}
-                    </span>
+                      {/* Right End: Credential Button + Serial No + Barcode */}
+                      <div className="flex items-center gap-3 md:gap-4 shrink-0">
+                        {cert.url && cert.url.trim() !== "" && (
+                          <a
+                            href={cert.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`View credential: ${cert.title}`}
+                            className="
+                              w-10 h-10 rounded-full shrink-0
+                              flex items-center justify-center
+                              border-2 border-wine bg-cream text-wine
+                              transition-all duration-150
+                              hover:bg-mustard hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#8C0027]
+                              active:translate-y-0 active:shadow-none
+                              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mustard
+                            "
+                          >
+                            <ArrowUpRight className="w-5 h-5 stroke-[2.5]" />
+                          </a>
+                        )}
+
+                        <span
+                          aria-hidden="true"
+                          className="text-xs text-wine/60 font-bold tracking-wider select-none whitespace-nowrap"
+                          style={{ fontFamily: "var(--font-body)" }}
+                        >
+                          {serialNo}
+                        </span>
+
+                        <div
+                          aria-hidden="true"
+                          className="hidden sm:block h-10 md:h-12 shrink-0 border-l border-r border-wine/20 select-none opacity-85"
+                          style={barcodeStyle}
+                        />
+                      </div>
+                    </div>
                   </div>
-
-                  {/* 3. Right Credential Button */}
-                  {cert.url && cert.url.trim() !== "" && (
-                    <a
-                      href={cert.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`View credential: ${cert.title}`}
-                      className="
-                        w-10 h-10 rounded-full shrink-0
-                        flex items-center justify-center
-                        border-2 border-wine bg-cream text-wine
-                        transition-all duration-150
-                        hover:bg-mustard hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#8C0027]
-                        active:translate-y-0 active:shadow-none
-                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mustard
-                      "
-                    >
-                      <ArrowUpRight className="w-5 h-5 stroke-[2.5]" />
-                    </a>
-                  )}
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
 
           {/* Show All / Show Less Toggle Button */}
