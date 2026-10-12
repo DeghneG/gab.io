@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Shrikhand, Special_Elite } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Loader from "@/components/Loader";
+import SmoothScrollProvider from "@/components/smooth-scroll-provider";
 import "./globals.css";
 
 /* Shrikhand: chunky retro display face for headings */
@@ -35,9 +36,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-dvh flex flex-col antialiased">
         {/* Film grain / paper texture overlay */}
         <div className="grain-overlay" aria-hidden="true" />
-        <Loader />
-        <Navbar />
-        {children}
+        <SmoothScrollProvider>
+          <Loader />
+          <Navbar />
+          {children}
+        </SmoothScrollProvider>
       </body>
     </html>
   );
