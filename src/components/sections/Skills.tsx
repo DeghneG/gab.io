@@ -19,6 +19,156 @@ const colorHex: Record<Skill["color"], string> = {
 };
 
 /**
+ * Individual Vinyl Record Skill Item with GSAP Turntable Spin-Up and Coast-to-Stop.
+ */
+function VinylSkillItem({
+  skill,
+  rowRef,
+}: {
+  skill: Skill;
+  rowRef: (el: HTMLDivElement | null) => void;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const discRef = useRef<HTMLDivElement>(null);
+  const labelRef = useRef<HTMLSpanElement>(null);
+  const spinTweenRef = useRef<gsap.core.Tween | null>(null);
+
+  const handleMouseEnter = () => {
+    if (!discRef.current) return;
+
+    // Stop any existing tweens on the disc and label
+    if (spinTweenRef.current) {
+      spinTweenRef.current.kill();
+    }
+    gsap.killTweensOf([discRef.current, labelRef.current]);
+
+    // 1. Continuous turntable spin (approx 33-45 RPM feel: 1 rotation every 1.2s)
+    spinTweenRef.current = gsap.to(discRef.current, {
+      rotation: "+=360",
+      duration: 1.2,
+      repeat: -1,
+      ease: "none",
+    });
+
+    // 2. Disc lifts & expands colored shadow
+    gsap.to(discRef.current, {
+      scale: 1.12,
+      boxShadow: `3px 3px 0 0 ${colorHex[skill.color]}`,
+      duration: 0.25,
+      ease: "power2.out",
+    });
+
+    // 3. Label shifts right and brightens
+    if (labelRef.current) {
+      gsap.to(labelRef.current, {
+        x: 6,
+        color: "#FFFFFF",
+        duration: 0.25,
+        ease: "power2.out",
+      });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (!discRef.current) return;
+
+    // Stop continuous loop and coast forward to a natural inertia stop
+    if (spinTweenRef.current) {
+      spinTweenRef.current.kill();
+      spinTweenRef.current = null;
+    }
+    gsap.killTweensOf([discRef.current, labelRef.current]);
+
+    // Coast to stop: continues rotating forward by 120deg while decelerating
+    gsap.to(discRef.current, {
+      rotation: "+=120",
+      scale: 1,
+      boxShadow: `2px 2px 0 0 ${colorHex[skill.color]}`,
+      duration: 0.7,
+      ease: "power2.out",
+    });
+
+    if (labelRef.current) {
+      gsap.to(labelRef.current, {
+        x: 0,
+        color: "rgba(245, 240, 232, 0.9)",
+        duration: 0.3,
+        ease: "power2.out",
+      });
+    }
+  };
+
+  return (
+    <div
+      ref={(el) => {
+        containerRef.current = el;
+        rowRef(el);
+      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onFocus={handleMouseEnter}
+      onBlur={handleMouseLeave}
+      tabIndex={0}
+      className="flex flex-row items-center gap-3 cursor-pointer py-1 px-1.5 -mx-1.5 rounded-xl transition-colors duration-150 hover:bg-white/5 outline-none focus-visible:ring-2 focus-visible:ring-mustard select-none"
+    >
+      {/* Vinyl disc */}
+      <div
+        ref={discRef}
+        className="
+          relative w-8 h-8 md:w-10 md:h-10 shrink-0
+          rounded-full
+          border-2
+          flex items-center justify-center
+          select-none
+        "
+        style={{
+          borderColor: colorHex[skill.color],
+          background: `radial-gradient(circle at center, ${colorHex[skill.color]} 0%, ${colorHex[skill.color]} 18%, #1a1a1a 19%, #1a1a1a 22%, ${colorHex[skill.color]}33 23%, #2a2a2a 40%, #1a1a1a 60%, ${colorHex[skill.color]}44 80%, #2a2a2a 100%)`,
+          boxShadow: `2px 2px 0 0 ${colorHex[skill.color]}`,
+          willChange: "transform",
+        }}
+        aria-hidden="true"
+      >
+        {/* Center label hole */}
+        <div
+          className="
+            w-3 h-3
+            rounded-full bg-cream
+            border-[1px]
+            flex items-center justify-center
+          "
+          style={{ borderColor: colorHex[skill.color] }}
+        >
+          <div
+            className="w-1 h-1 rounded-full"
+            style={{ backgroundColor: colorHex[skill.color] }}
+          />
+        </div>
+
+        {/* Groove lines */}
+        <div
+          className="absolute inset-[3px] rounded-full border border-white/5 pointer-events-none"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute inset-[6px] rounded-full border border-white/5 pointer-events-none"
+          aria-hidden="true"
+        />
+      </div>
+
+      {/* Skill name */}
+      <span
+        ref={labelRef}
+        className="text-xs text-cream/90 select-none transition-colors duration-150"
+        style={{ fontFamily: "var(--font-body)", willChange: "transform" }}
+      >
+        {skill.name}
+      </span>
+    </div>
+  );
+}
+
+/**
  * Skills section — "record collection."
  * Each skill is a vinyl disc that spins on hover.
  */
@@ -27,22 +177,17 @@ export default function Skills() {
   const discsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useGSAP(() => {
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (prefersReduced) return;
-
     discsRef.current.forEach((disc, i) => {
       if (!disc) return;
       gsap.fromTo(
         disc,
-        { opacity: 0, y: 40, rotate: -15 },
+        { opacity: 0, y: 35, rotate: -12 },
         {
           opacity: 1,
           y: 0,
           rotate: 0,
           duration: 0.5,
-          delay: i * 0.06,
+          delay: i * 0.05,
           ease: "power3.out",
           scrollTrigger: {
             trigger: sectionRef.current,
@@ -105,64 +250,13 @@ export default function Skills() {
                   {category.skills.map((skill) => {
                     const i = discCounter++;
                     return (
-                      <div
+                      <VinylSkillItem
                         key={skill.name}
-                        ref={(el) => { discsRef.current[i] = el; }}
-                        className="flex flex-row items-center gap-3 group"
-                      >
-                        {/* Vinyl disc */}
-                        <div
-                          className="
-                            relative w-8 h-8 md:w-10 md:h-10 shrink-0
-                            rounded-full
-                            border-2
-                            flex items-center justify-center
-                            transition-transform duration-500
-                            group-hover:rotate-[360deg]
-                          "
-                          style={{
-                            borderColor: colorHex[skill.color],
-                            background: `radial-gradient(circle at center, ${colorHex[skill.color]} 0%, ${colorHex[skill.color]} 18%, #1a1a1a 19%, #1a1a1a 22%, ${colorHex[skill.color]}33 23%, #2a2a2a 40%, #1a1a1a 60%, ${colorHex[skill.color]}44 80%, #2a2a2a 100%)`,
-                            boxShadow: `2px 2px 0 0 ${colorHex[skill.color]}`,
-                            transitionTimingFunction: "var(--ease-in-out)",
-                          }}
-                          aria-hidden="true"
-                        >
-                          {/* Center label hole */}
-                          <div
-                            className="
-                              w-3 h-3
-                              rounded-full bg-cream
-                              border-[1px]
-                              flex items-center justify-center
-                            "
-                            style={{ borderColor: colorHex[skill.color] }}
-                          >
-                            <div
-                              className="w-1 h-1 rounded-full"
-                              style={{ backgroundColor: colorHex[skill.color] }}
-                            />
-                          </div>
-
-                          {/* Groove lines (subtle rings on the vinyl) */}
-                          <div
-                            className="absolute inset-[3px] rounded-full border border-white/5 pointer-events-none"
-                            aria-hidden="true"
-                          />
-                          <div
-                            className="absolute inset-[6px] rounded-full border border-white/5 pointer-events-none"
-                            aria-hidden="true"
-                          />
-                        </div>
-
-                        {/* Skill name */}
-                        <span
-                          className="text-xs text-cream/90 text-center"
-                          style={{ fontFamily: "var(--font-body)" }}
-                        >
-                          {skill.name}
-                        </span>
-                      </div>
+                        skill={skill}
+                        rowRef={(el) => {
+                          discsRef.current[i] = el;
+                        }}
+                      />
                     );
                   })}
                 </div>
