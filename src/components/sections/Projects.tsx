@@ -28,61 +28,72 @@ function ProjectCardItem({
   const imgRef = useRef<HTMLImageElement>(null);
 
   const handleMouseEnter = () => {
-    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!cardInnerRef.current) return;
     gsap.killTweensOf([cardInnerRef.current, badgeRef.current, imgRef.current]);
 
     // 1. Rubber-band squash and stretch timeline on card container
     gsap
       .timeline()
       .to(cardInnerRef.current, {
-        scaleX: 1.026,
-        scaleY: 0.974,
-        y: -6,
-        boxShadow: "10px 10px 0 0 #8C0027",
+        scaleX: 1.05,
+        scaleY: 0.95,
+        y: -8,
+        boxShadow: "10px 12px 0 0 #8C0027",
         duration: 0.12,
         ease: "power2.out",
       })
       .to(cardInnerRef.current, {
-        scaleX: 0.988,
-        scaleY: 1.012,
+        scaleX: 0.96,
+        scaleY: 1.04,
         duration: 0.14,
+        ease: "power1.inOut",
+      })
+      .to(cardInnerRef.current, {
+        scaleX: 1.02,
+        scaleY: 0.99,
+        duration: 0.12,
         ease: "power1.inOut",
       })
       .to(cardInnerRef.current, {
         scaleX: 1,
         scaleY: 1,
-        y: -6,
-        duration: 0.38,
-        ease: "elastic.out(1.25, 0.35)",
+        y: -8,
+        duration: 0.4,
+        ease: "elastic.out(1.4, 0.35)",
       });
 
-    // 2. Secondary delayed jiggle on category badge
+    // 2. Playful jiggle on category badge
     if (badgeRef.current) {
       gsap
-        .timeline({ delay: 0.05 })
+        .timeline({ delay: 0.04 })
         .to(badgeRef.current, {
-          rotation: -7,
-          scale: 1.1,
+          rotation: -10,
+          scale: 1.15,
           duration: 0.1,
           ease: "power2.out",
         })
         .to(badgeRef.current, {
-          rotation: 5,
+          rotation: 8,
           duration: 0.12,
           ease: "power1.inOut",
         })
         .to(badgeRef.current, {
+          rotation: -5,
+          duration: 0.1,
+          ease: "power1.inOut",
+        })
+        .to(badgeRef.current, {
           rotation: 0,
-          scale: 1.04,
-          duration: 0.32,
-          ease: "elastic.out(1.4, 0.3)",
+          scale: 1.05,
+          duration: 0.35,
+          ease: "elastic.out(1.5, 0.3)",
         });
     }
 
     // 3. Smooth image scale
     if (imgRef.current) {
       gsap.to(imgRef.current, {
-        scale: 1.04,
+        scale: 1.06,
         duration: 0.35,
         ease: "power2.out",
       });
@@ -90,7 +101,7 @@ function ProjectCardItem({
   };
 
   const handleMouseLeave = () => {
-    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!cardInnerRef.current) return;
     gsap.killTweensOf([cardInnerRef.current, badgeRef.current, imgRef.current]);
 
     gsap.to(cardInnerRef.current, {
@@ -98,15 +109,15 @@ function ProjectCardItem({
       scaleY: 1,
       y: 0,
       boxShadow: "6px 6px 0 0 #8C0027",
-      duration: 0.28,
-      ease: "power2.out",
+      duration: 0.3,
+      ease: "power3.out",
     });
 
     if (badgeRef.current) {
       gsap.to(badgeRef.current, {
         rotation: 0,
         scale: 1,
-        duration: 0.22,
+        duration: 0.25,
         ease: "power2.out",
       });
     }
@@ -114,18 +125,18 @@ function ProjectCardItem({
     if (imgRef.current) {
       gsap.to(imgRef.current, {
         scale: 1,
-        duration: 0.28,
+        duration: 0.3,
         ease: "power2.out",
       });
     }
   };
 
   const handleMouseDown = () => {
-    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!cardInnerRef.current) return;
     gsap.to(cardInnerRef.current, {
-      scaleX: 0.985,
-      scaleY: 0.985,
-      y: 2,
+      scaleX: 0.97,
+      scaleY: 0.97,
+      y: 3,
       boxShadow: "2px 2px 0 0 #8C0027",
       duration: 0.08,
       ease: "power2.out",
@@ -133,12 +144,12 @@ function ProjectCardItem({
   };
 
   const handleMouseUp = () => {
-    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!cardInnerRef.current) return;
     gsap.to(cardInnerRef.current, {
       scaleX: 1,
       scaleY: 1,
-      y: -6,
-      boxShadow: "10px 10px 0 0 #8C0027",
+      y: -8,
+      boxShadow: "10px 12px 0 0 #8C0027",
       duration: 0.25,
       ease: "elastic.out(1.2, 0.4)",
     });
@@ -156,7 +167,7 @@ function ProjectCardItem({
       className={`
         relative w-full
         bg-cream border-4 border-wine rounded-2xl
-        flex flex-col overflow-hidden text-left
+        flex flex-col overflow-hidden text-left cursor-pointer
         ${isFeatured ? "aspect-square md:aspect-[16/9]" : "aspect-square md:aspect-[4/3]"}
         shadow-[6px_6px_0_0_#8C0027]
       `}
@@ -298,7 +309,7 @@ export default function Projects() {
           <Dialog key={project.slug || project.title}>
             <DialogTrigger
               ref={(el) => { cardsRef.current[i] = el; }}
-              className={`group outline-none focus-visible:ring-4 focus-visible:ring-mustard rounded-2xl ${i === 0 ? "md:col-span-2" : ""}`}
+              className={`group outline-none focus-visible:ring-4 focus-visible:ring-mustard rounded-2xl w-full block text-left cursor-pointer ${i === 0 ? "md:col-span-2" : ""}`}
               aria-label={`View details for ${project.title}`}
             >
               <ProjectCardItem project={project} isFeatured={i === 0} />

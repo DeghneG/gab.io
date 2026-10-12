@@ -36,8 +36,8 @@ export const projects: Project[] = [
     description:
       "The official website of the Information Technology Student Association at the University of San Agustin. It helps students connect, learn, and grow together.",
     tech: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
-    liveUrl: "#",
-    repoUrl: "#",
+    liveUrl: "https://itsa-website-psi.vercel.app/",
+    repoUrl: "https://github.com/JustineSalinas/ITSA-Website",
     image: "/projects/itsa.png",
   },
   {
