@@ -7,10 +7,202 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import ContourBackground from "@/components/contour-background";
-import { projects } from "@/data/content";
+import { projects, type Project } from "@/data/content";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
+}
+
+/**
+ * Single project card with GSAP rubber-band squash & stretch + badge jiggle hover effects.
+ */
+function ProjectCardItem({
+  project,
+  isFeatured,
+}: {
+  project: Project;
+  isFeatured: boolean;
+}) {
+  const cardInnerRef = useRef<HTMLDivElement>(null);
+  const badgeRef = useRef<HTMLSpanElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  const handleMouseEnter = () => {
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    gsap.killTweensOf([cardInnerRef.current, badgeRef.current, imgRef.current]);
+
+    // 1. Rubber-band squash and stretch timeline on card container
+    gsap
+      .timeline()
+      .to(cardInnerRef.current, {
+        scaleX: 1.026,
+        scaleY: 0.974,
+        y: -6,
+        boxShadow: "10px 10px 0 0 #8C0027",
+        duration: 0.12,
+        ease: "power2.out",
+      })
+      .to(cardInnerRef.current, {
+        scaleX: 0.988,
+        scaleY: 1.012,
+        duration: 0.14,
+        ease: "power1.inOut",
+      })
+      .to(cardInnerRef.current, {
+        scaleX: 1,
+        scaleY: 1,
+        y: -6,
+        duration: 0.38,
+        ease: "elastic.out(1.25, 0.35)",
+      });
+
+    // 2. Secondary delayed jiggle on category badge
+    if (badgeRef.current) {
+      gsap
+        .timeline({ delay: 0.05 })
+        .to(badgeRef.current, {
+          rotation: -7,
+          scale: 1.1,
+          duration: 0.1,
+          ease: "power2.out",
+        })
+        .to(badgeRef.current, {
+          rotation: 5,
+          duration: 0.12,
+          ease: "power1.inOut",
+        })
+        .to(badgeRef.current, {
+          rotation: 0,
+          scale: 1.04,
+          duration: 0.32,
+          ease: "elastic.out(1.4, 0.3)",
+        });
+    }
+
+    // 3. Smooth image scale
+    if (imgRef.current) {
+      gsap.to(imgRef.current, {
+        scale: 1.04,
+        duration: 0.35,
+        ease: "power2.out",
+      });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    gsap.killTweensOf([cardInnerRef.current, badgeRef.current, imgRef.current]);
+
+    gsap.to(cardInnerRef.current, {
+      scaleX: 1,
+      scaleY: 1,
+      y: 0,
+      boxShadow: "6px 6px 0 0 #8C0027",
+      duration: 0.28,
+      ease: "power2.out",
+    });
+
+    if (badgeRef.current) {
+      gsap.to(badgeRef.current, {
+        rotation: 0,
+        scale: 1,
+        duration: 0.22,
+        ease: "power2.out",
+      });
+    }
+
+    if (imgRef.current) {
+      gsap.to(imgRef.current, {
+        scale: 1,
+        duration: 0.28,
+        ease: "power2.out",
+      });
+    }
+  };
+
+  const handleMouseDown = () => {
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    gsap.to(cardInnerRef.current, {
+      scaleX: 0.985,
+      scaleY: 0.985,
+      y: 2,
+      boxShadow: "2px 2px 0 0 #8C0027",
+      duration: 0.08,
+      ease: "power2.out",
+    });
+  };
+
+  const handleMouseUp = () => {
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    gsap.to(cardInnerRef.current, {
+      scaleX: 1,
+      scaleY: 1,
+      y: -6,
+      boxShadow: "10px 10px 0 0 #8C0027",
+      duration: 0.25,
+      ease: "elastic.out(1.2, 0.4)",
+    });
+  };
+
+  return (
+    <div
+      ref={cardInnerRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onFocus={handleMouseEnter}
+      onBlur={handleMouseLeave}
+      className={`
+        relative w-full
+        bg-cream border-4 border-wine rounded-2xl
+        flex flex-col overflow-hidden text-left
+        ${isFeatured ? "aspect-square md:aspect-[16/9]" : "aspect-square md:aspect-[4/3]"}
+        shadow-[6px_6px_0_0_#8C0027]
+      `}
+      style={{ willChange: "transform, box-shadow" }}
+    >
+      {/* Image area */}
+      <div className="flex-1 relative bg-mint/40 flex items-center justify-center border-b-4 border-wine overflow-hidden">
+        {project.image ? (
+          <Image
+            ref={imgRef}
+            src={project.image}
+            alt={project.imageAlt || `Screenshot of the ${project.title} homepage`}
+            fill
+            className={`object-cover ${project.imagePosition || "object-center"}`}
+          />
+        ) : (
+          <span className="text-6xl transition-transform duration-150 group-hover:scale-110">🎞️</span>
+        )}
+      </div>
+      {/* Title strip */}
+      <div className="p-4 flex items-center justify-between bg-cream">
+        <div className="flex items-center gap-3">
+          <h3
+            className="text-xl text-wine"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            {project.title}
+          </h3>
+          {project.type && (
+            <span
+              ref={badgeRef}
+              className="inline-block px-2 py-1 text-[10px] uppercase tracking-wider bg-mustard text-wine rounded-md border-2 border-wine/20 font-bold origin-center"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              {project.type}
+            </span>
+          )}
+        </div>
+        {project.year && (
+          <span className="text-wine/60 text-sm font-bold" style={{ fontFamily: "var(--font-body)" }}>
+            {project.year}
+          </span>
+        )}
+      </div>
+    </div>
+  );
 }
 
 /**
@@ -109,56 +301,7 @@ export default function Projects() {
               className={`group outline-none focus-visible:ring-4 focus-visible:ring-mustard rounded-2xl ${i === 0 ? "md:col-span-2" : ""}`}
               aria-label={`View details for ${project.title}`}
             >
-              <div
-                  className={`
-                    relative w-full
-                    bg-cream border-4 border-wine rounded-2xl
-                    flex flex-col overflow-hidden text-left
-                    ${i === 0 ? "aspect-square md:aspect-[16/9]" : "aspect-square md:aspect-[4/3]"}
-                    transition-all duration-100 ease-out
-                    shadow-[6px_6px_0_0_#8C0027]
-                    group-hover:translate-x-[2px] group-hover:translate-y-[2px] group-hover:shadow-[4px_4px_0_0_#8C0027]
-                    group-active:translate-x-[6px] group-active:translate-y-[6px] group-active:shadow-none
-                  `}
-                >
-                  {/* Image area */}
-                  <div className="flex-1 relative bg-mint/40 flex items-center justify-center border-b-4 border-wine overflow-hidden">
-                    {project.image ? (
-                      <Image
-                        src={project.image}
-                        alt={project.imageAlt || `Screenshot of the ${project.title} homepage`}
-                        fill
-                        className={`object-cover ${project.imagePosition || "object-center"} transition-all duration-300 group-hover:scale-[1.02]`}
-                      />
-                    ) : (
-                      <span className="text-6xl transition-transform duration-150 group-hover:scale-110">🎞️</span>
-                    )}
-                  </div>
-                  {/* Title strip */}
-                  <div className="p-4 flex items-center justify-between bg-cream">
-                    <div className="flex items-center gap-3">
-                      <h3
-                        className="text-xl text-wine"
-                        style={{ fontFamily: "var(--font-display)" }}
-                      >
-                        {project.title}
-                      </h3>
-                      {project.type && (
-                        <span
-                          className="px-2 py-1 text-[10px] uppercase tracking-wider bg-mustard text-wine rounded-md border-2 border-wine/20 font-bold"
-                          style={{ fontFamily: "var(--font-body)" }}
-                        >
-                          {project.type}
-                        </span>
-                      )}
-                    </div>
-                    {project.year && (
-                      <span className="text-wine/60 text-sm font-bold" style={{ fontFamily: "var(--font-body)" }}>
-                        {project.year}
-                      </span>
-                    )}
-                  </div>
-              </div>
+              <ProjectCardItem project={project} isFeatured={i === 0} />
             </DialogTrigger>
 
             <DialogContent className="bg-wine text-cream border-4 border-mustard rounded-2xl p-6 sm:p-8 max-w-2xl" style={{ boxShadow: "8px 8px 0 0 #F1A512" }}>
