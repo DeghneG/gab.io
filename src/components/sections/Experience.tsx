@@ -6,10 +6,254 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUpRight } from "lucide-react";
 import ContourBackground from "@/components/contour-background";
-import { timeline, siteConfig, certifications } from "@/data/content";
+import { timeline, siteConfig, certifications, type Certification } from "@/data/content";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
+}
+
+/**
+ * Individual Ticket-Stub Row with GSAP Perforated Crease & 3D Hinge Tilt on Hover.
+ */
+function TicketStubRow({
+  cert,
+  stubColor,
+  serialNo,
+  ticketMaskStyle,
+  barcodeStyle,
+  cardRef,
+}: {
+  cert: Certification;
+  stubColor: { bg: string; text: string; label: string };
+  serialNo: string;
+  ticketMaskStyle: React.CSSProperties;
+  barcodeStyle: React.CSSProperties;
+  cardRef: (el: HTMLLIElement | null) => void;
+}) {
+  const rowRef = useRef<HTMLLIElement>(null);
+  const stubRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const seamRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseEnter = () => {
+    if (!rowRef.current) return;
+    gsap.killTweensOf([rowRef.current, stubRef.current, bodyRef.current, seamRef.current]);
+
+    // 1. Lift row and expand drop-shadow
+    gsap.to(rowRef.current, {
+      y: -5,
+      filter: "drop-shadow(10px 10px 0 #8C0027)",
+      duration: 0.28,
+      ease: "power2.out",
+    });
+
+    // 2. Crease left stub along the right seam (pivot at perforation)
+    if (stubRef.current) {
+      gsap.to(stubRef.current, {
+        transformPerspective: 800,
+        transformOrigin: "right center",
+        rotateY: -7,
+        duration: 0.3,
+        ease: "power2.out",
+      });
+    }
+
+    // 3. Crease main ticket body along the left seam (pivot at perforation)
+    if (bodyRef.current) {
+      gsap.to(bodyRef.current, {
+        transformPerspective: 800,
+        transformOrigin: "left center",
+        rotateY: 2.5,
+        duration: 0.3,
+        ease: "power2.out",
+      });
+    }
+
+    // 4. Accentuate dashed perforation seam
+    if (seamRef.current) {
+      gsap.to(seamRef.current, {
+        borderRightColor: "rgba(140, 0, 39, 0.85)",
+        duration: 0.2,
+      });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (!rowRef.current) return;
+    gsap.killTweensOf([rowRef.current, stubRef.current, bodyRef.current, seamRef.current]);
+
+    gsap.to(rowRef.current, {
+      y: 0,
+      filter: "drop-shadow(6px 6px 0 #8C0027)",
+      duration: 0.28,
+      ease: "power3.out",
+    });
+
+    if (stubRef.current) {
+      gsap.to(stubRef.current, {
+        rotateY: 0,
+        duration: 0.25,
+        ease: "power2.out",
+      });
+    }
+
+    if (bodyRef.current) {
+      gsap.to(bodyRef.current, {
+        rotateY: 0,
+        duration: 0.25,
+        ease: "power2.out",
+      });
+    }
+
+    if (seamRef.current) {
+      gsap.to(seamRef.current, {
+        borderRightColor: "rgba(140, 0, 39, 0.4)",
+        duration: 0.2,
+      });
+    }
+  };
+
+  const handleMouseDown = () => {
+    if (!rowRef.current) return;
+    gsap.to(rowRef.current, {
+      y: 2,
+      filter: "drop-shadow(2px 2px 0 #8C0027)",
+      duration: 0.08,
+      ease: "power1.out",
+    });
+  };
+
+  const handleMouseUp = () => {
+    if (!rowRef.current) return;
+    gsap.to(rowRef.current, {
+      y: -5,
+      filter: "drop-shadow(10px 10px 0 #8C0027)",
+      duration: 0.2,
+      ease: "power2.out",
+    });
+  };
+
+  return (
+    <li
+      ref={(el) => {
+        rowRef.current = el;
+        cardRef(el);
+      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onFocus={handleMouseEnter}
+      onBlur={handleMouseLeave}
+      className="group relative cursor-pointer select-none"
+      style={{
+        filter: "drop-shadow(6px 6px 0 #8C0027)",
+        willChange: "transform, filter",
+      }}
+    >
+      <div
+        className="relative flex items-stretch bg-cream border-3 border-wine rounded-2xl overflow-hidden [perspective:1000px]"
+        style={ticketMaskStyle}
+      >
+        {/* 1. Left Stub (Year + CERT label) */}
+        <div
+          ref={(el) => {
+            stubRef.current = el;
+            seamRef.current = el;
+          }}
+          className={`
+            relative w-[88px] shrink-0
+            ${stubColor.bg} ${stubColor.text}
+            flex flex-col items-center justify-center
+            border-r-2 border-dashed border-wine/40
+            py-5 px-2 select-none gap-1.5
+          `}
+          style={{ willChange: "transform", transformStyle: "preserve-3d" }}
+        >
+          <span
+            aria-hidden="true"
+            className={`text-[10px] uppercase tracking-widest font-bold ${stubColor.label}`}
+            style={{ fontFamily: "var(--font-body)" }}
+          >
+            CERT
+          </span>
+          <span
+            className="text-2xl md:text-3xl font-bold [writing-mode:vertical-rl] rotate-180 tracking-wide"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            {cert.year}
+          </span>
+        </div>
+
+        {/* 2 & 3. Middle Content & Right Barcode/Serial */}
+        <div
+          ref={bodyRef}
+          className="py-5 px-6 flex items-center justify-between gap-4 md:gap-6 flex-1 min-w-0"
+          style={{ willChange: "transform", transformStyle: "preserve-3d" }}
+        >
+          {/* Middle Info */}
+          <div className="flex-1 min-w-0 flex flex-col justify-center gap-1.5">
+            <h4
+              className="text-lg md:text-xl text-wine line-clamp-2 md:truncate leading-snug"
+              style={{ fontFamily: "var(--font-display)" }}
+              title={cert.title}
+            >
+              {cert.title}
+            </h4>
+            <p
+              className="text-xs md:text-sm text-wine/75"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              {cert.issuer}
+            </p>
+            <span
+              className="inline-flex w-fit text-[11px] md:text-xs px-2.5 py-0.5 bg-teal text-cream rounded-full border border-wine/30 font-bold"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              {cert.category}
+            </span>
+          </div>
+
+          {/* Right End: Credential Button + Serial No + Barcode */}
+          <div className="flex items-center gap-3 md:gap-4 shrink-0">
+            {cert.url && cert.url.trim() !== "" && (
+              <a
+                href={cert.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`View credential: ${cert.title}`}
+                className="
+                  w-10 h-10 rounded-full shrink-0
+                  flex items-center justify-center
+                  border-2 border-wine bg-cream text-wine
+                  transition-all duration-150
+                  hover:bg-mustard hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#8C0027]
+                  active:translate-y-0 active:shadow-none
+                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mustard
+                "
+              >
+                <ArrowUpRight className="w-5 h-5 stroke-[2.5]" />
+              </a>
+            )}
+
+            <span
+              aria-hidden="true"
+              className="text-xs text-wine/60 font-bold tracking-wider select-none whitespace-nowrap"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              {serialNo}
+            </span>
+
+            <div
+              aria-hidden="true"
+              className="hidden sm:block h-10 md:h-12 shrink-0 border-l border-r border-wine/20 select-none opacity-85"
+              style={barcodeStyle}
+            />
+          </div>
+        </div>
+      </div>
+    </li>
+  );
 }
 
 /**
@@ -311,112 +555,17 @@ export default function Experience() {
               const serialNo = `No. ${String(i + 1).padStart(3, "0")}`;
 
               return (
-                <li
+                <TicketStubRow
                   key={`${cert.title}-${cert.year}`}
-                  ref={(el) => {
+                  cert={cert}
+                  stubColor={stubColor}
+                  serialNo={serialNo}
+                  ticketMaskStyle={ticketMaskStyle}
+                  barcodeStyle={barcodeStyle}
+                  cardRef={(el) => {
                     certCardsRef.current[i] = el;
                   }}
-                  className="
-                    group relative
-                    transition-all duration-150 ease-out
-                    hover:-translate-y-[2px] hover:rotate-[0.8deg]
-                    motion-reduce:hover:translate-y-0 motion-reduce:hover:rotate-0
-                    [filter:drop-shadow(6px_6px_0_#8C0027)] hover:[filter:drop-shadow(8px_8px_0_#8C0027)]
-                  "
-                >
-                  <div
-                    className="relative flex items-stretch bg-cream border-3 border-wine rounded-2xl overflow-hidden"
-                    style={ticketMaskStyle}
-                  >
-                    {/* 1. Left Stub (Year + CERT label) */}
-                    <div
-                      className={`
-                        relative w-[88px] shrink-0
-                        ${stubColor.bg} ${stubColor.text}
-                        flex flex-col items-center justify-center
-                        border-r-2 border-dashed border-wine/40
-                        py-5 px-2 select-none gap-1.5
-                      `}
-                    >
-                      <span
-                        aria-hidden="true"
-                        className={`text-[10px] uppercase tracking-widest font-bold ${stubColor.label}`}
-                        style={{ fontFamily: "var(--font-body)" }}
-                      >
-                        CERT
-                      </span>
-                      <span
-                        className="text-2xl md:text-3xl font-bold [writing-mode:vertical-rl] rotate-180 tracking-wide"
-                        style={{ fontFamily: "var(--font-display)" }}
-                      >
-                        {cert.year}
-                      </span>
-                    </div>
-
-                    {/* 2 & 3. Middle Content & Right Barcode/Serial */}
-                    <div className="py-5 px-6 flex items-center justify-between gap-4 md:gap-6 flex-1 min-w-0">
-                      {/* Middle Info */}
-                      <div className="flex-1 min-w-0 flex flex-col justify-center gap-1.5">
-                        <h4
-                          className="text-lg md:text-xl text-wine line-clamp-2 md:truncate leading-snug"
-                          style={{ fontFamily: "var(--font-display)" }}
-                          title={cert.title}
-                        >
-                          {cert.title}
-                        </h4>
-                        <p
-                          className="text-xs md:text-sm text-wine/75"
-                          style={{ fontFamily: "var(--font-body)" }}
-                        >
-                          {cert.issuer}
-                        </p>
-                        <span
-                          className="inline-flex w-fit text-[11px] md:text-xs px-2.5 py-0.5 bg-teal text-cream rounded-full border border-wine/30 font-bold"
-                          style={{ fontFamily: "var(--font-body)" }}
-                        >
-                          {cert.category}
-                        </span>
-                      </div>
-
-                      {/* Right End: Credential Button + Serial No + Barcode */}
-                      <div className="flex items-center gap-3 md:gap-4 shrink-0">
-                        {cert.url && cert.url.trim() !== "" && (
-                          <a
-                            href={cert.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`View credential: ${cert.title}`}
-                            className="
-                              w-10 h-10 rounded-full shrink-0
-                              flex items-center justify-center
-                              border-2 border-wine bg-cream text-wine
-                              transition-all duration-150
-                              hover:bg-mustard hover:-translate-y-0.5 hover:shadow-[2px_2px_0_0_#8C0027]
-                              active:translate-y-0 active:shadow-none
-                              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mustard
-                            "
-                          >
-                            <ArrowUpRight className="w-5 h-5 stroke-[2.5]" />
-                          </a>
-                        )}
-
-                        <span
-                          aria-hidden="true"
-                          className="text-xs text-wine/60 font-bold tracking-wider select-none whitespace-nowrap"
-                          style={{ fontFamily: "var(--font-body)" }}
-                        >
-                          {serialNo}
-                        </span>
-
-                        <div
-                          aria-hidden="true"
-                          className="hidden sm:block h-10 md:h-12 shrink-0 border-l border-r border-wine/20 select-none opacity-85"
-                          style={barcodeStyle}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </li>
+                />
               );
             })}
           </ul>
