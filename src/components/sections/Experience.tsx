@@ -404,13 +404,13 @@ export default function Experience() {
       ref={sectionRef}
       id="experience"
       aria-label="Experience and education"
-      className="relative isolate overflow-hidden py-20 md:py-32"
+      className="relative isolate overflow-hidden py-24 md:py-36 lg:py-40"
     >
       <ContourBackground variant="c" maskType="center" className="z-0" />
-      <div className="relative z-30 mx-auto max-w-6xl w-full px-6 md:px-8">
-        <h2 className="text-3xl md:text-5xl text-wine mb-4">Experience</h2>
+      <div className="relative z-30 mx-auto max-w-6xl w-full px-6 md:px-10 lg:px-12">
+        <h2 className="text-3xl md:text-5xl text-wine mb-5">Experience</h2>
         <p
-          className="text-wine/70 mb-8 md:mb-10 max-w-2xl text-base"
+          className="text-wine/70 mb-12 md:mb-14 max-w-2xl text-base"
           style={{ fontFamily: "var(--font-body)" }}
         >
           My journey so far.
@@ -431,14 +431,14 @@ export default function Experience() {
             aria-hidden="true"
           />
 
-          <ol className="flex flex-col gap-8 md:gap-10">
+          <ol className="flex flex-col gap-10 md:gap-14">
             {timeline.map((entry, i) => (
               <li key={`${entry.org}-${entry.period}`} className="relative">
                 <div
                   ref={(el) => {
                     itemsRef.current[i] = el;
                   }}
-                  className="flex gap-5 md:gap-7 items-start"
+                  className="flex gap-6 md:gap-8 items-start"
                 >
                   {/* Timeline marker with milestone numbers */}
                   <div
@@ -476,7 +476,7 @@ export default function Experience() {
                       experience-card
                       flex-1
                       bg-cream border-3 border-wine rounded-2xl
-                      p-5 md:p-6
+                      p-6 md:p-7
                       will-change-transform
                     "
                     style={{ boxShadow: "4px 4px 0 0 #8C0027" }}
@@ -524,7 +524,7 @@ export default function Experience() {
 
       {/* Certifications Block */}
       {certifications && certifications.length > 0 && (
-        <div ref={certsContainerRef} className="max-w-2xl mx-auto mt-16">
+        <div ref={certsContainerRef} className="max-w-2xl mx-auto mt-24 md:mt-28">
           <div className="flex items-center gap-3 mb-2">
             <h3
               className="text-2xl md:text-4xl text-wine"
@@ -549,7 +549,7 @@ export default function Experience() {
           />
 
           {/* Ticket-Stub List */}
-          <ul className="flex flex-col gap-5">
+          <ul className="flex flex-col gap-6 md:gap-7">
             {displayedCertifications.map((cert, i) => {
               const stubColor = STUB_COLORS[i % STUB_COLORS.length];
               const serialNo = `No. ${String(i + 1).padStart(3, "0")}`;
@@ -600,7 +600,7 @@ export default function Experience() {
       )}
 
       {/* Download resume button */}
-      <div className="flex justify-center mt-12">
+      <div className="flex justify-center mt-16 md:mt-20">
         <a
           href={siteConfig.resumeUrl}
           download

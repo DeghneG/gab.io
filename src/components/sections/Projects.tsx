@@ -192,7 +192,7 @@ function ProjectCardItem({
         )}
       </div>
       {/* Title strip */}
-      <div className="p-4 flex items-center justify-between bg-cream">
+      <div className="p-5 md:p-6 flex items-center justify-between bg-cream">
         <div className="flex items-center gap-3">
           <h3
             className="text-xl text-wine"
@@ -340,7 +340,7 @@ export default function Projects() {
       ref={sectionRef}
       id="projects"
       aria-label="Projects"
-      className="relative isolate overflow-hidden py-20 md:py-32"
+      className="relative isolate overflow-hidden py-24 md:py-36 lg:py-40"
     >
       {/* ── 3. Top stripe band divider (14px tall) ───── */}
       <div
@@ -352,19 +352,19 @@ export default function Projects() {
       {/* ── 2. Contour hill cluster behind the grid ───── */}
       <ProjectsContourHill />
 
-      <div className="relative z-30 mx-auto max-w-6xl w-full px-6 md:px-8">
+      <div className="relative z-30 mx-auto max-w-6xl w-full px-6 md:px-10 lg:px-12">
         {/* Section heading */}
-        <div className="mb-10 md:mb-12">
-          <h2 className="text-3xl md:text-5xl text-wine mb-4">Featured Projects</h2>
+        <div className="mb-12 md:mb-16">
+          <h2 className="text-3xl md:text-5xl text-wine mb-5">Featured Projects</h2>
           <p
-            className="text-lg md:text-xl text-wine/80 max-w-2xl mb-8"
+            className="text-lg md:text-xl text-wine/80 max-w-2xl mb-10"
             style={{ fontFamily: "var(--font-body)" }}
           >
             A curated selection of my recent work, from personal side projects to full-stack applications and organizational websites.
           </p>
 
           {/* Sorter Pills */}
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-3.5 md:gap-4">
             {categories.map((category) => (
               <button
                 key={category}
@@ -386,7 +386,7 @@ export default function Projects() {
         </div>
 
         {/* Project cards grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 lg:gap-x-8 gap-y-10 lg:gap-y-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 lg:gap-x-10 gap-y-12 lg:gap-y-16">
           {filteredProjects.map((project, i) => {
             const isFeatured = i === 0;
             return (
