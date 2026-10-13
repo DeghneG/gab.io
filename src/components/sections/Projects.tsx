@@ -180,6 +180,11 @@ function ProjectCardItem({
             src={project.image}
             alt={project.imageAlt || `Screenshot of the ${project.title} homepage`}
             fill
+            sizes={
+              isFeatured
+                ? "(max-width: 768px) 100vw, 1100px"
+                : "(max-width: 768px) 100vw, 550px"
+            }
             className={`object-cover ${project.imagePosition || "object-center"}`}
           />
         ) : (
