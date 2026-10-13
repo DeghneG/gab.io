@@ -97,6 +97,21 @@ function TailwindIcon({ className }: { className?: string }) {
   );
 }
 
+function PythonIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      width="14"
+      height="14"
+      aria-hidden="true"
+    >
+      <path d="M11.914 0C5.82 0 6.188 2.643 6.188 2.643l.006 2.738h5.836v.834H3.854S0 5.754 0 11.885c0 6.13 3.36 5.922 3.36 5.922h2.004v-2.805s-.108-3.36 3.308-3.36h5.707s3.2 0 3.2-3.145V2.643S18.01 0 11.914 0zm-3.25 1.706a1.05 1.05 0 1 1 0 2.1 1.05 1.05 0 0 1 0-2.1zM12.086 24c6.094 0 5.726-2.643 5.726-2.643l-.006-2.738H11.97v-.834h8.176S24 18.246 24 12.115c0-6.13-3.36-5.922-3.36-5.922h-2.004v2.805s.108 3.36-3.308 3.36H9.62s-3.2 0-3.2 3.145v5.852S5.99 24 12.086 24zm3.25-1.706a1.05 1.05 0 1 1 0-2.1 1.05 1.05 0 0 1 0 2.1z" />
+    </svg>
+  );
+}
+
 /**
  * Individual Vinyl Record Skill Item with GSAP Turntable Spin-Up and Coast-to-Stop.
  */
@@ -273,6 +288,19 @@ function VinylSkillItem({
             style={{ borderColor: colorHex[skill.color] }}
           >
             <TailwindIcon className="w-3.5 h-3.5 xl:w-4 xl:h-4 fill-current" />
+          </div>
+        ) : skill.name.toLowerCase() === "python" ? (
+          <div
+            className="
+              w-5 h-5 xl:w-5.5 xl:h-5.5
+              rounded-full bg-cream
+              border-[1.5px]
+              flex items-center justify-center
+              text-wine shadow-xs
+            "
+            style={{ borderColor: colorHex[skill.color] }}
+          >
+            <PythonIcon className="w-3.5 h-3.5 xl:w-4 xl:h-4 fill-current" />
           </div>
         ) : (
           <div
