@@ -329,19 +329,6 @@ export default function Hero() {
               />
             </div>
 
-            {/* 3. Small Retro Mode Stamp (top-left) */}
-            <div
-              className="absolute top-3 left-3 z-30 pointer-events-none px-2.5 py-0.5 rounded-full border-2 border-wine bg-cream/95 text-[10px] uppercase font-bold tracking-wider transition-colors duration-200 shadow-[2px_2px_0_0_#8C0027]"
-              style={{ fontFamily: "var(--font-body)" }}
-            >
-              <span
-                className="inline-block w-1.5 h-1.5 rounded-full mr-1.5 align-middle"
-                style={{ backgroundColor: isCasualActive ? "#2BAF90" : "#DD4111" }}
-              />
-              <span className="text-wine">
-                {isCasualActive ? "Casual" : "Formal"}
-              </span>
-            </div>
 
             {/* 4. Subtle hover cue label (bottom pill) */}
             <div
