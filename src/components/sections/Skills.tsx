@@ -82,6 +82,21 @@ function TypeScriptIcon({ className }: { className?: string }) {
   );
 }
 
+function TailwindIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      width="14"
+      height="14"
+      aria-hidden="true"
+    >
+      <path d="M12.001 4.8c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624C13.666 10.618 15.027 12 18.001 12c3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C16.337 6.182 14.976 4.8 12.001 4.8zm-6 7.2c-3.2 0-5.2 1.6-6 4.8 1.2-1.6 2.6-2.2 4.2-1.8.913.228 1.565.89 2.288 1.624 1.177 1.194 2.538 2.576 5.512 2.576 3.2 0 5.2-1.6 6-4.8-1.2 1.6-2.6 2.2-4.2 1.8-.913-.228-1.565-.89-2.288-1.624C10.337 13.382 8.976 12 6.001 12z" />
+    </svg>
+  );
+}
+
 /**
  * Individual Vinyl Record Skill Item with GSAP Turntable Spin-Up and Coast-to-Stop.
  */
@@ -245,6 +260,19 @@ function VinylSkillItem({
             style={{ borderColor: colorHex[skill.color] }}
           >
             <TypeScriptIcon className="w-3 h-3 xl:w-3.5 xl:h-3.5 fill-current" />
+          </div>
+        ) : skill.name.toLowerCase() === "tailwind css" ? (
+          <div
+            className="
+              w-5 h-5 xl:w-5.5 xl:h-5.5
+              rounded-full bg-cream
+              border-[1.5px]
+              flex items-center justify-center
+              text-teal shadow-xs
+            "
+            style={{ borderColor: colorHex[skill.color] }}
+          >
+            <TailwindIcon className="w-3.5 h-3.5 xl:w-4 xl:h-4 fill-current" />
           </div>
         ) : (
           <div
