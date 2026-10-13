@@ -21,6 +21,161 @@ const KEYBOARD_ROWS = [
 ] as const;
 
 /**
+ * Web Audio API synthesizer for authentic vintage mechanical typewriter sound FX.
+ * Zero external audio files, zero network delay, 100% code-synthesized.
+ */
+class TypewriterSound {
+  private ctx: AudioContext | null = null;
+  public isMuted: boolean = false;
+
+  constructor(isMuted = false) {
+    this.isMuted = isMuted;
+  }
+
+  private initContext(): AudioContext | null {
+    if (typeof window === "undefined") return null;
+    if (!this.ctx) {
+      const AudioCtx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (AudioCtx) {
+        this.ctx = new AudioCtx();
+      }
+    }
+    if (this.ctx && this.ctx.state === "suspended") {
+      this.ctx.resume().catch(() => {});
+    }
+    return this.ctx;
+  }
+
+  /** Key strike clack: metallic slug striking ribbon and platen */
+  playKeyClack() {
+    if (this.isMuted) return;
+    const ctx = this.initContext();
+    if (!ctx) return;
+
+    try {
+      const t = ctx.currentTime;
+      // 1. Noise transient (mechanical slug impact)
+      const bufferSize = Math.floor(ctx.sampleRate * 0.022);
+      const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1;
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = noiseBuffer;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = "bandpass";
+      filter.frequency.setValueAtTime(1550 + (Math.random() * 240 - 120), t);
+      filter.Q.setValueAtTime(2.8, t);
+
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.18, t);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.022);
+
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+      noise.start(t);
+
+      // 2. Resonant keybed strike tone
+      const osc = ctx.createOscillator();
+      const oscGain = ctx.createGain();
+      const freq = 560 + (Math.random() * 80 - 40);
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(freq, t);
+      osc.frequency.exponentialRampToValueAtTime(70, t + 0.035);
+
+      oscGain.gain.setValueAtTime(0.15, t);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, t + 0.035);
+
+      osc.connect(oscGain);
+      oscGain.connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.04);
+    } catch {}
+  }
+
+  /** Spacebar thud: deeper, heavier wooden/metal keybed resonance */
+  playSpaceThud() {
+    if (this.isMuted) return;
+    const ctx = this.initContext();
+    if (!ctx) return;
+
+    try {
+      const t = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const oscGain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(160, t);
+      osc.frequency.exponentialRampToValueAtTime(42, t + 0.055);
+
+      oscGain.gain.setValueAtTime(0.22, t);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, t + 0.055);
+
+      osc.connect(oscGain);
+      oscGain.connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.06);
+    } catch {}
+  }
+
+  /** Authentic brass bell DING! */
+  playBellDing() {
+    if (this.isMuted) return;
+    const ctx = this.initContext();
+    if (!ctx) return;
+
+    try {
+      const t = ctx.currentTime;
+      const harmonics = [2093, 4186, 6279];
+      harmonics.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq + (Math.random() * 10 - 5), t);
+
+        const amp = idx === 0 ? 0.24 : idx === 1 ? 0.08 : 0.03;
+        gain.gain.setValueAtTime(amp, t);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.85);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + 0.9);
+      });
+    } catch {}
+  }
+
+  /** Carriage slide mechanical ratchet clicks */
+  playCarriageSlide() {
+    if (this.isMuted) return;
+    const ctx = this.initContext();
+    if (!ctx) return;
+
+    try {
+      const t = ctx.currentTime;
+      for (let i = 0; i < 4; i++) {
+        const clickTime = t + 0.04 + i * 0.045;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(720 + i * 110, clickTime);
+        gain.gain.setValueAtTime(0.055, clickTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, clickTime + 0.02);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(clickTime);
+        osc.stop(clickTime + 0.025);
+      }
+    } catch {}
+  }
+}
+
+/**
  * Contact section — 3D interactive typewriter.
  *
  * A realistic vintage typewriter rendered with CSS 3D transforms.
@@ -31,6 +186,7 @@ export default function Contact() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const carriageRef = useRef<HTMLDivElement>(null);
+  const soundRef = useRef<TypewriterSound | null>(null);
 
   const [formState, setFormState] = useState<FormState>("idle");
   const [activeField, setActiveField] = useState<ActiveField>("from");
@@ -38,6 +194,34 @@ export default function Contact() {
   const [message, setMessage] = useState("");
   const [fullName, setFullName] = useState("");
   const [pressedKey, setPressedKey] = useState<string | null>(null);
+  const [isMuted, setIsMuted] = useState(false);
+
+  useEffect(() => {
+    let initialMuted = false;
+    try {
+      initialMuted = localStorage.getItem("typewriter_muted") === "true";
+    } catch {}
+    soundRef.current = new TypewriterSound(initialMuted);
+    if (initialMuted) {
+      setTimeout(() => setIsMuted(true), 0);
+    }
+  }, []);
+
+  const toggleSound = useCallback(() => {
+    setIsMuted((prev) => {
+      const next = !prev;
+      if (soundRef.current) {
+        soundRef.current.isMuted = next;
+        if (!next) {
+          soundRef.current.playKeyClack();
+        }
+      }
+      try {
+        localStorage.setItem("typewriter_muted", String(next));
+      } catch {}
+      return next;
+    });
+  }, []);
 
   const MAX_CHARS_PER_LINE = 42;
 
@@ -118,13 +302,15 @@ export default function Contact() {
       // Typewriter margin physics
       if (currentLineLen >= MAX_CHARS_PER_LINE) {
         if (activeField === "message") {
-          // Auto-carriage return for multiline
+          // Auto-carriage return for multiline with chime
+          soundRef.current?.playBellDing();
+          soundRef.current?.playCarriageSlide();
           const next = prev + "\n" + char;
           syncCarriage(next);
           return next;
         } else {
           // Margin lock (can't type past margin on single line)
-          // Play a "ding!" visually? We just bounce the carriage slightly
+          soundRef.current?.playBellDing();
           if (carriageRef.current) {
              gsap.fromTo(carriageRef.current, 
                { x: (MAX_CHARS_PER_LINE * -8) - 4 }, 
@@ -135,6 +321,13 @@ export default function Contact() {
         }
       }
 
+      // Audio feedback
+      if (char === " ") {
+        soundRef.current?.playSpaceThud();
+      } else {
+        soundRef.current?.playKeyClack();
+      }
+
       const next = prev + char;
       syncCarriage(next);
       return next;
@@ -143,6 +336,7 @@ export default function Contact() {
 
   const handleBackspace = useCallback(() => {
     if (formState !== "idle") return;
+    soundRef.current?.playKeyClack();
     const setter =
       activeField === "from" ? setFromEmail
       : activeField === "message" ? setMessage
@@ -158,6 +352,9 @@ export default function Contact() {
 
   const handleReturn = useCallback(() => {
     if (formState !== "idle") return;
+    soundRef.current?.playBellDing();
+    soundRef.current?.playCarriageSlide();
+    resetCarriage();
     
     if (activeField === "from") {
       setActiveField("message");
@@ -166,16 +363,19 @@ export default function Contact() {
       setActiveField("name");
       syncCarriage(fullName);
     }
-  }, [activeField, formState, message, fullName, syncCarriage]);
+  }, [activeField, formState, message, fullName, syncCarriage, resetCarriage]);
 
   const handleNewline = useCallback(() => {
     if (formState !== "idle" || activeField !== "message") return;
+    soundRef.current?.playBellDing();
+    soundRef.current?.playCarriageSlide();
+    resetCarriage();
     setMessage((prev) => {
       const next = prev + "\n";
       syncCarriage(next);
       return next;
     });
-  }, [formState, activeField, syncCarriage]);
+  }, [formState, activeField, syncCarriage, resetCarriage]);
 
   const changeField = useCallback((newField: ActiveField) => {
     setActiveField(newField);
@@ -231,6 +431,8 @@ export default function Contact() {
   function handleSubmit(e?: FormEvent<HTMLFormElement>) {
     if (e) e.preventDefault();
     if (!fromEmail.trim() || !message.trim() || !fullName.trim()) return;
+    soundRef.current?.playBellDing();
+    soundRef.current?.playCarriageSlide();
     setFormState("sending");
     setTimeout(() => setFormState("success"), 1200);
   }
@@ -289,9 +491,14 @@ export default function Contact() {
                 zIndex: 5,
               }}
             >
-              {/* Carriage Return Lever (Left Side) */}
-              <div
-                className="absolute z-10"
+              {/* Carriage Return Lever (Left Side - Interactive!) */}
+              <button
+                type="button"
+                onClick={() => {
+                  flashKey("RET");
+                  handleReturn();
+                }}
+                className="absolute z-10 cursor-pointer group outline-none"
                 style={{
                   top: -6,
                   left: -40,
@@ -302,11 +509,14 @@ export default function Contact() {
                   transformOrigin: "right center",
                   transform: "rotate(-15deg)",
                   boxShadow: "0 4px 6px rgba(0,0,0,0.6)",
+                  transition: "transform 0.1s ease-out",
                 }}
+                title="Carriage Return Lever (Return / Next Line)"
+                aria-label="Carriage Return Lever"
               >
                 {/* Finger paddle on lever */}
                 <div
-                  className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2"
+                  className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 group-hover:brightness-125 group-active:scale-95 transition-all"
                   style={{
                     width: 20,
                     height: 28,
@@ -315,7 +525,7 @@ export default function Contact() {
                     boxShadow: "inset 2px 0 4px rgba(255,255,255,0.1), 4px 4px 10px rgba(0,0,0,0.8)",
                   }}
                 />
-              </div>
+              </button>
 
               {/* Roller knobs */}
               <div
@@ -696,6 +906,39 @@ export default function Contact() {
               )}
             </div>
 
+            {/* Sound Toggle (Brushed Vintage Switch in top-right) */}
+            <div className="absolute right-6 top-8 md:top-9 z-10 flex items-center">
+              <button
+                type="button"
+                onClick={toggleSound}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-all outline-none focus-visible:ring-2 focus-visible:ring-mustard group cursor-pointer"
+                style={{
+                  background: isMuted
+                    ? "linear-gradient(180deg, #24292f 0%, #161a1e 100%)"
+                    : "linear-gradient(180deg, #424c56 0%, #283037 100%)",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  boxShadow: isMuted
+                    ? "inset 0 2px 4px rgba(0,0,0,0.7)"
+                    : "0 2px 6px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.25)",
+                }}
+                aria-label={isMuted ? "Unmute typewriter sound" : "Mute typewriter sound"}
+                title={isMuted ? "Typewriter Sound: OFF (Click to unmute)" : "Typewriter Sound: ON (Click to mute)"}
+              >
+                <span className="text-xs transition-transform group-hover:scale-110">
+                  {isMuted ? "🔇" : "🔊"}
+                </span>
+                <span
+                  className="text-[10px] uppercase tracking-wider font-bold"
+                  style={{
+                    color: isMuted ? "#7A828A" : "#F5F0E8",
+                    fontFamily: "var(--font-mono)",
+                  }}
+                >
+                  {isMuted ? "Sound: Off" : "Sound: On"}
+                </span>
+              </button>
+            </div>
+
             {/* Field selector (Removed to maintain vintage aesthetic, user uses TAB or clicks paper) */}
 
             {/* ── KEYBOARD ────────────────────────────── */}
@@ -916,7 +1159,7 @@ export default function Contact() {
               style={{ fontFamily: "var(--font-body)" }}
             >
               Typing: <span className="text-mustard/70 font-bold">{activeField === "from" ? "From" : activeField === "message" ? "Message" : "Name"}</span>
-              {" "}&#183; TAB/RETURN = next field &#183; Shift+Enter = new line
+              {" "}&#183; TAB/RETURN = next field &#183; Shift+Enter = new line &#183; {isMuted ? "🔇 Muted" : "🔊 Audio ON"}
             </p>
 
             {/* Feet / rubber pads at the bottom */}
