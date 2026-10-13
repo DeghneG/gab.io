@@ -34,12 +34,96 @@ export default function Hero() {
   const halfCircleRef = useRef<HTMLDivElement>(null);
   const [hasAnimated, setHasAnimated] = useState(false);
 
+  /* ── Interactive Photo Hover Transition ──────────── */
+  const photoFrameRef = useRef<HTMLDivElement>(null);
+  const formalPhotoRef = useRef<HTMLDivElement>(null);
+  const casualPhotoRef = useRef<HTMLDivElement>(null);
+  const starStickerRef = useRef<HTMLDivElement>(null);
+  const photoTimelineRef = useRef<gsap.core.Timeline | null>(null);
+  const [isCasualActive, setIsCasualActive] = useState(false);
+
   /* ── No sunburst rotation — fully static ────────── */
 
   useGSAP(() => {
     const prefersReduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
+
+    /* Setup Photo Hover Slide-Down Timeline */
+    if (formalPhotoRef.current && casualPhotoRef.current) {
+      if (prefersReduced) {
+        gsap.set(formalPhotoRef.current, { yPercent: 0 });
+        gsap.set(casualPhotoRef.current, { yPercent: 0, opacity: 0 });
+        const tl = gsap.timeline({
+          paused: true,
+          onStart: () => setIsCasualActive(true),
+          onReverseComplete: () => setIsCasualActive(false),
+        });
+        tl.to(formalPhotoRef.current, { opacity: 0, duration: 0.2 }, 0);
+        tl.to(casualPhotoRef.current, { opacity: 1, duration: 0.2 }, 0);
+        photoTimelineRef.current = tl;
+      } else {
+        gsap.set(formalPhotoRef.current, { yPercent: 0 });
+        gsap.set(casualPhotoRef.current, { yPercent: -100 });
+
+        const tl = gsap.timeline({
+          paused: true,
+          onStart: () => setIsCasualActive(true),
+          onReverseComplete: () => setIsCasualActive(false),
+        });
+
+        if (photoFrameRef.current) {
+          tl.to(
+            photoFrameRef.current,
+            {
+              rotate: -1,
+              y: -4,
+              boxShadow: "8px 8px 0 0 #8C0027",
+              duration: 0.35,
+              ease: "power2.out",
+            },
+            0
+          );
+        }
+
+        if (starStickerRef.current) {
+          tl.to(
+            starStickerRef.current,
+            {
+              rotate: 28,
+              scale: 1.15,
+              duration: 0.45,
+              ease: "back.out(2)",
+            },
+            0.05
+          );
+        }
+
+        /* 1. Formal photo slides down and exits at bottom */
+        tl.to(
+          formalPhotoRef.current,
+          {
+            yPercent: 100,
+            duration: 0.65,
+            ease: "power3.inOut",
+          },
+          0
+        );
+
+        /* 2. Casual photo slides down into the frame from top */
+        tl.to(
+          casualPhotoRef.current,
+          {
+            yPercent: 0,
+            duration: 0.65,
+            ease: "power3.out",
+          },
+          0
+        );
+
+        photoTimelineRef.current = tl;
+      }
+    }
 
     if (prefersReduced || !introRef.current) {
       /* Show full text immediately */
@@ -94,6 +178,27 @@ export default function Hero() {
       });
     }
   }, []);
+
+  const handlePhotoMouseEnter = () => {
+    if (photoTimelineRef.current) {
+      photoTimelineRef.current.play();
+    }
+  };
+
+  const handlePhotoMouseLeave = () => {
+    if (photoTimelineRef.current) {
+      photoTimelineRef.current.reverse();
+    }
+  };
+
+  const handlePhotoClick = () => {
+    if (!photoTimelineRef.current) return;
+    if (photoTimelineRef.current.progress() === 0) {
+      photoTimelineRef.current.play();
+    } else {
+      photoTimelineRef.current.reverse();
+    }
+  };
 
   return (
     <section
@@ -162,35 +267,98 @@ export default function Hero() {
         ref={cardRef}
         className="relative z-30 mx-auto max-w-7xl w-full px-6 md:px-8 flex flex-col gap-8 md:flex-row md:items-center md:gap-14 lg:gap-16 gsap-hero-card"
       >
-        {/* Photo — tilted polaroid frame */}
-        <div className="shrink-0 self-start relative">
-          {/* SHADOW_OFFSET — 6px 6px hard wine shadow (already correct) */}
+        {/* Photo — tilted polaroid frame with interactive hover reveal */}
+        <div className="shrink-0 self-start relative select-none">
+          {/* Polaroid container */}
           <div
+            ref={photoFrameRef}
+            onMouseEnter={handlePhotoMouseEnter}
+            onMouseLeave={handlePhotoMouseLeave}
+            onClick={handlePhotoClick}
             className="
               relative
               w-44 h-56 md:w-56 md:h-72
               rounded-3xl
               border-4 border-wine
               bg-cream overflow-hidden
-              -rotate-3
+              -rotate-3 cursor-pointer group
             "
             style={{ boxShadow: "6px 6px 0 0 #8C0027" }}
+            aria-label="Portrait photo of Gabriel - hover to reveal casual photo"
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handlePhotoClick();
+              }
+            }}
           >
-            <Image
-              src={siteConfig.heroPhoto}
-              alt={siteConfig.name}
-              fill
-              priority
-              sizes="(max-width: 768px) 176px, 224px"
-              className="object-cover object-[center_18%]"
-            />
+            {/* 1. Formal Photo Layer (Default view: formal.png) */}
+            <div
+              ref={formalPhotoRef}
+              className="absolute inset-0 w-full h-full will-change-transform z-10"
+            >
+              <Image
+                src={siteConfig.heroPhoto}
+                alt={`${siteConfig.name} - Formal`}
+                fill
+                priority
+                sizes="(max-width: 768px) 176px, 224px"
+                className="object-cover object-[center_12%]"
+              />
+            </div>
+
+            {/* 2. Casual Photo Layer (Slides down on hover: DSC03695.JPG) */}
+            <div
+              ref={casualPhotoRef}
+              className="absolute inset-0 w-full h-full will-change-transform z-20"
+            >
+              <Image
+                src={siteConfig.casualPhoto}
+                alt={`${siteConfig.name} - Casual`}
+                fill
+                priority
+                sizes="(max-width: 768px) 176px, 224px"
+                className="object-cover object-[center_18%]"
+              />
+              {/* Seam wiper strip attached to the bottom of casual photo that rolls down through the frame */}
+              <div
+                aria-hidden="true"
+                className="absolute top-full left-0 right-0 h-3.5 stripe-band border-y border-wine/40 shadow-[0_3px_8px_rgba(0,0,0,0.4)]"
+              />
+            </div>
+
+            {/* 3. Small Retro Mode Stamp (top-left) */}
+            <div
+              className="absolute top-3 left-3 z-30 pointer-events-none px-2.5 py-0.5 rounded-full border-2 border-wine bg-cream/95 text-[10px] uppercase font-bold tracking-wider transition-colors duration-200 shadow-[2px_2px_0_0_#8C0027]"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              <span
+                className="inline-block w-1.5 h-1.5 rounded-full mr-1.5 align-middle"
+                style={{ backgroundColor: isCasualActive ? "#2BAF90" : "#DD4111" }}
+              />
+              <span className="text-wine">
+                {isCasualActive ? "Casual" : "Formal"}
+              </span>
+            </div>
+
+            {/* 4. Subtle hover cue label (bottom pill) */}
+            <div
+              className={`absolute bottom-2.5 left-1/2 -translate-x-1/2 z-30 pointer-events-none px-2 py-0.5 rounded-full bg-wine/85 text-cream text-[9px] uppercase font-bold tracking-widest transition-opacity duration-300 ${
+                isCasualActive ? "opacity-0" : "opacity-80 group-hover:opacity-100"
+              }`}
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              Hover me ▾
+            </div>
           </div>
 
           {/* ── Star / sparkle sticker ──────────────── */}
-          {/* SHADOW_OFFSET — 6px 6px to match unified direction */}
           <div
+            ref={starStickerRef}
             aria-hidden="true"
-            className="absolute -bottom-4 -right-4 md:-bottom-5 md:-right-5 rotate-12 pointer-events-none"
+            className="absolute -bottom-4 -right-4 md:-bottom-5 md:-right-5 rotate-12 pointer-events-none z-30 will-change-transform"
           >
             <svg
               width="56"
