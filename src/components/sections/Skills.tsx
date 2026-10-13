@@ -52,6 +52,21 @@ function ReactIcon({ className }: { className?: string }) {
   );
 }
 
+function NextjsIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      width="14"
+      height="14"
+      aria-hidden="true"
+    >
+      <path d="M18.665 21.978C16.758 23.255 14.465 24 12 24 5.377 24 0 18.623 0 12S5.377 0 12 0s12 5.377 12 12c0 3.583-1.574 6.801-4.067 9.001L9.219 7.2H7.2v9.596h1.615V9.251l9.85 12.727Zm-3.332-8.533 1.6 2.061V7.2h-1.6v6.245Z" />
+    </svg>
+  );
+}
+
 /**
  * Individual Vinyl Record Skill Item with GSAP Turntable Spin-Up and Coast-to-Stop.
  */
@@ -189,6 +204,19 @@ function VinylSkillItem({
             style={{ borderColor: colorHex[skill.color] }}
           >
             <ReactIcon className="w-3.5 h-3.5 xl:w-4 xl:h-4 text-teal" />
+          </div>
+        ) : skill.name.toLowerCase() === "next.js" ? (
+          <div
+            className="
+              w-5 h-5 xl:w-5.5 xl:h-5.5
+              rounded-full bg-cream
+              border-[1.5px]
+              flex items-center justify-center
+              text-wine shadow-xs
+            "
+            style={{ borderColor: colorHex[skill.color] }}
+          >
+            <NextjsIcon className="w-3.5 h-3.5 xl:w-4 xl:h-4 fill-current" />
           </div>
         ) : (
           <div
