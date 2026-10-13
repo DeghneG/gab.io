@@ -33,6 +33,25 @@ function GitHubIcon({ className }: { className?: string }) {
   );
 }
 
+function ReactIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="-11.5 -10.23 23 20.46"
+      className={className}
+      width="14"
+      height="14"
+      aria-hidden="true"
+    >
+      <circle cx="0" cy="0" r="2.2" fill="currentColor" />
+      <g stroke="currentColor" strokeWidth="1.1" fill="none">
+        <ellipse rx="11" ry="4.2" />
+        <ellipse rx="11" ry="4.2" transform="rotate(60)" />
+        <ellipse rx="11" ry="4.2" transform="rotate(120)" />
+      </g>
+    </svg>
+  );
+}
+
 /**
  * Individual Vinyl Record Skill Item with GSAP Turntable Spin-Up and Coast-to-Stop.
  */
@@ -144,7 +163,7 @@ function VinylSkillItem({
         }}
         aria-hidden="true"
       >
-        {/* Center label hole: GitHub logo for GitHub, or standard center dot for other skills */}
+        {/* Center label hole: GitHub/React logo, or standard center dot for other skills */}
         {skill.name.toLowerCase() === "github" ? (
           <div
             className="
@@ -157,6 +176,19 @@ function VinylSkillItem({
             style={{ borderColor: colorHex[skill.color] }}
           >
             <GitHubIcon className="w-3 h-3 xl:w-3.5 xl:h-3.5 fill-current" />
+          </div>
+        ) : skill.name.toLowerCase() === "react" ? (
+          <div
+            className="
+              w-5 h-5 xl:w-5.5 xl:h-5.5
+              rounded-full bg-cream
+              border-[1.5px]
+              flex items-center justify-center
+              text-teal shadow-xs
+            "
+            style={{ borderColor: colorHex[skill.color] }}
+          >
+            <ReactIcon className="w-3.5 h-3.5 xl:w-4 xl:h-4 text-teal" />
           </div>
         ) : (
           <div
