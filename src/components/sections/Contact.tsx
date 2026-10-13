@@ -873,7 +873,7 @@ export default function Contact() {
 
           {/* ── TYPEWRITER BODY ───────────────────────── */}
           <div
-            className="relative -mt-4 z-20"
+            className="relative -mt-4 z-20 px-3 sm:px-6 md:px-8 pt-5 pb-6"
             style={{
               /* Matte blue-grey shell */
               backgroundColor: "#3B444F",
@@ -883,7 +883,6 @@ export default function Contact() {
               `,
               backgroundBlendMode: "overlay, normal",
               borderRadius: "18px 18px 24px 24px",
-              padding: "44px 20px 24px md:px-24",
               boxShadow:
                 "0 32px 64px rgba(0,0,0,0.95), 0 14px 24px rgba(0,0,0,0.85), inset 0 2px 2px rgba(255,255,255,0.3), inset -14px 0 28px rgba(0,0,0,0.45), inset 14px 0 28px rgba(0,0,0,0.45), inset 0 -8px 16px rgba(0,0,0,0.7)",
               border: "1px solid #1a1e23",
@@ -894,8 +893,8 @@ export default function Contact() {
             <div
               className="absolute left-1/2 -translate-x-1/2 top-0 overflow-hidden"
               style={{
-                width: "56%",
-                height: 58,
+                width: "48%",
+                height: 56,
                 background: "linear-gradient(180deg, #020202 0%, #0d0f12 70%, #15181c 100%)",
                 borderBottomLeftRadius: "50% 100%",
                 borderBottomRightRadius: "50% 100%",
@@ -944,81 +943,137 @@ export default function Contact() {
               }}
             />
 
-            {/* Brand label & Phone Numbers */}
-            <div className="absolute left-6 top-9 md:top-10 z-10 flex flex-col gap-3">
+            {/* ── LEFT: Flat Metal Faceplate with Brand & Engraved Plaque ── */}
+            <div className="absolute left-4 sm:left-6 top-5 z-10 flex flex-col gap-1.5 max-w-[170px] sm:max-w-[210px]">
               <span
-                className="text-[10px] md:text-xs tracking-[0.2em] font-serif"
+                className="text-[10px] md:text-xs tracking-[0.2em] font-serif font-bold italic"
                 style={{
-                  color: "#B8BDC2",
-                  textShadow: "0 -1px 1px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.18)",
+                  color: "#C2C8CF",
+                  textShadow: "0 -1px 1px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.2)",
                   display: "flex",
-                  flexDirection: "column",
+                  gap: "6px",
                   lineHeight: "1.1",
-                  fontStyle: "italic",
                 }}
               >
                 <span>CENTURY</span>
-                <span className="ml-2">WRITERS</span>
+                <span>WRITERS</span>
               </span>
 
-              {/* Engraved Phone Numbers */}
+              {/* Flat Vintage Metal Nameplate / Specification Plaque */}
               {contact.phone && contact.phone.length > 0 && (
                 <div 
-                  className="flex flex-col gap-1.5 mt-2"
+                  className="relative rounded-md px-2.5 sm:px-3 py-1.5"
                   style={{
-                    color: "#AAB0B6",
-                    textShadow: "0 -1px 1px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.12)",
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.75rem",
-                    letterSpacing: "0.05em",
+                    background: "linear-gradient(180deg, #2b333a 0%, #1e2328 100%)",
+                    border: "1px solid rgba(255,255,255,0.16)",
+                    borderTop: "1px solid rgba(255,255,255,0.26)",
+                    borderBottom: "1px solid rgba(0,0,0,0.7)",
+                    boxShadow: "0 2px 5px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.12)",
                   }}
                 >
-                  {contact.phone.map((p) => (
-                    <div key={p.label} className="flex items-center gap-2">
-                      <span className="opacity-60 uppercase text-[0.65rem] tracking-wider font-sans">{p.label}:</span>
-                      <span className="font-bold">{p.number}</span>
-                    </div>
-                  ))}
+                  {/* Corner brass rivets */}
+                  <span className="absolute top-1 left-1.5 w-1 h-1 rounded-full bg-[#5d6772] shadow-[0_0.5px_0_rgba(255,255,255,0.3)]" />
+                  <span className="absolute top-1 right-1.5 w-1 h-1 rounded-full bg-[#5d6772] shadow-[0_0.5px_0_rgba(255,255,255,0.3)]" />
+                  <span className="absolute bottom-1 left-1.5 w-1 h-1 rounded-full bg-[#5d6772] shadow-[0_0.5px_0_rgba(255,255,255,0.3)]" />
+                  <span className="absolute bottom-1 right-1.5 w-1 h-1 rounded-full bg-[#5d6772] shadow-[0_0.5px_0_rgba(255,255,255,0.3)]" />
+
+                  {/* Engraved Phone Numbers */}
+                  <div className="flex flex-col gap-1 px-1">
+                    {contact.phone.map((p) => (
+                      <div key={p.label} className="flex items-center justify-between gap-2">
+                        <span
+                          className="opacity-60 uppercase text-[8px] sm:text-[9px] tracking-wider font-sans font-bold text-[#9aa4ae]"
+                          style={{ textShadow: "0 -1px 1px rgba(0,0,0,0.8)" }}
+                        >
+                          {p.label}:
+                        </span>
+                        <span
+                          className="font-bold tracking-wider text-[10px] sm:text-xs"
+                          style={{
+                            fontFamily: "var(--font-mono)",
+                            color: "#E2E7EC",
+                            textShadow: "0 -1px 1px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.16)",
+                          }}
+                        >
+                          {p.number}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
 
-            {/* Sound Toggle (Brushed Vintage Switch in top-right) */}
-            <div className="absolute right-6 top-8 md:top-9 z-10 flex items-center">
-              <button
-                type="button"
-                onClick={toggleSound}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full transition-all outline-none focus-visible:ring-2 focus-visible:ring-mustard group cursor-pointer"
+            {/* ── RIGHT: 3D Vintage Rocker / Push-Button Assembly ── */}
+            <div className="absolute right-4 sm:right-6 top-5 z-10 flex items-center">
+              {/* Outer socket bezel ring stamped into metal */}
+              <div
+                className="rounded-full p-[3px]"
                 style={{
-                  background: isMuted
-                    ? "linear-gradient(180deg, #24292f 0%, #161a1e 100%)"
-                    : "linear-gradient(180deg, #48535e 0%, #293139 100%)",
-                  border: "1px solid rgba(255,255,255,0.18)",
-                  boxShadow: isMuted
-                    ? "inset 0 2px 4px rgba(0,0,0,0.8)"
-                    : "0 3px 8px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.35)",
+                  background: "linear-gradient(180deg, #13161a 0%, #1e242b 100%)",
+                  border: "1px solid #0f1215",
+                  borderBottom: "1px solid rgba(255,255,255,0.14)",
+                  boxShadow: "inset 0 3px 6px rgba(0,0,0,0.9), inset 0 1px 2px rgba(0,0,0,0.95), 0 1px 1px rgba(255,255,255,0.2)",
                 }}
-                aria-label={isMuted ? "Unmute typewriter sound" : "Mute typewriter sound"}
-                title={isMuted ? "Typewriter Sound: OFF (Click to unmute)" : "Typewriter Sound: ON (Click to mute)"}
               >
-                <span className="text-xs transition-transform group-hover:scale-110">
-                  {isMuted ? "🔇" : "🔊"}
-                </span>
-                <span
-                  className="text-[10px] uppercase tracking-wider font-bold"
+                {/* 3D Button Cap */}
+                <button
+                  type="button"
+                  onClick={toggleSound}
+                  className="flex items-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-1.5 rounded-full transition-all outline-none focus-visible:ring-2 focus-visible:ring-mustard group cursor-pointer active:translate-y-[2px]"
                   style={{
-                    color: isMuted ? "#7A828A" : "#F5F0E8",
-                    fontFamily: "var(--font-mono)",
+                    background: isMuted
+                      ? "radial-gradient(ellipse at 50% 50%, #252b31 0%, #171b1f 100%)"
+                      : "radial-gradient(ellipse at 50% 28%, #566473 0%, #38414b 60%, #242a31 100%)",
+                    border: "1px solid #3c454f",
+                    borderTop: "1.5px solid rgba(255,255,255,0.7)",
+                    borderBottom: isMuted ? "2px solid #14171a" : "5px solid #1a2027",
+                    boxShadow: isMuted
+                      ? "inset 0 3px 5px rgba(0,0,0,0.7), 0 1px 2px rgba(0,0,0,0.5)"
+                      : "0 6px 12px -2px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.6), inset 0 1.5px 2px rgba(255,255,255,0.6), inset 0 -1.5px 2px rgba(0,0,0,0.4)",
+                    transform: isMuted ? "translateY(2px)" : "translateY(0)",
                   }}
+                  aria-label={isMuted ? "Unmute typewriter sound" : "Mute typewriter sound"}
+                  title={isMuted ? "Typewriter Sound: OFF (Click to unmute)" : "Typewriter Sound: ON (Click to mute)"}
                 >
-                  {isMuted ? "Sound: Off" : "Sound: On"}
-                </span>
-              </button>
+                  {/* 3D Jewel Indicator Lamp */}
+                  <span
+                    aria-hidden="true"
+                    className="w-2 h-2 rounded-full transition-all"
+                    style={{
+                      background: isMuted ? "#454d56" : "#10b981",
+                      boxShadow: isMuted
+                        ? "inset 0 1px 1px rgba(0,0,0,0.6)"
+                        : "0 0 8px #10b981, inset 0 1px 1px rgba(255,255,255,0.8)",
+                      border: isMuted ? "1px solid #282d33" : "1px solid #34d399",
+                    }}
+                  />
+
+                  {/* Speaker Icon with 3D Pop */}
+                  <span className="text-xs transition-transform group-hover:scale-110 drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
+                    {isMuted ? "🔇" : "🔊"}
+                  </span>
+
+                  {/* 3D Engraved Typography */}
+                  <span
+                    className="text-[10px] uppercase tracking-wider font-bold"
+                    style={{
+                      color: isMuted ? "#7A828A" : "#F5F0E8",
+                      fontFamily: "var(--font-mono)",
+                      textShadow: isMuted
+                        ? "none"
+                        : "0 -1px 1px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.25)",
+                    }}
+                  >
+                    {isMuted ? "Sound: Off" : "Sound: On"}
+                  </span>
+                </button>
+              </div>
             </div>
 
             {/* ── SUNKEN KEYBOARD TRAY (Recessed 3D Well) ── */}
             <div
-              className="relative mx-auto mt-7 rounded-2xl p-2.5 sm:p-4 md:p-6"
+              className="relative mx-auto mt-24 sm:mt-26 rounded-2xl p-2.5 sm:p-4 md:p-6"
               style={{
                 /* Stamped dark metal tray floor */
                 background: "linear-gradient(180deg, #181d22 0%, #232931 35%, #181c20 100%)",
