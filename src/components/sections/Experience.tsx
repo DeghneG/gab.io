@@ -648,7 +648,8 @@ export default function Experience() {
       timeline.forEach((_, i) => {
         const marker = markersRef.current[i];
         const card = cardsRef.current[i];
-        const timeSlot = i * 0.45;
+        // Paced across ~2 seconds for 3 items (0.0s, 0.75s, 1.5s)
+        const timeSlot = i * 0.75;
 
         // Node stamp: pops down with punchy retro bounce
         if (marker) {
@@ -658,8 +659,8 @@ export default function Experience() {
             {
               scale: 1,
               opacity: 1,
-              duration: 0.5,
-              ease: "back.out(2)",
+              duration: 0.6,
+              ease: "back.out(1.8)",
             },
             timeSlot
           );
@@ -673,10 +674,10 @@ export default function Experience() {
             {
               x: 0,
               opacity: 1,
-              duration: 0.55,
+              duration: 0.65,
               ease: "power3.out",
             },
-            timeSlot + 0.05
+            timeSlot + 0.08
           );
         }
 
@@ -687,15 +688,15 @@ export default function Experience() {
             lineProgressRef.current,
             {
               scaleY: targetScale,
-              duration: 0.4,
-              ease: "power2.inOut",
+              duration: 0.55,
+              ease: "power1.inOut",
             },
-            timeSlot + 0.2
+            timeSlot + 0.3
           );
         }
       });
 
-      // 3. Live beacon pulse on the last milestone
+      // 3. Live beacon pulse on the last milestone (finishes at ~2.2s)
       if (pulseDotRef.current) {
         masterTl.fromTo(
           pulseDotRef.current,
@@ -703,10 +704,10 @@ export default function Experience() {
           {
             scale: 1,
             opacity: 1,
-            duration: 0.35,
+            duration: 0.4,
             ease: "back.out(2)",
           },
-          "+=0.05"
+          2.0
         );
       }
     },
