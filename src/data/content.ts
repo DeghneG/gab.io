@@ -9,7 +9,7 @@ export const siteConfig = {
   role: "Front-end Developer",
   introLine:
     "I'm Deghne Gabriel Agana, a third-year IT student at the University of San Agustin who builds front-end. Design got me in. Animation keeps me here.",
-  heroPhoto: "/images/hero-photo.jpg", // replace with your actual photo
+  heroPhoto: "/picture/DSC03695.JPG",
   resumeUrl: "/files/resume.pdf", // place your resume PDF in /public/files/
 } as const;
 

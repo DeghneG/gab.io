@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { TextPlugin } from "gsap/TextPlugin";
@@ -161,29 +162,28 @@ export default function Hero() {
         ref={cardRef}
         className="relative z-30 mx-auto max-w-7xl w-full px-8 flex flex-col gap-10 md:flex-row md:items-center md:gap-16 lg:gap-24 gsap-hero-card"
       >
-        {/* Photo placeholder — tilted polaroid frame */}
+        {/* Photo — tilted polaroid frame */}
         <div className="shrink-0 self-start relative">
           {/* SHADOW_OFFSET — 6px 6px hard wine shadow (already correct) */}
           <div
             className="
+              relative
               w-44 h-56 md:w-56 md:h-72
               rounded-3xl
               border-4 border-wine
               bg-cream overflow-hidden
-              flex items-center justify-center
               -rotate-3
             "
             style={{ boxShadow: "6px 6px 0 0 #8C0027" }}
           >
-            {/* Replace with next/image when you add a real photo */}
-            <div className="text-center px-4">
-              <span className="text-5xl" role="img" aria-label="Camera">
-                📷
-              </span>
-              <p className="text-sm text-wine/60 mt-2" style={{ fontFamily: "var(--font-body)" }}>
-                Your photo here
-              </p>
-            </div>
+            <Image
+              src={siteConfig.heroPhoto}
+              alt={siteConfig.name}
+              fill
+              priority
+              sizes="(max-width: 768px) 176px, 224px"
+              className="object-cover object-[center_18%]"
+            />
           </div>
 
           {/* ── Star / sparkle sticker ──────────────── */}
