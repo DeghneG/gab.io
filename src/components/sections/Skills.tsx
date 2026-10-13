@@ -207,11 +207,11 @@ export default function Skills() {
     <section
       ref={sectionRef}
       id="skills"
-      aria-label="Skills"
+      aria-label="Technology Stack"
       className="relative py-24 md:py-36 lg:py-40 bg-wine"
     >
       <div className="mx-auto max-w-6xl w-full px-6 md:px-10 lg:px-12">
-        <h2 className="text-3xl md:text-5xl text-cream mb-3">Skills</h2>
+        <h2 className="text-3xl md:text-5xl text-cream mb-3">Technology Stack</h2>
         <p
           className="text-cream/70 mb-12 md:mb-16 max-w-2xl text-sm md:text-base"
           style={{ fontFamily: "var(--font-body)" }}

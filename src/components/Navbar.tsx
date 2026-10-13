@@ -8,7 +8,7 @@ import { contact } from "@/data/content";
    ─────────────────────────────────────────────────── */
 const NAV_LINKS = [
   { label: "Projects", href: "#projects" },
-  { label: "Skills", href: "#skills" },
+  { label: "Tech Stack", href: "#skills" },
   { label: "About", href: "#hero" },
   { label: "Contact", href: "#contact" },
 ] as const;
