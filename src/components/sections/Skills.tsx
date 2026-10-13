@@ -211,13 +211,7 @@ export default function Skills() {
       className="relative py-24 md:py-36 lg:py-40 bg-wine"
     >
       <div className="mx-auto max-w-6xl w-full px-6 md:px-10 lg:px-12">
-        <h2 className="text-3xl md:text-5xl text-cream mb-3">Technology Stack</h2>
-        <p
-          className="text-cream/70 mb-12 md:mb-16 max-w-2xl text-sm md:text-base"
-          style={{ fontFamily: "var(--font-body)" }}
-        >
-          My record collection of tools and technologies.
-        </p>
+        <h2 className="text-3xl md:text-5xl text-cream mb-12 md:mb-16">Technology Stack</h2>
 
         {/* Category Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 md:gap-6 xl:gap-7 items-stretch">
