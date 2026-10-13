@@ -232,7 +232,6 @@
 }
 .typewriter-key:active {
   transform: translateY(2px);
-  box-shadow: none !important;
 }
 
 /* ═══════════════════════════════════════════════════

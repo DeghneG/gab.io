@@ -464,14 +464,32 @@ export default function Contact() {
          ══════════════════════════════════════════════════ */}
       <div
         ref={contentRef}
-        className="max-w-3xl mx-auto"
-        style={{ perspective: "1200px" }}
+        className="max-w-3xl mx-auto relative"
+        style={{ perspective: "1400px" }}
       >
+        {/* ── GROUNDING CONTACT & AMBIENT DESK SHADOWS ────── */}
+        <div
+          aria-hidden="true"
+          className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[94%] h-28 pointer-events-none rounded-[50%]"
+          style={{
+            background: "radial-gradient(ellipse at 50% 50%, rgba(10,2,5,0.88) 0%, rgba(20,5,10,0.5) 45%, transparent 75%)",
+            filter: "blur(22px)",
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[86%] h-8 pointer-events-none rounded-[50%]"
+          style={{
+            background: "rgba(0,0,0,0.95)",
+            filter: "blur(8px)",
+          }}
+        />
+
         <div
           className="relative"
           style={{
             transformStyle: "preserve-3d",
-            transform: "rotateX(12deg)",
+            transform: "rotateX(14deg)",
           }}
         >
           {/* ── CARRIAGE ASSEMBLY — the whole thing moves ── */}
@@ -480,17 +498,53 @@ export default function Contact() {
             className="relative z-10"
             style={{ willChange: "transform" }}
           >
-            {/* Paper roller bar */}
+            {/* Paper roller bar (Platen Cylinder) */}
             <div
               className="relative mx-auto rounded-full"
               style={{
                 width: "92%",
-                height: 28,
-                background: "linear-gradient(180deg, #1a1a1a 0%, #333 20%, #555 50%, #333 80%, #1a1a1a 100%)",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.1)",
+                height: 32,
+                /* True 3D rubber platen cylinder shading */
+                background: "linear-gradient(180deg, #101316 0%, #2e353e 14%, #5e6978 30%, #293038 60%, #121518 88%, #08090a 100%)",
+                boxShadow: "0 8px 20px rgba(0,0,0,0.75), inset 0 2px 2px rgba(255,255,255,0.3), inset 0 -3px 5px rgba(0,0,0,0.9)",
                 zIndex: 5,
               }}
             >
+              {/* Chrome Paper Bail Bar (holds paper tight to roller) */}
+              <div
+                aria-hidden="true"
+                className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-[3px] rounded-full z-10 pointer-events-none"
+                style={{
+                  background: "linear-gradient(180deg, #ffffff 0%, #d5dde5 40%, #76818c 100%)",
+                  boxShadow: "0 2px 5px rgba(0,0,0,0.7)",
+                }}
+              >
+                {/* Left bail roller guide */}
+                <div
+                  className="absolute top-1/2 -translate-y-1/2 rounded-[2px]"
+                  style={{
+                    left: "22%",
+                    width: 14,
+                    height: 11,
+                    background: "linear-gradient(180deg, #444, #181818 60%, #0a0a0a 100%)",
+                    border: "1px solid #5a6068",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.6)",
+                  }}
+                />
+                {/* Right bail roller guide */}
+                <div
+                  className="absolute top-1/2 -translate-y-1/2 rounded-[2px]"
+                  style={{
+                    right: "22%",
+                    width: 14,
+                    height: 11,
+                    background: "linear-gradient(180deg, #444, #181818 60%, #0a0a0a 100%)",
+                    border: "1px solid #5a6068",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.6)",
+                  }}
+                />
+              </div>
+
               {/* Carriage Return Lever (Left Side - Interactive!) */}
               <button
                 type="button"
@@ -500,16 +554,17 @@ export default function Contact() {
                 }}
                 className="absolute z-10 cursor-pointer group outline-none"
                 style={{
-                  top: -6,
-                  left: -40,
-                  width: 50,
-                  height: 12,
-                  background: "linear-gradient(180deg, #111, #333)",
-                  borderRadius: "6px 0 0 6px",
+                  top: -8,
+                  left: -44,
+                  width: 56,
+                  height: 14,
+                  background: "linear-gradient(180deg, #ffffff 0%, #adb6c0 30%, #4f5862 70%, #1f2429 100%)",
+                  borderRadius: "7px 0 0 7px",
                   transformOrigin: "right center",
                   transform: "rotate(-15deg)",
-                  boxShadow: "0 4px 6px rgba(0,0,0,0.6)",
+                  boxShadow: "0 6px 10px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.8)",
                   transition: "transform 0.1s ease-out",
+                  border: "1px solid rgba(255,255,255,0.3)",
                 }}
                 title="Carriage Return Lever (Return / Next Line)"
                 aria-label="Carriage Return Lever"
@@ -518,36 +573,51 @@ export default function Contact() {
                 <div
                   className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 group-hover:brightness-125 group-active:scale-95 transition-all"
                   style={{
-                    width: 20,
-                    height: 28,
-                    background: "linear-gradient(135deg, #444, #111)",
-                    borderRadius: "40% 10% 10% 40%",
-                    boxShadow: "inset 2px 0 4px rgba(255,255,255,0.1), 4px 4px 10px rgba(0,0,0,0.8)",
+                    width: 22,
+                    height: 32,
+                    background: "linear-gradient(135deg, #444a52 0%, #1c2024 60%, #0d0f11 100%)",
+                    borderRadius: "45% 10% 10% 45%",
+                    boxShadow: "inset 2px 0 4px rgba(255,255,255,0.25), 4px 6px 12px rgba(0,0,0,0.85)",
+                    border: "1px solid #333a42",
                   }}
                 />
               </button>
 
-              {/* Roller knobs */}
+              {/* 3D Cylindrical Roller Knobs */}
               <div
-                className="absolute -left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full"
+                className="absolute -left-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full"
                 style={{
-                  background: "radial-gradient(circle at 35% 35%, #777, #333)",
-                  boxShadow: "2px 2px 6px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.15)",
-                  border: "2px solid #555",
+                  background: "radial-gradient(circle at 35% 35%, #9aa2ab 0%, #4b525b 50%, #1c2024 100%)",
+                  boxShadow: "3px 4px 8px rgba(0,0,0,0.75), inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 3px rgba(0,0,0,0.6)",
+                  border: "2px solid #3b424a",
                 }}
               >
-                {/* Knob grip lines */}
-                <div className="absolute inset-1.5 rounded-full border border-white/10" />
+                {/* Fluted ribbed ring & chrome center hub */}
+                <div className="absolute inset-1.5 rounded-full border border-white/20" />
+                <div
+                  className="absolute inset-2.5 rounded-full"
+                  style={{
+                    background: "radial-gradient(circle at 40% 40%, #ffffff 0%, #adb5be 60%, #505862 100%)",
+                    boxShadow: "inset 0 1px 1px rgba(255,255,255,0.8), 0 1px 2px rgba(0,0,0,0.5)",
+                  }}
+                />
               </div>
               <div
-                className="absolute -right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full"
+                className="absolute -right-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full"
                 style={{
-                  background: "radial-gradient(circle at 35% 35%, #777, #333)",
-                  boxShadow: "2px 2px 6px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.15)",
-                  border: "2px solid #555",
+                  background: "radial-gradient(circle at 35% 35%, #9aa2ab 0%, #4b525b 50%, #1c2024 100%)",
+                  boxShadow: "3px 4px 8px rgba(0,0,0,0.75), inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 3px rgba(0,0,0,0.6)",
+                  border: "2px solid #3b424a",
                 }}
               >
-                <div className="absolute inset-1.5 rounded-full border border-white/10" />
+                <div className="absolute inset-1.5 rounded-full border border-white/20" />
+                <div
+                  className="absolute inset-2.5 rounded-full"
+                  style={{
+                    background: "radial-gradient(circle at 40% 40%, #ffffff 0%, #adb5be 60%, #505862 100%)",
+                    boxShadow: "inset 0 1px 1px rgba(255,255,255,0.8), 0 1px 2px rgba(0,0,0,0.5)",
+                  }}
+                />
               </div>
             </div>
 
@@ -803,64 +873,84 @@ export default function Contact() {
 
           {/* ── TYPEWRITER BODY ───────────────────────── */}
           <div
-            className="relative -mt-4 z-20 overflow-hidden"
+            className="relative -mt-4 z-20"
             style={{
               /* Matte blue-grey shell */
               backgroundColor: "#3B444F",
               backgroundImage: `
                 url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"),
-                linear-gradient(180deg, rgba(74,85,96,0.9) 0%, rgba(59,68,79,0.9) 30%, rgba(30,35,40,0.95) 100%)
+                linear-gradient(180deg, rgba(82,94,106,0.95) 0%, rgba(62,71,82,0.95) 25%, rgba(42,49,58,0.98) 75%, rgba(24,28,33,1) 100%)
               `,
               backgroundBlendMode: "overlay, normal",
-              borderRadius: "16px 16px 24px 24px",
-              padding: "45px 24px 40px",
+              borderRadius: "18px 18px 24px 24px",
+              padding: "44px 20px 24px md:px-24",
               boxShadow:
-                "0 25px 50px rgba(0,0,0,0.9), 0 10px 15px rgba(0,0,0,0.8), inset 0 2px 2px rgba(255,255,255,0.15), inset -12px 0 24px rgba(0,0,0,0.4), inset 12px 0 24px rgba(0,0,0,0.4), inset 0 -12px 24px rgba(0,0,0,0.5)",
-              border: "1px solid #1E2328",
-              borderTop: "1px solid #5C6775",
-              borderBottom: "4px solid #15181c",
+                "0 32px 64px rgba(0,0,0,0.95), 0 14px 24px rgba(0,0,0,0.85), inset 0 2px 2px rgba(255,255,255,0.3), inset -14px 0 28px rgba(0,0,0,0.45), inset 14px 0 28px rgba(0,0,0,0.45), inset 0 -8px 16px rgba(0,0,0,0.7)",
+              border: "1px solid #1a1e23",
+              borderTop: "2px solid #6b7786",
             }}
           >
             {/* The deep typebar cavity (cutout in the middle) */}
             <div
-              className="absolute left-1/2 -translate-x-1/2 top-0"
+              className="absolute left-1/2 -translate-x-1/2 top-0 overflow-hidden"
               style={{
-                width: "55%",
-                height: 55,
-                background: "linear-gradient(180deg, #050505, #111)",
+                width: "56%",
+                height: 58,
+                background: "linear-gradient(180deg, #020202 0%, #0d0f12 70%, #15181c 100%)",
                 borderBottomLeftRadius: "50% 100%",
                 borderBottomRightRadius: "50% 100%",
-                boxShadow: "inset 0 15px 25px rgba(0,0,0,1), 0 2px 0 rgba(255,255,255,0.06), inset 0 -4px 6px rgba(0,0,0,0.8)",
+                boxShadow: "inset 0 18px 28px rgba(0,0,0,1), 0 2px 0 rgba(255,255,255,0.1), inset 0 -6px 8px rgba(0,0,0,0.9)",
                 zIndex: 1,
-                border: "1px solid #111",
-                borderTop: "6px solid #22282e", // thickness of the metal shell
+                border: "1px solid #0d0f11",
+                borderTop: "7px solid #232a32", // heavy thickness of metal shell
               }}
             >
-              {/* Typebars (the metal arms inside the cavity) */}
+              {/* Typebars (the metal arms converging in the cavity) */}
               <div 
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-full opacity-60"
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-full opacity-70"
                 style={{
-                  background: "repeating-linear-gradient(110deg, transparent, transparent 4px, #555 4px, #333 6px)",
-                  maskImage: "radial-gradient(ellipse at bottom, black 20%, transparent 80%)",
-                  WebkitMaskImage: "radial-gradient(ellipse at bottom, black 20%, transparent 80%)",
+                  background: "repeating-linear-gradient(110deg, transparent, transparent 3px, #6e7680 3px, #363b42 5px, #181b1e 6px)",
+                  maskImage: "radial-gradient(ellipse at bottom, black 30%, transparent 85%)",
+                  WebkitMaskImage: "radial-gradient(ellipse at bottom, black 30%, transparent 85%)",
+                }}
+              />
+
+              {/* Type guide bracket (ribbon vibrator) where slugs strike paper */}
+              <div
+                aria-hidden="true"
+                className="absolute top-0 left-1/2 -translate-x-1/2 w-9 h-5 pointer-events-none"
+                style={{
+                  background: "linear-gradient(180deg, #d8dee4 0%, #808892 50%, #3a3f45 100%)",
+                  clipPath: "polygon(20% 0%, 80% 0%, 100% 100%, 70% 100%, 50% 40%, 30% 100%, 0% 100%)",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.8)",
+                }}
+              />
+              {/* Two-tone typewriter ribbon strip */}
+              <div
+                aria-hidden="true"
+                className="absolute top-2 left-1/2 -translate-x-1/2 w-16 h-[3px] pointer-events-none"
+                style={{
+                  background: "linear-gradient(180deg, #111 50%, #901c1c 50%)",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.7)",
                 }}
               />
             </div>
-            {/* Metal trim at top edge of body */}
+
+            {/* Metal trim highlight at top edge of body */}
             <div
-              className="absolute top-0 left-6 right-6 h-1 rounded-full"
+              className="absolute top-0 left-6 right-6 h-[2px] rounded-full"
               style={{
-                background: "linear-gradient(90deg, #555, #888, #aaa, #888, #555)",
+                background: "linear-gradient(90deg, transparent 0%, #6e7986 20%, #b8c2cc 50%, #6e7986 80%, transparent 100%)",
               }}
             />
 
             {/* Brand label & Phone Numbers */}
-            <div className="absolute left-6 top-10 md:top-10 z-10 flex flex-col gap-3">
+            <div className="absolute left-6 top-9 md:top-10 z-10 flex flex-col gap-3">
               <span
                 className="text-[10px] md:text-xs tracking-[0.2em] font-serif"
                 style={{
-                  color: "#B0B5BA",
-                  textShadow: "0 -1px 1px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.1)",
+                  color: "#B8BDC2",
+                  textShadow: "0 -1px 1px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.18)",
                   display: "flex",
                   flexDirection: "column",
                   lineHeight: "1.1",
@@ -877,7 +967,7 @@ export default function Contact() {
                   className="flex flex-col gap-1.5 mt-2"
                   style={{
                     color: "#AAB0B6",
-                    textShadow: "0 -1px 1px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.1)",
+                    textShadow: "0 -1px 1px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.12)",
                     fontFamily: "var(--font-mono)",
                     fontSize: "0.75rem",
                     letterSpacing: "0.05em",
@@ -902,11 +992,11 @@ export default function Contact() {
                 style={{
                   background: isMuted
                     ? "linear-gradient(180deg, #24292f 0%, #161a1e 100%)"
-                    : "linear-gradient(180deg, #424c56 0%, #283037 100%)",
-                  border: "1px solid rgba(255,255,255,0.12)",
+                    : "linear-gradient(180deg, #48535e 0%, #293139 100%)",
+                  border: "1px solid rgba(255,255,255,0.18)",
                   boxShadow: isMuted
-                    ? "inset 0 2px 4px rgba(0,0,0,0.7)"
-                    : "0 2px 6px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.25)",
+                    ? "inset 0 2px 4px rgba(0,0,0,0.8)"
+                    : "0 3px 8px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.35)",
                 }}
                 aria-label={isMuted ? "Unmute typewriter sound" : "Mute typewriter sound"}
                 title={isMuted ? "Typewriter Sound: OFF (Click to unmute)" : "Typewriter Sound: ON (Click to mute)"}
@@ -926,232 +1016,300 @@ export default function Contact() {
               </button>
             </div>
 
-            {/* Field selector (Removed to maintain vintage aesthetic, user uses TAB or clicks paper) */}
+            {/* ── SUNKEN KEYBOARD TRAY (Recessed 3D Well) ── */}
+            <div
+              className="relative mx-auto mt-7 rounded-2xl p-2.5 sm:p-4 md:p-6"
+              style={{
+                /* Stamped dark metal tray floor */
+                background: "linear-gradient(180deg, #181d22 0%, #232931 35%, #181c20 100%)",
+                boxShadow:
+                  "inset 0 12px 22px rgba(0,0,0,0.95), inset 0 3px 6px rgba(0,0,0,0.9), inset -4px 0 8px rgba(0,0,0,0.7), inset 4px 0 8px rgba(0,0,0,0.7), inset 0 -3px 6px rgba(255,255,255,0.06), 0 1px 1px rgba(255,255,255,0.14), 0 2px 5px rgba(0,0,0,0.45)",
+                border: "1px solid #14171a",
+                borderBottom: "1px solid rgba(255,255,255,0.09)",
+                width: "98%",
+              }}
+            >
+              {/* Slotted mechanical guide comb lines on tray floor */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-2 rounded-xl pointer-events-none opacity-15"
+                style={{
+                  backgroundImage: "repeating-linear-gradient(90deg, #000 0px, #000 2px, transparent 2px, transparent 18px)",
+                }}
+              />
 
-            {/* ── KEYBOARD ────────────────────────────── */}
-            <div className="flex flex-col items-center gap-[6px] md:gap-[10px] mt-6">
-              {KEYBOARD_ROWS.map((row, rowIdx) => (
-                <div
-                  key={rowIdx}
-                  className="flex gap-[5px] md:gap-[9px] justify-center"
-                  style={{
-                    /* Stagger rows like a real typewriter */
-                    paddingLeft: rowIdx === 1 ? 12 : rowIdx === 2 ? 28 : rowIdx === 3 ? 48 : 0,
-                  }}
-                >
-                  {row.map((key) => {
-                    const isPressed = pressedKey === key;
-                    return (
-                      <button
-                        key={key}
-                        onMouseDown={(e) => e.preventDefault()}
-                        onClick={() => handleKeyClick(key)}
-                        className="typewriter-key group relative"
-                        aria-label={key}
-                        style={{ outline: "none" }}
-                      >
-                        {/* Key stem (the arm connecting key to mechanism) */}
-                        <div
-                          className="absolute left-1/2 -translate-x-1/2 rounded-sm"
-                          style={{
-                            bottom: -6,
-                            width: 6,
-                            height: 12,
-                            background: "linear-gradient(180deg, #555, #222)",
-                            boxShadow: "inset -1px 0 2px rgba(0,0,0,0.5)",
-                            zIndex: 0,
-                          }}
-                        />
-                        {/* Key cap — tall rounded square */}
-                        <div
-                          className="relative z-10 flex items-center justify-center transition-all duration-75"
-                          style={{
-                            width: 34,
-                            height: 34, // tall profile
-                            borderRadius: "6px",
-                            background: isPressed
-                              ? "linear-gradient(180deg, #d4cfc5 0%, #a8a49c 100%)"
-                              : "linear-gradient(180deg, #f2efe9 0%, #dcd8cf 100%)",
-                            boxShadow: isPressed
-                              ? "inset 0 3px 6px rgba(0,0,0,0.4), 0 1px 1px rgba(0,0,0,0.5)" // depressed
-                              : "0 6px 8px -2px rgba(0,0,0,0.8), 0 3px 3px rgba(0,0,0,0.5), inset 0 2px 3px rgba(255,255,255,0.8)", // tall shadow
-                            transform: isPressed ? "translateY(5px)" : "translateY(0)",
-                            fontSize: 12,
-                            fontWeight: 700,
-                            color: isPressed ? "#5a1a2b" : "#3A3D40",
-                            fontFamily: "var(--font-body)",
-                            cursor: "pointer",
-                            border: "1px solid rgba(0,0,0,0.15)",
-                            borderBottom: isPressed ? "1px solid #888" : "5px solid #a8a49c", // Physical 3D thickness
-                            borderTop: "1px solid rgba(255,255,255,0.7)",
-                          }}
+              {/* ── KEYBOARD ROWS ───────────────────────── */}
+              <div className="flex flex-col items-center gap-[6px] md:gap-[9px] relative z-10">
+                {KEYBOARD_ROWS.map((row, rowIdx) => (
+                  <div
+                    key={rowIdx}
+                    className="flex gap-[4px] sm:gap-[6px] md:gap-[9px] justify-center"
+                    style={{
+                      /* Stagger rows like a real typewriter */
+                      paddingLeft: rowIdx === 1 ? 12 : rowIdx === 2 ? 26 : rowIdx === 3 ? 46 : 0,
+                    }}
+                  >
+                    {row.map((key) => {
+                      const isPressed = pressedKey === key;
+                      return (
+                        <button
+                          key={key}
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => handleKeyClick(key)}
+                          className="typewriter-key group relative"
+                          aria-label={key}
+                          style={{ outline: "none" }}
                         >
-                          {key}
-                        </div>
-                      </button>
-                    );
-                  })}
+                          {/* Key stem (metal arm anchoring into the well) */}
+                          <div
+                            className="absolute left-1/2 -translate-x-1/2 rounded-[1px]"
+                            style={{
+                              bottom: -7,
+                              width: 6,
+                              height: 14,
+                              background: "linear-gradient(180deg, #6c737c 0%, #34383e 50%, #111315 100%)",
+                              boxShadow: "inset -1px 0 2px rgba(0,0,0,0.6)",
+                              zIndex: 0,
+                            }}
+                          />
+                          {/* Key cap — iconic vintage chrome bezel & dished face */}
+                          <div
+                            className="relative z-10 flex items-center justify-center transition-all duration-75"
+                            style={{
+                              width: 34,
+                              height: 34,
+                              borderRadius: "7px",
+                              /* Vintage ivory concave dish */
+                              background: isPressed
+                                ? "radial-gradient(circle at 50% 60%, #b8b3a7 0%, #999387 100%)"
+                                : "radial-gradient(circle at 50% 32%, #ffffff 0%, #f6f2e9 45%, #ddd6c8 100%)",
+                              /* Raised chrome outer ring + deep drop shadow */
+                              boxShadow: isPressed
+                                ? "inset 0 3px 6px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.6)"
+                                : "0 7px 12px -2px rgba(0,0,0,0.9), 0 3px 4px rgba(0,0,0,0.6), inset 0 1.5px 1.5px rgba(255,255,255,0.95), inset 0 -1.5px 2px rgba(0,0,0,0.35)",
+                              transform: isPressed ? "translateY(5px)" : "translateY(0)",
+                              fontSize: 12,
+                              fontWeight: 700,
+                              color: isPressed ? "#5a1a2b" : "#2f3235",
+                              fontFamily: "var(--font-body)",
+                              cursor: "pointer",
+                              border: "1.5px solid #bdc3c7", // Chrome bezel ring
+                              borderBottom: isPressed ? "2px solid #777" : "6px solid #8e949a", // 3D metal side extrusion
+                              borderTop: "1.5px solid rgba(255,255,255,0.9)",
+                              textShadow: isPressed ? "none" : "0 1px 0 rgba(255,255,255,0.7)",
+                            }}
+                          >
+                            {key}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ))}
+
+                {/* Bottom row: BACK, SPACE BAR, RETURN, SEND */}
+                <div className="flex gap-[5px] sm:gap-[7px] md:gap-[10px] items-center justify-center mt-2">
+                  {/* BACK key */}
+                  <button
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => handleKeyClick("BACK")}
+                    className="typewriter-key relative"
+                    style={{ outline: "none" }}
+                  >
+                    <div
+                      className="relative z-10 flex items-center justify-center transition-all duration-75"
+                      style={{
+                        width: 56,
+                        height: 34,
+                        borderRadius: "7px",
+                        background: pressedKey === "BACK"
+                          ? "radial-gradient(circle at 50% 60%, #b8b3a7 0%, #999387 100%)"
+                          : "radial-gradient(circle at 50% 32%, #ffffff 0%, #f6f2e9 45%, #ddd6c8 100%)",
+                        boxShadow: pressedKey === "BACK"
+                          ? "inset 0 3px 6px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.6)"
+                          : "0 7px 12px -2px rgba(0,0,0,0.9), 0 3px 4px rgba(0,0,0,0.6), inset 0 1.5px 1.5px rgba(255,255,255,0.95), inset 0 -1.5px 2px rgba(0,0,0,0.35)",
+                        transform: pressedKey === "BACK" ? "translateY(5px)" : "translateY(0)",
+                        fontSize: 10,
+                        fontWeight: 700,
+                        color: "#2f3235",
+                        fontFamily: "var(--font-body)",
+                        cursor: "pointer",
+                        border: "1.5px solid #bdc3c7",
+                        borderBottom: pressedKey === "BACK" ? "2px solid #777" : "6px solid #8e949a",
+                        borderTop: "1.5px solid rgba(255,255,255,0.9)",
+                        textShadow: pressedKey === "BACK" ? "none" : "0 1px 0 rgba(255,255,255,0.7)",
+                      }}
+                    >
+                      ← DEL
+                    </div>
+                  </button>
+
+                  {/* SPACE BAR */}
+                  <button
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => handleKeyClick("SPC")}
+                    className="typewriter-key relative"
+                    style={{ outline: "none" }}
+                  >
+                    {/* Dual metal stems */}
+                    <div
+                      className="absolute left-[30%] -translate-x-1/2 rounded-[1px]"
+                      style={{
+                        bottom: -7,
+                        width: 8,
+                        height: 14,
+                        background: "linear-gradient(180deg, #6c737c 0%, #34383e 50%, #111315 100%)",
+                        zIndex: 0,
+                      }}
+                    />
+                    <div
+                      className="absolute left-[70%] -translate-x-1/2 rounded-[1px]"
+                      style={{
+                        bottom: -7,
+                        width: 8,
+                        height: 14,
+                        background: "linear-gradient(180deg, #6c737c 0%, #34383e 50%, #111315 100%)",
+                        zIndex: 0,
+                      }}
+                    />
+                    <div
+                      className="relative z-10 flex items-center justify-center transition-all duration-75"
+                      style={{
+                        width: 180,
+                        height: 32,
+                        borderRadius: "8px",
+                        background: pressedKey === "SPC"
+                          ? "radial-gradient(ellipse at 50% 60%, #b8b3a7 0%, #999387 100%)"
+                          : "radial-gradient(ellipse at 50% 32%, #ffffff 0%, #f6f2e9 45%, #ddd6c8 100%)",
+                        boxShadow: pressedKey === "SPC"
+                          ? "inset 0 3px 6px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.6)"
+                          : "0 7px 12px -2px rgba(0,0,0,0.9), 0 3px 4px rgba(0,0,0,0.6), inset 0 1.5px 1.5px rgba(255,255,255,0.95), inset 0 -1.5px 2px rgba(0,0,0,0.35)",
+                        transform: pressedKey === "SPC" ? "translateY(5px)" : "translateY(0)",
+                        cursor: "pointer",
+                        border: "1.5px solid #bdc3c7",
+                        borderBottom: pressedKey === "SPC" ? "2px solid #777" : "6px solid #8e949a",
+                        borderTop: "1.5px solid rgba(255,255,255,0.9)",
+                      }}
+                    />
+                  </button>
+
+                  {/* RETURN key */}
+                  <button
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => handleKeyClick("RET")}
+                    className="typewriter-key relative"
+                    style={{ outline: "none" }}
+                  >
+                    <div
+                      className="relative z-10 flex items-center justify-center transition-all duration-75"
+                      style={{
+                        width: 56,
+                        height: 34,
+                        borderRadius: "7px",
+                        background: pressedKey === "RET"
+                          ? "radial-gradient(circle at 50% 60%, #b8b3a7 0%, #999387 100%)"
+                          : "radial-gradient(circle at 50% 32%, #ffffff 0%, #f6f2e9 45%, #ddd6c8 100%)",
+                        boxShadow: pressedKey === "RET"
+                          ? "inset 0 3px 6px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.6)"
+                          : "0 7px 12px -2px rgba(0,0,0,0.9), 0 3px 4px rgba(0,0,0,0.6), inset 0 1.5px 1.5px rgba(255,255,255,0.95), inset 0 -1.5px 2px rgba(0,0,0,0.35)",
+                        transform: pressedKey === "RET" ? "translateY(5px)" : "translateY(0)",
+                        fontSize: 10,
+                        fontWeight: 700,
+                        color: "#2f3235",
+                        fontFamily: "var(--font-body)",
+                        cursor: "pointer",
+                        border: "1.5px solid #bdc3c7",
+                        borderBottom: pressedKey === "RET" ? "2px solid #777" : "6px solid #8e949a",
+                        borderTop: "1.5px solid rgba(255,255,255,0.9)",
+                        textShadow: pressedKey === "RET" ? "none" : "0 1px 0 rgba(255,255,255,0.7)",
+                      }}
+                    >
+                      RET ↵
+                    </div>
+                  </button>
+
+                  {/* SEND key (Vintage Bakelite Emerald Finish) */}
+                  <button
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => handleKeyClick("SEND")}
+                    className="typewriter-key relative"
+                    style={{ outline: "none" }}
+                  >
+                    <div
+                      className="relative z-10 flex items-center justify-center transition-all duration-75"
+                      style={{
+                        width: 66,
+                        height: 34,
+                        borderRadius: "7px",
+                        background: pressedKey === "SEND"
+                          ? "radial-gradient(circle at 50% 60%, #155d48 0%, #0d3b2e 100%)"
+                          : "radial-gradient(circle at 50% 30%, #32b591 0%, #1f8a6c 50%, #136049 100%)",
+                        boxShadow: pressedKey === "SEND"
+                          ? "inset 0 3px 6px rgba(0,0,0,0.7), 0 1px 2px rgba(0,0,0,0.6)"
+                          : "0 7px 14px -2px rgba(0,0,0,0.9), 0 3px 4px rgba(0,0,0,0.6), inset 0 1.5px 2px rgba(255,255,255,0.6), inset 0 -1.5px 2px rgba(0,0,0,0.5)",
+                        transform: pressedKey === "SEND" ? "translateY(5px)" : "translateY(0)",
+                        fontSize: 10,
+                        fontWeight: 700,
+                        color: "#FFF",
+                        fontFamily: "var(--font-body)",
+                        cursor: "pointer",
+                        border: "1.5px solid #62ccad",
+                        borderBottom: pressedKey === "SEND" ? "2px solid #0e3d2f" : "6px solid #114e3b",
+                        borderTop: "1.5px solid rgba(255,255,255,0.6)",
+                        textShadow: "0 -1px 1px rgba(0,0,0,0.6)",
+                      }}
+                    >
+                      ✉ SEND
+                    </div>
+                  </button>
                 </div>
-              ))}
-
-              {/* Bottom row: BACK, SPACE BAR, RETURN, SEND */}
-              <div className="flex gap-[6px] md:gap-[9px] items-center justify-center mt-2">
-                {/* BACK key */}
-                <button
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => handleKeyClick("BACK")}
-                  className="typewriter-key relative"
-                  style={{ outline: "none" }}
-                >
-                  <div
-                    className="relative z-10 flex items-center justify-center transition-all duration-75 rounded-full"
-                    style={{
-                      width: 56,
-                      height: 34,
-                      borderRadius: "6px",
-                      background: pressedKey === "BACK"
-                        ? "linear-gradient(180deg, #d4cfc5 0%, #a8a49c 100%)"
-                        : "linear-gradient(180deg, #f2efe9 0%, #dcd8cf 100%)",
-                      boxShadow: pressedKey === "BACK"
-                        ? "inset 0 3px 6px rgba(0,0,0,0.4), 0 1px 1px rgba(0,0,0,0.5)"
-                        : "0 6px 8px -2px rgba(0,0,0,0.8), 0 3px 3px rgba(0,0,0,0.5), inset 0 2px 3px rgba(255,255,255,0.8)",
-                      transform: pressedKey === "BACK" ? "translateY(5px)" : "translateY(0)",
-                      fontSize: 10,
-                      fontWeight: 700,
-                      color: "#3A3D40",
-                      fontFamily: "var(--font-body)",
-                      cursor: "pointer",
-                      border: "1px solid rgba(0,0,0,0.15)",
-                      borderBottom: pressedKey === "BACK" ? "1px solid #888" : "5px solid #a8a49c",
-                      borderTop: "1px solid rgba(255,255,255,0.7)",
-                    }}
-                  >
-                    ← DEL
-                  </div>
-                </button>
-
-                {/* SPACE BAR */}
-                <button
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => handleKeyClick("SPC")}
-                  className="typewriter-key relative"
-                  style={{ outline: "none" }}
-                >
-                  <div
-                    className="absolute left-1/2 -translate-x-1/2 rounded-sm"
-                    style={{
-                      bottom: -6,
-                      width: "70%",
-                      height: 12,
-                      background: "linear-gradient(180deg, #555, #222)",
-                      boxShadow: "inset -1px 0 2px rgba(0,0,0,0.5)",
-                      zIndex: 0,
-                    }}
-                  />
-                  <div
-                    className="relative z-10 flex items-center justify-center transition-all duration-75"
-                    style={{
-                      width: 180,
-                      height: 30,
-                      borderRadius: "8px",
-                      background: pressedKey === "SPC"
-                        ? "linear-gradient(180deg, #d4cfc5 0%, #a8a49c 100%)"
-                        : "linear-gradient(180deg, #f2efe9 0%, #dcd8cf 100%)",
-                      boxShadow: pressedKey === "SPC"
-                        ? "inset 0 3px 6px rgba(0,0,0,0.4), 0 1px 1px rgba(0,0,0,0.5)"
-                        : "0 6px 8px -2px rgba(0,0,0,0.8), 0 3px 3px rgba(0,0,0,0.5), inset 0 2px 3px rgba(255,255,255,0.8)",
-                      transform: pressedKey === "SPC" ? "translateY(5px)" : "translateY(0)",
-                      cursor: "pointer",
-                      border: "1px solid rgba(0,0,0,0.15)",
-                      borderBottom: pressedKey === "SPC" ? "1px solid #888" : "5px solid #a8a49c",
-                      borderTop: "1px solid rgba(255,255,255,0.7)",
-                    }}
-                  />
-                </button>
-
-
-                {/* RETURN key */}
-                <button
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => handleKeyClick("RET")}
-                  className="typewriter-key relative"
-                  style={{ outline: "none" }}
-                >
-                  <div
-                    className="relative z-10 flex items-center justify-center transition-all duration-75 rounded-full"
-                    style={{
-                      width: 56,
-                      height: 34,
-                      borderRadius: "6px",
-                      background: pressedKey === "RET"
-                        ? "linear-gradient(180deg, #d4cfc5 0%, #a8a49c 100%)"
-                        : "linear-gradient(180deg, #f2efe9 0%, #dcd8cf 100%)",
-                      boxShadow: pressedKey === "RET"
-                        ? "inset 0 3px 6px rgba(0,0,0,0.4), 0 1px 1px rgba(0,0,0,0.5)"
-                        : "0 6px 8px -2px rgba(0,0,0,0.8), 0 3px 3px rgba(0,0,0,0.5), inset 0 2px 3px rgba(255,255,255,0.8)",
-                      transform: pressedKey === "RET" ? "translateY(5px)" : "translateY(0)",
-                      fontSize: 10,
-                      fontWeight: 700,
-                      color: "#3A3D40",
-                      fontFamily: "var(--font-body)",
-                      cursor: "pointer",
-                      border: "1px solid rgba(0,0,0,0.15)",
-                      borderBottom: pressedKey === "RET" ? "1px solid #888" : "5px solid #a8a49c",
-                      borderTop: "1px solid rgba(255,255,255,0.7)",
-                    }}
-                  >
-                    RET ↵
-                  </div>
-                </button>
-
-                {/* SEND key */}
-                <button
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => handleKeyClick("SEND")}
-                  className="typewriter-key relative"
-                  style={{ outline: "none" }}
-                >
-                  <div
-                    className="relative z-10 flex items-center justify-center transition-all duration-75 rounded-full"
-                    style={{
-                      width: 64,
-                      height: 34,
-                      borderRadius: "6px",
-                      background: pressedKey === "SEND"
-                        ? "linear-gradient(180deg, #1e7058 0%, #124d3a 100%)"
-                        : "linear-gradient(180deg, #2A9679 0%, #1A735A 100%)",
-                      boxShadow: pressedKey === "SEND"
-                        ? "inset 0 3px 6px rgba(0,0,0,0.6), 0 1px 1px rgba(0,0,0,0.5)"
-                        : "0 6px 8px -2px rgba(0,0,0,0.8), 0 3px 3px rgba(0,0,0,0.5), inset 0 2px 3px rgba(255,255,255,0.4)",
-                      transform: pressedKey === "SEND" ? "translateY(5px)" : "translateY(0)",
-                      fontSize: 10,
-                      fontWeight: 700,
-                      color: "#FFF",
-                      fontFamily: "var(--font-body)",
-                      cursor: "pointer",
-                      border: "1px solid rgba(0,0,0,0.2)",
-                      borderBottom: pressedKey === "SEND" ? "1px solid #0f4030" : "5px solid #124d3a",
-                      borderTop: "1px solid rgba(255,255,255,0.4)",
-                    }}
-                  >
-                    ✉ SEND
-                  </div>
-                </button>
               </div>
             </div>
 
             {/* Status line */}
             <p
-              className="text-center text-cream/30 text-[9px] md:text-[10px] mt-4"
+              className="text-center text-cream/40 text-[9px] md:text-[10px] mt-4"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              Typing: <span className="text-mustard/70 font-bold">{activeField === "from" ? "From" : activeField === "message" ? "Message" : "Name"}</span>
+              Typing: <span className="text-mustard font-bold">{activeField === "from" ? "From" : activeField === "message" ? "Message" : "Name"}</span>
               {" "}&#183; TAB/RETURN = next field &#183; Shift+Enter = new line &#183; {isMuted ? "🔇 Muted" : "🔊 Audio ON"}
             </p>
 
-            {/* Feet / rubber pads at the bottom */}
-            <div className="absolute -bottom-2 left-8 w-12 h-3 rounded-b-lg bg-[#111]" style={{ boxShadow: "0 4px 8px rgba(0,0,0,0.4)" }} />
-            <div className="absolute -bottom-2 right-8 w-12 h-3 rounded-b-lg bg-[#111]" style={{ boxShadow: "0 4px 8px rgba(0,0,0,0.4)" }} />
+            {/* ── MOLDED FRONT BUMPER / APRON (Cast metal 3D thickness) ── */}
+            <div
+              className="mt-4 -mx-5 h-5 rounded-b-[22px] relative overflow-hidden"
+              style={{
+                background: "linear-gradient(180deg, #283038 0%, #191e23 50%, #0d0f12 100%)",
+                borderTop: "1px solid rgba(255,255,255,0.14)",
+                boxShadow: "0 6px 14px rgba(0,0,0,0.85), inset 0 1px 1px rgba(255,255,255,0.22)",
+              }}
+            >
+              {/* Subtle brushed chrome highlight bead on front lip */}
+              <div
+                className="absolute top-1 left-10 right-10 h-[1px]"
+                style={{
+                  background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 30%, rgba(255,255,255,0.25) 70%, transparent 100%)",
+                }}
+              />
+            </div>
+
+            {/* ── RUBBER CHASSIS FEET (Grounding corner pads) ── */}
+            <div
+              className="absolute -bottom-2.5 left-8 w-14 h-4 rounded-b-xl z-10"
+              style={{
+                background: "linear-gradient(180deg, #3d434a 0%, #181a1d 50%, #060708 100%)",
+                boxShadow: "0 6px 12px rgba(0,0,0,0.9), inset 0 1px 1px rgba(255,255,255,0.25)",
+                borderTop: "2px solid #5a626c", // Chrome washer
+              }}
+            />
+            <div
+              className="absolute -bottom-2.5 right-8 w-14 h-4 rounded-b-xl z-10"
+              style={{
+                background: "linear-gradient(180deg, #3d434a 0%, #181a1d 50%, #060708 100%)",
+                boxShadow: "0 6px 12px rgba(0,0,0,0.9), inset 0 1px 1px rgba(255,255,255,0.25)",
+                borderTop: "2px solid #5a626c", // Chrome washer
+              }}
+            />
           </div>
         </div>
       </div>
