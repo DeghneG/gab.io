@@ -355,13 +355,7 @@ export default function Projects() {
       <div className="relative z-30 mx-auto max-w-6xl w-full px-6 md:px-8">
         {/* Section heading */}
         <div className="mb-8 md:mb-10">
-          <h2 className="text-3xl md:text-5xl text-wine mb-3 md:mb-4">Featured Projects</h2>
-          <p
-            className="text-base md:text-lg text-wine/80 max-w-2xl mb-6 md:mb-8"
-            style={{ fontFamily: "var(--font-body)" }}
-          >
-            A curated selection of my recent work, from personal side projects to full-stack applications and organizational websites.
-          </p>
+          <h2 className="text-3xl md:text-5xl text-wine mb-6 md:mb-8">Featured Projects</h2>
 
           {/* Sorter Pills */}
           <div className="flex flex-wrap gap-2.5 sm:gap-3">
