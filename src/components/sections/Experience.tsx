@@ -585,6 +585,8 @@ export default function Experience() {
   const lineProgressRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
   const markersRef = useRef<(HTMLDivElement | null)[]>([]);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const pulseDotRef = useRef<HTMLSpanElement | null>(null);
 
   const [showAll, setShowAll] = useState(false);
 
@@ -600,67 +602,113 @@ export default function Experience() {
 
   useGSAP(
     () => {
-      // 1. Dynamic Scroll-Drawn Gradient Line
-      if (lineProgressRef.current && timelineRef.current) {
-        gsap.fromTo(
-          lineProgressRef.current,
-          { scaleY: 0 },
-          {
-            scaleY: 1,
-            ease: "none",
-            transformOrigin: "top center",
-            scrollTrigger: {
-              trigger: timelineRef.current,
-              start: "top 75%",
-              end: "bottom 75%",
-              scrub: 0.5,
-            },
-          }
-        );
+      const prefersReduced =
+        typeof window !== "undefined" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (!timelineRef.current) return;
+
+      if (prefersReduced) {
+        if (lineProgressRef.current) gsap.set(lineProgressRef.current, { scaleY: 1 });
+        markersRef.current.forEach((m) => m && gsap.set(m, { scale: 1, opacity: 1 }));
+        cardsRef.current.forEach((c) => c && gsap.set(c, { x: 0, opacity: 1 }));
+        if (pulseDotRef.current) gsap.set(pulseDotRef.current, { scale: 1, opacity: 1 });
+        return;
       }
 
-      // 2. Milestone Node Stamp & Card Glide-In
-      itemsRef.current.forEach((item, i) => {
-        if (!item) return;
-        const marker = markersRef.current[i];
-        const card = item.querySelector(".experience-card");
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: item,
-            start: "top 82%",
-            once: true,
-          },
+      // ── Sequential Downward Cascading List Timeline ──
+      // 1. Initial hidden state for line, markers, cards, and live beacon
+      if (lineProgressRef.current) {
+        gsap.set(lineProgressRef.current, {
+          scaleY: 0,
+          transformOrigin: "top center",
         });
+      }
+      markersRef.current.forEach((m) => {
+        if (m) gsap.set(m, { scale: 0, opacity: 0 });
+      });
+      cardsRef.current.forEach((c) => {
+        if (c) gsap.set(c, { x: 35, opacity: 0 });
+      });
+      if (pulseDotRef.current) {
+        gsap.set(pulseDotRef.current, { scale: 0, opacity: 0 });
+      }
 
+      // 2. Orchestrated master timeline triggered when the timeline tile comes into view
+      const masterTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: timelineRef.current,
+          start: "top 80%",
+          once: true,
+        },
+      });
+
+      const totalItems = timeline.length;
+
+      timeline.forEach((_, i) => {
+        const marker = markersRef.current[i];
+        const card = cardsRef.current[i];
+        const timeSlot = i * 0.45;
+
+        // Node stamp: pops down with punchy retro bounce
         if (marker) {
-          tl.fromTo(
+          masterTl.fromTo(
             marker,
-            { scale: 0.4, opacity: 0 },
+            { scale: 0, opacity: 0 },
             {
               scale: 1,
               opacity: 1,
               duration: 0.5,
-              ease: "back.out(1.7)",
-            }
+              ease: "back.out(2)",
+            },
+            timeSlot
           );
         }
 
+        // Card glide: slides in smoothly from the right
         if (card) {
-          tl.fromTo(
+          masterTl.fromTo(
             card,
-            { opacity: 0, x: 25, y: 10 },
+            { x: 35, opacity: 0 },
             {
-              opacity: 1,
               x: 0,
-              y: 0,
-              duration: 0.65,
+              opacity: 1,
+              duration: 0.55,
               ease: "power3.out",
             },
-            "-=0.3"
+            timeSlot + 0.05
+          );
+        }
+
+        // Ink line drawing down to the next node
+        if (lineProgressRef.current && i < totalItems - 1) {
+          const targetScale = (i + 1) / (totalItems - 1);
+          masterTl.to(
+            lineProgressRef.current,
+            {
+              scaleY: targetScale,
+              duration: 0.4,
+              ease: "power2.inOut",
+            },
+            timeSlot + 0.2
           );
         }
       });
+
+      // 3. Live beacon pulse on the last milestone
+      if (pulseDotRef.current) {
+        masterTl.fromTo(
+          pulseDotRef.current,
+          { scale: 0, opacity: 0 },
+          {
+            scale: 1,
+            opacity: 1,
+            duration: 0.35,
+            ease: "back.out(2)",
+          },
+          "+=0.05"
+        );
+      }
     },
     { scope: sectionRef }
   );
@@ -742,7 +790,7 @@ export default function Experience() {
                       ref={(el) => {
                         itemsRef.current[i] = el;
                       }}
-                      className="flex gap-4 md:gap-5 items-start"
+                      className="flex gap-4 md:gap-5 items-start group/item"
                     >
                       {/* Timeline marker with milestone numbers */}
                       <div
@@ -757,6 +805,8 @@ export default function Experience() {
                           flex items-center justify-center
                           text-base md:text-lg font-bold text-wine
                           will-change-transform
+                          transition-transform duration-200
+                          group-hover/item:scale-105 group-hover/item:-rotate-3
                         "
                         style={{
                           fontFamily: "var(--font-display)",
@@ -766,7 +816,10 @@ export default function Experience() {
                       >
                         0{i + 1}
                         {i === timeline.length - 1 && (
-                          <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+                          <span
+                            ref={pulseDotRef}
+                            className="absolute -top-1 -right-1 flex h-3.5 w-3.5 will-change-transform"
+                          >
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange opacity-75" />
                             <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-orange border border-cream" />
                           </span>
@@ -775,12 +828,17 @@ export default function Experience() {
 
                       {/* Content card inside tile: inner border only to prevent heavy double shadows */}
                       <div
+                        ref={(el) => {
+                          cardsRef.current[i] = el;
+                        }}
                         className="
                           experience-card
                           flex-1
                           bg-white/60 border-2 border-wine/40 rounded-2xl
                           p-4 md:p-5
                           will-change-transform
+                          transition-all duration-200
+                          group-hover/item:bg-white/80 group-hover/item:border-wine group-hover/item:-translate-y-0.5
                         "
                       >
                         <h4
