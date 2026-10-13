@@ -703,19 +703,6 @@ export default function Contact() {
                     <span className="font-bold" style={{ color: "rgba(58,21,32,0.4)" }}>To:</span>{" "}
                     <span>{contact.email}</span>
                   </p>
-                  {/* GitHub */}
-                  <p>
-                    <span className="font-bold" style={{ color: "rgba(58,21,32,0.4)" }}>GitHub:</span>{" "}
-                    <a
-                      href={contact.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline"
-                      style={{ color: "#1a6e5a", textDecorationColor: "rgba(26,110,90,0.4)" }}
-                    >
-                      {contact.github}
-                    </a>
-                  </p>
 
                   <div style={{ borderTop: "1px solid rgba(58,21,32,0.08)", margin: "16px 0" }} />
 
