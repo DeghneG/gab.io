@@ -32,7 +32,7 @@ export const projects: Project[] = [
   {
     slug: "itsa-website",
     title: "ITSA Website",
-    type: "Organization site",
+    type: "Web Dev",
     year: 2026,
     description:
       "The official website of the Information Technology Student Association at the University of San Agustin. It helps students connect, learn, and grow together.",
