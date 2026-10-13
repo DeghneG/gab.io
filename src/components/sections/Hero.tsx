@@ -99,7 +99,7 @@ export default function Hero() {
     <section
       id="hero"
       aria-label="About me"
-      className="relative isolate min-h-[92vh] flex items-center overflow-hidden py-24 md:py-36 lg:py-44"
+      className="relative isolate min-h-[85vh] flex items-center overflow-hidden py-16 md:py-24 lg:py-28"
     >
       {/* ── LAYER 1: Contour lines (very subtle) ─────── */}
       {/* CONTOUR_OPACITY — change the opacity-[…] value to adjust */}
@@ -160,7 +160,7 @@ export default function Hero() {
       {/* ── LAYER 6: Hero content ────────────────────── */}
       <div
         ref={cardRef}
-        className="relative z-30 mx-auto max-w-7xl w-full px-6 md:px-10 lg:px-12 flex flex-col gap-12 md:flex-row md:items-center md:gap-20 lg:gap-28 gsap-hero-card"
+        className="relative z-30 mx-auto max-w-7xl w-full px-6 md:px-8 flex flex-col gap-8 md:flex-row md:items-center md:gap-14 lg:gap-16 gsap-hero-card"
       >
         {/* Photo — tilted polaroid frame */}
         <div className="shrink-0 self-start relative">
@@ -228,14 +228,14 @@ export default function Hero() {
 
           {/* 2. Intro paragraph */}
           <p
-            className="text-base md:text-lg text-wine leading-snug md:leading-normal max-w-prose mt-7 md:mt-8"
+            className="text-base md:text-lg text-wine leading-snug md:leading-normal max-w-prose mt-5 md:mt-6"
             style={{ fontFamily: "var(--font-body)" }}
           >
             I&apos;m Deghne Gabriel Agana, a third-year IT student at the University of San Agustin who builds front-end. <span className="font-semibold">Design got me in. Animation keeps me here.</span>
           </p>
 
           {/* 3. Actions row */}
-          <div className="flex flex-wrap items-center gap-6 mt-10 md:mt-12">
+          <div className="flex flex-wrap items-center gap-6 mt-7 md:mt-8">
             <a
               href="#projects"
               className="group relative inline-flex items-center justify-center px-6 py-3 bg-wine text-cream rounded-md outline-none focus-visible:ring-4 focus-visible:ring-mustard transition-transform active:scale-[0.97]"
@@ -279,7 +279,7 @@ export default function Hero() {
           </div>
 
           {/* 4. Meta row */}
-          <div className="flex flex-wrap gap-3 mt-10 md:mt-12">
+          <div className="flex flex-wrap gap-3 mt-7 md:mt-8">
             {/* Location stamp */}
             <div
               className="inline-flex items-center justify-center px-3 py-1.5 border-2 border-wine border-double rounded-sm -rotate-2 bg-cream text-wine text-xs uppercase font-bold tracking-wider"

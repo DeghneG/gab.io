@@ -147,13 +147,13 @@ export default function Footer() {
       <div aria-hidden="true" className="w-full stripe-band" />
 
       {/* ── 2. Container ─────────────────────────────── */}
-      <div className="mx-auto max-w-6xl px-6 py-12 md:py-16 flex flex-col">
+      <div className="mx-auto max-w-6xl px-6 md:px-8 py-10 md:py-12 flex flex-col">
         {/* ── 3. Top row ─────────────────────────────── */}
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8 md:gap-12">
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 md:gap-8">
           {/* Left: Heading */}
           <div>
             <h2
-              className="text-5xl md:text-6xl text-cream leading-tight tracking-normal"
+              className="text-4xl md:text-5xl text-cream leading-tight tracking-normal"
               style={{ fontFamily: "var(--font-display)" }}
             >
               Say hello.
@@ -201,12 +201,12 @@ export default function Footer() {
 
         {/* ── 4. Divider ─────────────────────────────── */}
         <div
-          className="w-full h-[2px] bg-cream/25 mt-12 md:mt-16"
+          className="w-full h-[2px] bg-cream/25 mt-8 md:mt-10"
           aria-hidden="true"
         />
 
         {/* ── 5. Middle row ──────────────────────────── */}
-        <div className="mt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-8">
+        <div className="mt-6 md:mt-7 flex flex-col md:flex-row md:items-center md:justify-between gap-5 md:gap-6">
           {/* Left: Nav links */}
           <nav
             className="flex flex-wrap items-center gap-6 md:gap-8"
@@ -285,7 +285,7 @@ export default function Footer() {
 
         {/* ── 7. Small copyright line ────────────────── */}
         <div
-          className="mt-12 md:mt-16 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-cream/70"
+          className="mt-8 md:mt-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-cream/70"
           style={{ fontFamily: "var(--font-body)" }}
         >
           <span>© {currentYear} Deghne Gabriel Agana</span>
@@ -296,13 +296,13 @@ export default function Footer() {
       {/* ── 6. Giant wordmark spanning edge to edge ──── */}
       <div
         aria-hidden="true"
-        className="w-full overflow-hidden flex justify-center pointer-events-none select-none translate-y-[15%] pt-6 md:pt-8"
+        className="w-full overflow-hidden flex justify-center pointer-events-none select-none translate-y-[15%] pt-4 md:pt-6"
       >
         <div
           className="text-center whitespace-nowrap leading-[0.8] tracking-tight font-normal"
           style={{
             fontFamily: "var(--font-display)",
-            fontSize: "clamp(4.5rem, 26vw, 22rem)",
+            fontSize: "clamp(3.5rem, 18vw, 13rem)",
           }}
         >
           {LETTERS.map((letter, i) => (

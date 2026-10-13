@@ -246,12 +246,12 @@ export default function Contact() {
       ref={sectionRef}
       id="contact"
       aria-label="Contact"
-      className="relative py-24 md:py-36 lg:py-40 bg-wine overflow-hidden"
+      className="relative py-16 md:py-24 lg:py-28 bg-wine overflow-hidden"
     >
-      <div className="mx-auto max-w-6xl w-full px-6 md:px-10 lg:px-12">
-        <h2 className="text-3xl md:text-5xl text-cream mb-5">Get in touch</h2>
+      <div className="mx-auto max-w-6xl w-full px-6 md:px-8">
+        <h2 className="text-3xl md:text-5xl text-cream mb-3 md:mb-4">Get in touch</h2>
         <p
-          className="text-cream/70 mb-12 md:mb-16 max-w-2xl text-base"
+          className="text-cream/70 mb-8 md:mb-10 max-w-2xl text-base"
           style={{ fontFamily: "var(--font-body)" }}
         >
           Type your message on the typewriter below.
@@ -928,7 +928,7 @@ export default function Contact() {
 
       {/* ── Footer credits ───────────────────────────── */}
       </div>
-      <footer className="mt-28 md:mt-32 pt-10 border-t border-cream/10 pb-10 md:pb-14 text-center w-full max-w-6xl mx-auto px-6 md:px-10 lg:px-12">
+      <footer className="mt-16 md:mt-20 pt-6 border-t border-cream/10 pb-6 md:pb-8 text-center w-full max-w-6xl mx-auto px-6 md:px-8">
         <p
           className="text-cream/40 text-xs text-center"
           style={{ fontFamily: "var(--font-body)" }}

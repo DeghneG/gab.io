@@ -208,26 +208,26 @@ export default function Skills() {
       ref={sectionRef}
       id="skills"
       aria-label="Technology Stack"
-      className="relative py-24 md:py-36 lg:py-40 bg-wine"
+      className="relative py-16 md:py-24 bg-wine"
     >
-      <div className="mx-auto max-w-6xl w-full px-6 md:px-10 lg:px-12">
-        <h2 className="text-3xl md:text-5xl text-cream mb-12 md:mb-16">Technology Stack</h2>
+      <div className="mx-auto max-w-6xl w-full px-6 md:px-8">
+        <h2 className="text-3xl md:text-5xl text-cream mb-8 md:mb-10">Technology Stack</h2>
 
         {/* Category Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 md:gap-6 xl:gap-7 items-stretch">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 xl:gap-5 items-stretch">
           {(() => {
             let discCounter = 0;
             return skillCategories.map((category) => (
               <div
                 key={category.category}
-                className="bg-white/5 border-[3px] rounded-2xl xl:rounded-3xl p-5 xl:p-6 flex flex-col relative overflow-hidden last:sm:col-span-2 last:lg:col-span-1 last:sm:max-w-md last:sm:mx-auto last:sm:w-full last:lg:max-w-none"
+                className="bg-white/5 border-[3px] rounded-2xl xl:rounded-3xl p-4 xl:p-5 flex flex-col relative overflow-hidden last:sm:col-span-2 last:lg:col-span-1 last:sm:max-w-md last:sm:mx-auto last:sm:w-full last:lg:max-w-none"
                 style={{
                   borderColor: colorHex[category.accent],
                   boxShadow: `5px 5px 0 0 ${colorHex[category.accent]}`,
                 }}
               >
                 {/* Card Header */}
-                <div className="mb-5 relative z-10">
+                <div className="mb-4 relative z-10">
                   <h3
                     className="text-lg xl:text-xl text-cream"
                     style={{ fontFamily: "var(--font-display)" }}

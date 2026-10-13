@@ -670,10 +670,10 @@ export default function Experience() {
       ref={sectionRef}
       id="experience"
       aria-label="Experience and education"
-      className="relative isolate overflow-hidden py-24 md:py-36 lg:py-40"
+      className="relative isolate overflow-hidden py-16 md:py-24 lg:py-28"
     >
       <ContourBackground variant="c" maskType="center" className="z-0" />
-      <div className="relative z-30 mx-auto max-w-6xl w-full px-6 md:px-10 lg:px-12">
+      <div className="relative z-30 mx-auto max-w-6xl w-full px-6 md:px-8">
         {/* Section Heading & Subtitle */}
         <div className="flex items-center gap-3 mb-2">
           <h2 className="text-3xl md:text-5xl text-wine">Experience</h2>
@@ -687,7 +687,7 @@ export default function Experience() {
           )}
         </div>
         <p
-          className="text-wine/70 mb-12 md:mb-14 max-w-2xl text-base"
+          className="text-wine/70 mb-8 md:mb-10 max-w-2xl text-base"
           style={{ fontFamily: "var(--font-body)" }}
         >
           My journey so far.
@@ -700,12 +700,12 @@ export default function Experience() {
             className={`
               col-span-1 md:col-span-2 ${hasCerts ? "lg:col-span-7" : "lg:col-span-12"}
               bg-cream border-4 border-wine rounded-3xl
-              p-6 sm:p-8 flex flex-col justify-between
+              p-5 sm:p-7 flex flex-col justify-between
               shadow-[6px_6px_0_0_#8C0027]
             `}
           >
             {/* Tile Header */}
-            <div className="flex items-center justify-between mb-8 pb-4 border-b-2 border-wine/15">
+            <div className="flex items-center justify-between mb-6 pb-3 border-b-2 border-wine/15">
               <h3
                 className="text-2xl md:text-3xl text-wine"
                 style={{ fontFamily: "var(--font-display)" }}
@@ -724,25 +724,25 @@ export default function Experience() {
             <div ref={timelineRef} className="relative w-full">
               {/* Timeline background track line */}
               <div
-                className="absolute left-6 md:left-8 -translate-x-1/2 top-6 bottom-6 w-1 bg-wine/15 rounded-full"
+                className="absolute left-6 md:left-7 -translate-x-1/2 top-6 bottom-6 w-1 bg-wine/15 rounded-full"
                 aria-hidden="true"
               />
 
               {/* Dynamic Scroll-Drawn Ink Line */}
               <div
                 ref={lineProgressRef}
-                className="absolute left-6 md:left-8 -translate-x-1/2 top-6 bottom-6 w-1.5 bg-gradient-to-b from-[#2BAF90] via-[#F1A512] to-[#DD4111] rounded-full will-change-transform shadow-[0_0_8px_rgba(241,165,18,0.35)]"
+                className="absolute left-6 md:left-7 -translate-x-1/2 top-6 bottom-6 w-1.5 bg-gradient-to-b from-[#2BAF90] via-[#F1A512] to-[#DD4111] rounded-full will-change-transform shadow-[0_0_8px_rgba(241,165,18,0.35)]"
                 aria-hidden="true"
               />
 
-              <ol className="flex flex-col gap-8 md:gap-10">
+              <ol className="flex flex-col gap-6 md:gap-7">
                 {timeline.map((entry, i) => (
                   <li key={`${entry.org}-${entry.period}`} className="relative">
                     <div
                       ref={(el) => {
                         itemsRef.current[i] = el;
                       }}
-                      className="flex gap-5 md:gap-6 items-start"
+                      className="flex gap-4 md:gap-5 items-start"
                     >
                       {/* Timeline marker with milestone numbers */}
                       <div
@@ -751,11 +751,11 @@ export default function Experience() {
                         }}
                         className="
                           relative z-10 shrink-0
-                          w-12 h-12 md:w-16 md:h-16
+                          w-12 h-12 md:w-14 md:h-14
                           rounded-full
                           bg-cream border-4 border-wine
                           flex items-center justify-center
-                          text-base md:text-xl font-bold text-wine
+                          text-base md:text-lg font-bold text-wine
                           will-change-transform
                         "
                         style={{
@@ -779,7 +779,7 @@ export default function Experience() {
                           experience-card
                           flex-1
                           bg-white/60 border-2 border-wine/40 rounded-2xl
-                          p-5 md:p-6
+                          p-4 md:p-5
                           will-change-transform
                         "
                       >
@@ -874,7 +874,7 @@ export default function Experience() {
             className="
               col-span-1 md:col-span-2 lg:col-span-12
               bg-cream border-4 border-wine rounded-3xl
-              p-6 sm:p-8
+              p-5 sm:p-7
               shadow-[6px_6px_0_0_#8C0027]
               flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6
             "
