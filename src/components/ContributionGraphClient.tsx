@@ -147,13 +147,17 @@ export default function ContributionGraphClient({ data }: ContributionGraphClien
           >
             {/* Weekday labels (desktop only: Mon, Wed, Fri) */}
             <div
-              className="hidden md:flex flex-col justify-between w-6 shrink-0 h-[104px] text-[10px] text-wine/80 font-bold select-none pt-[13px] pb-[13px]"
+              className="hidden md:grid grid-rows-7 h-[108px] w-6 shrink-0 text-[10px] text-wine/80 font-bold select-none gap-1"
               style={{ fontFamily: "var(--font-body)" }}
               aria-hidden="true"
             >
-              <span className="leading-none">Mon</span>
-              <span className="leading-none">Wed</span>
-              <span className="leading-none">Fri</span>
+              <div />
+              <div className="flex items-center leading-none">Mon</div>
+              <div />
+              <div className="flex items-center leading-none">Wed</div>
+              <div />
+              <div className="flex items-center leading-none">Fri</div>
+              <div />
             </div>
 
             {/* 53 Columns */}
@@ -198,7 +202,7 @@ export default function ContributionGraphClient({ data }: ContributionGraphClien
                         <div
                           key={day.date}
                           title={tooltip}
-                          className="w-[9px] h-[9px] sm:w-[11px] sm:h-[11px] md:w-[12px] md:h-[12px] rounded-sm transition-transform hover:scale-125 cursor-pointer shadow-[0_1px_1px_rgba(0,0,0,0.12)] border border-wine/10"
+                          className="w-[9px] h-[9px] sm:w-[11px] sm:h-[11px] md:w-[12px] md:h-[12px] rounded-[2px] transition-transform hover:scale-125 cursor-pointer shadow-[0_1px_1px_rgba(0,0,0,0.12)] border border-wine/10"
                           style={{ backgroundColor: color }}
                         />
                       );
@@ -219,27 +223,27 @@ export default function ContributionGraphClient({ data }: ContributionGraphClien
         <span className="opacity-80">Less</span>
         <div className="flex items-center gap-1">
           <span
-            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-sm border border-wine/10"
+            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-[2px] border border-wine/10"
             style={{ backgroundColor: PALETTE.level0 }}
             title="0 contributions"
           />
           <span
-            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-sm border border-wine/10"
+            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-[2px] border border-wine/10"
             style={{ backgroundColor: PALETTE.level1 }}
             title="Low contributions"
           />
           <span
-            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-sm border border-wine/10"
+            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-[2px] border border-wine/10"
             style={{ backgroundColor: PALETTE.level2 }}
             title="Medium contributions"
           />
           <span
-            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-sm border border-wine/10"
+            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-[2px] border border-wine/10"
             style={{ backgroundColor: PALETTE.level3 }}
             title="High contributions"
           />
           <span
-            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-sm border border-wine/10"
+            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-[2px] border border-wine/10"
             style={{ backgroundColor: PALETTE.level4 }}
             title="Highest contributions"
           />
