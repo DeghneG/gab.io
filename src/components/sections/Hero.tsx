@@ -28,7 +28,7 @@ if (typeof window !== "undefined") {
  *   RING_WIDTH        — 4px wine outline ring width
  *   SUN_POSITION      — sunburst right/bottom offsets & mountain overlap
  */
-export default function Hero({ children }: { children?: React.ReactNode }) {
+export default function Hero() {
   const introRef = useRef<HTMLSpanElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const halfCircleRef = useRef<HTMLDivElement>(null);
@@ -263,11 +263,10 @@ export default function Hero({ children }: { children?: React.ReactNode }) {
       />
 
       {/* ── LAYER 6: Hero content ────────────────────── */}
-      <div className="relative z-30 mx-auto max-w-7xl w-full px-6 md:px-8 flex flex-col">
-        <div
-          ref={cardRef}
-          className="flex flex-col gap-8 md:flex-row md:items-center md:gap-14 lg:gap-16 gsap-hero-card"
-        >
+      <div
+        ref={cardRef}
+        className="relative z-30 mx-auto max-w-7xl w-full px-6 md:px-8 flex flex-col gap-8 md:flex-row md:items-center md:gap-14 lg:gap-16 gsap-hero-card"
+      >
         {/* Photo — tilted polaroid frame with interactive hover reveal */}
         <div className="shrink-0 self-start relative select-none">
           {/* Polaroid container */}
@@ -457,10 +456,6 @@ export default function Hero({ children }: { children?: React.ReactNode }) {
             </div>
           </div>
         </div>
-      </div>
-
-        {/* Children (e.g. GitHub Contributions Graph) */}
-        {children}
       </div>
 
       {/* ── Stripe band at the bottom ────────────────── */}
