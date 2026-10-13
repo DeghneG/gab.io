@@ -726,14 +726,6 @@ export default function Experience() {
         {/* Section Heading & Subtitle */}
         <div className="flex items-center gap-3 mb-2">
           <h2 className="text-3xl md:text-5xl text-wine">Experience</h2>
-          {process.env.NODE_ENV === "development" && (
-            <span
-              className="px-2 py-0.5 text-[10px] uppercase tracking-wider bg-orange/15 text-orange border border-orange/40 rounded font-bold"
-              style={{ fontFamily: "var(--font-body)" }}
-            >
-              Placeholder
-            </span>
-          )}
         </div>
         <p
           className="text-wine/70 mb-8 md:mb-10 max-w-2xl text-base"
