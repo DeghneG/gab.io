@@ -142,6 +142,21 @@ function WordPressIcon({ className }: { className?: string }) {
   );
 }
 
+function VercelIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      width="14"
+      height="14"
+      aria-hidden="true"
+    >
+      <path d="m12 1.608 12 20.784H0Z" />
+    </svg>
+  );
+}
+
 /**
  * Individual Vinyl Record Skill Item with GSAP Turntable Spin-Up and Coast-to-Stop.
  */
@@ -357,6 +372,19 @@ function VinylSkillItem({
             style={{ borderColor: colorHex[skill.color] }}
           >
             <WordPressIcon className="w-3.5 h-3.5 xl:w-4 xl:h-4 fill-current" />
+          </div>
+        ) : skill.name.toLowerCase() === "vercel" ? (
+          <div
+            className="
+              w-5 h-5 xl:w-5.5 xl:h-5.5
+              rounded-full bg-cream
+              border-[1.5px]
+              flex items-center justify-center
+              text-wine shadow-xs
+            "
+            style={{ borderColor: colorHex[skill.color] }}
+          >
+            <VercelIcon className="w-3 h-3 xl:w-3.5 xl:h-3.5 fill-current" />
           </div>
         ) : (
           <div
