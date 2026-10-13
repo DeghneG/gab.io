@@ -1,4 +1,5 @@
 import Hero from "@/components/sections/Hero";
+import ContributionGraph from "@/components/ContributionGraph";
 import Projects from "@/components/sections/Projects";
 import Skills from "@/components/sections/Skills";
 import Experience from "@/components/sections/Experience";
@@ -8,7 +9,9 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <main>
-      <Hero />
+      <Hero>
+        <ContributionGraph />
+      </Hero>
       <Projects />
       <Skills />
       <Experience />

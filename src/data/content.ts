@@ -181,3 +181,6 @@ export const contact = {
     { label: "Smart", number: "0961 776 8196" },
   ],
 } as const;
+
+export const GITHUB_USERNAME = "DeghneG";
+
