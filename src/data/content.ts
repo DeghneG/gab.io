@@ -107,7 +107,7 @@ export const skillCategories: SkillCategory[] = [
   },
   {
     category: "Developer Tools",
-    accent: "wine",
+    accent: "mustard",
     skills: [
       { name: "GitHub", color: "mustard" },
       { name: "Vercel", color: "mustard" },
