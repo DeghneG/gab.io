@@ -4,6 +4,7 @@ export interface ContributionDay {
   date: string;
   contributionCount: number;
   weekday: number;
+  level?: number;
 }
 
 export interface ContributionWeek {
@@ -28,6 +29,7 @@ const CONTRIBUTIONS_QUERY = `
               date
               contributionCount
               weekday
+              contributionLevel
             }
           }
         }
@@ -67,7 +69,7 @@ async function fetchPublicGitHubContributions(): Promise<ContributionCalendarDat
     }
 
     // Extract table day cells
-    const tdRegex = /<td[^>]+data-date="([^"]+)"[^>]+id="([^"]+)"/g;
+    const tdRegex = /<td[^>]+data-date="([^"]+)"[^>]+id="([^"]+)"[^>]*data-level="([^"]+)"/g;
     let tdm;
     const days: ContributionDay[] = [];
     let calculatedTotal = 0;
@@ -75,12 +77,14 @@ async function fetchPublicGitHubContributions(): Promise<ContributionCalendarDat
     while ((tdm = tdRegex.exec(html)) !== null) {
       const date = tdm[1];
       const id = tdm[2];
+      const level = parseInt(tdm[3], 10);
       const count = tooltips.get(id) || 0;
       calculatedTotal += count;
       days.push({
         date,
         contributionCount: count,
         weekday: new Date(date + "T00:00:00Z").getUTCDay(),
+        level: isNaN(level) ? undefined : level,
       });
     }
 
@@ -147,8 +151,37 @@ export async function getGitHubContributions(): Promise<ContributionCalendarData
 
       if (response.ok) {
         const data = await response.json();
-        if (!data.errors && data?.data?.user?.contributionsCollection?.contributionCalendar) {
-          return data.data.user.contributionsCollection.contributionCalendar as ContributionCalendarData;
+        const rawCalendar = data?.data?.user?.contributionsCollection?.contributionCalendar;
+        if (!data.errors && rawCalendar) {
+          const LEVEL_MAP: Record<string, number> = {
+            NONE: 0,
+            FIRST_QUARTILE: 1,
+            SECOND_QUARTILE: 2,
+            THIRD_QUARTILE: 3,
+            FOURTH_QUARTILE: 4,
+          };
+          const weeks: ContributionWeek[] = rawCalendar.weeks.map(
+            (w: {
+              contributionDays: Array<{
+                date: string;
+                contributionCount: number;
+                weekday: number;
+                contributionLevel?: string;
+              }>;
+            }) => ({
+              contributionDays: w.contributionDays.map((d) => ({
+                date: d.date,
+                contributionCount: d.contributionCount,
+                weekday: d.weekday,
+                level: d.contributionLevel ? LEVEL_MAP[d.contributionLevel] ?? 0 : undefined,
+              })),
+            })
+          );
+
+          return {
+            totalContributions: rawCalendar.totalContributions,
+            weeks,
+          };
         }
       }
     } catch {

@@ -15,14 +15,33 @@ interface ContributionGraphClientProps {
 }
 
 const PALETTE = {
-  level0: "#94C3A3", // #A1D4B1 darkened ~8% (mint tinted)
-  level1: "#5CCBB3", // light teal
-  level2: "#2BAF90", // retro teal
-  level3: "#F1A512", // retro mustard
-  level4: "#DD4111", // retro orange
+  level0: "#E8D1D5", // muted dusty rose / empty slot
+  level1: "#F87171", // light warm red (low)
+  level2: "#E13247", // vivid rich red (medium)
+  level3: "#B31237", // deep crimson red (high)
+  level4: "#8C0027", // signature retro wine (highest)
 };
 
-function getCellColor(count: number, maxCount: number): string {
+function getCellColor(
+  count: number,
+  maxCount: number,
+  level?: number
+): string {
+  if (typeof level === "number") {
+    switch (level) {
+      case 1:
+        return PALETTE.level1;
+      case 2:
+        return PALETTE.level2;
+      case 3:
+        return PALETTE.level3;
+      case 4:
+        return PALETTE.level4;
+      default:
+        return PALETTE.level0;
+    }
+  }
+
   if (count <= 0) return PALETTE.level0;
   const ratio = count / Math.max(maxCount, 1);
   if (ratio <= 0.25) return PALETTE.level1;
@@ -196,7 +215,7 @@ export default function ContributionGraphClient({ data }: ContributionGraphClien
                         day.contributionCount === 1 ? "" : "s"
                       } on ${formattedDate}`;
 
-                      const color = getCellColor(day.contributionCount, maxCount);
+                      const color = getCellColor(day.contributionCount, maxCount, day.level);
 
                       return (
                         <div
