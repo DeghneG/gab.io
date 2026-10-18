@@ -164,13 +164,42 @@ export interface Certification {
   year: string;
   category: string;
   url?: string;
+  description?: string;
 }
 
 export const certifications: Certification[] = [
-  { title: "Certification Title One", issuer: "Issuer Name", year: "2026", category: "Web Dev", url: "" },
-  { title: "Certification Title Two", issuer: "Issuer Name", year: "2025", category: "Design", url: "" },
-  { title: "Certification Title Three", issuer: "Issuer Name", year: "2025", category: "AI", url: "" },
-  { title: "Certification Title Four", issuer: "Issuer Name", year: "2024", category: "Tools", url: "" }
+  {
+    title: "AI Prompts Fundamentals",
+    issuer: "Coddy",
+    year: "2026",
+    category: "AI",
+    url: "/certificates/ai-prompts-fundamentals.pdf",
+    description: "Certificate of Completion covering prompt engineering fundamentals and generative AI workflows.",
+  },
+  {
+    title: "Certification Title Two",
+    issuer: "Issuer Name",
+    year: "2025",
+    category: "Design",
+    url: "",
+    description: "UI/UX design systems, component architecture, and interaction states.",
+  },
+  {
+    title: "Certification Title Three",
+    issuer: "Issuer Name",
+    year: "2025",
+    category: "Web Dev",
+    url: "",
+    description: "Modern web application development and responsive design.",
+  },
+  {
+    title: "Certification Title Four",
+    issuer: "Issuer Name",
+    year: "2024",
+    category: "Tools",
+    url: "",
+    description: "Developer tooling, workflow automation, and version control.",
+  },
 ];
 
 export const contact = {

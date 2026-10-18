@@ -360,7 +360,7 @@ function FeaturedTicketStub({
         {/* Middle Info & Right Credential Button */}
         <div
           ref={bodyRef}
-          className="py-6 px-6 sm:px-7 flex items-center justify-between gap-4 md:gap-6 flex-1 min-w-0"
+          className="py-5 sm:py-6 px-5 sm:px-7 flex items-center justify-between gap-4 md:gap-5 flex-1 min-w-0"
           style={{ willChange: "transform", transformStyle: "preserve-3d" }}
         >
           <div className="flex-1 min-w-0 flex flex-col justify-center gap-2">
@@ -372,24 +372,24 @@ function FeaturedTicketStub({
                 {cert.category}
               </span>
               <span
-                className="text-xs text-wine/50 font-bold tracking-wider uppercase"
+                className="text-xs text-wine/70 font-bold tracking-wider uppercase"
                 style={{ fontFamily: "var(--font-body)" }}
               >
-                Featured
+                {cert.issuer}
               </span>
             </div>
             <h4
-              className="text-xl md:text-2xl text-wine font-bold leading-snug line-clamp-2"
+              className="text-lg sm:text-xl md:text-2xl text-wine font-bold leading-tight sm:leading-snug line-clamp-2"
               style={{ fontFamily: "var(--font-display)" }}
               title={cert.title}
             >
               {cert.title}
             </h4>
             <p
-              className="text-xs md:text-sm text-wine/80 font-medium"
+              className="text-xs sm:text-sm text-wine/80 font-medium leading-relaxed line-clamp-2"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              {cert.issuer}
+              {cert.description || cert.issuer}
             </p>
           </div>
 
@@ -416,7 +416,7 @@ function FeaturedTicketStub({
 
             <span
               aria-hidden="true"
-              className="hidden sm:inline-block text-xs text-wine/60 font-bold tracking-wider select-none whitespace-nowrap"
+              className="hidden xl:inline-block text-xs text-wine/60 font-bold tracking-wider select-none whitespace-nowrap"
               style={{ fontFamily: "var(--font-body)" }}
             >
               {serialNo}
@@ -424,7 +424,7 @@ function FeaturedTicketStub({
 
             <div
               aria-hidden="true"
-              className="hidden md:block h-12 shrink-0 border-l border-r border-wine/20 select-none opacity-85"
+              className="hidden xl:block h-12 shrink-0 border-l border-r border-wine/20 select-none opacity-85"
               style={barcodeStyle}
             />
           </div>
