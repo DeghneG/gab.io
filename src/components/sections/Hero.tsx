@@ -39,6 +39,7 @@ export default function Hero() {
   const formalPhotoRef = useRef<HTMLDivElement>(null);
   const casualPhotoRef = useRef<HTMLDivElement>(null);
   const starStickerRef = useRef<HTMLDivElement>(null);
+  const cloudsRef = useRef<(HTMLDivElement | null)[]>([]);
   const photoTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const [isCasualActive, setIsCasualActive] = useState(false);
 
@@ -51,6 +52,11 @@ export default function Hero() {
 
     /* Setup Photo Hover Slide-Down Timeline */
     if (formalPhotoRef.current && casualPhotoRef.current) {
+      // Set initial state for comic cloud puffs
+      cloudsRef.current.forEach((cloud) => {
+        if (cloud) gsap.set(cloud, { scale: 0, opacity: 0 });
+      });
+
       if (prefersReduced) {
         gsap.set(formalPhotoRef.current, { yPercent: 0 });
         gsap.set(casualPhotoRef.current, { yPercent: 0, opacity: 0 });
@@ -61,6 +67,10 @@ export default function Hero() {
         });
         tl.to(formalPhotoRef.current, { opacity: 0, duration: 0.2 }, 0);
         tl.to(casualPhotoRef.current, { opacity: 1, duration: 0.2 }, 0);
+        const validClouds = cloudsRef.current.filter(Boolean);
+        if (validClouds.length > 0) {
+          tl.to(validClouds, { scale: 1, opacity: 1, duration: 0.2 }, 0);
+        }
         photoTimelineRef.current = tl;
       } else {
         gsap.set(formalPhotoRef.current, { yPercent: 0 });
@@ -72,34 +82,63 @@ export default function Hero() {
           onReverseComplete: () => setIsCasualActive(false),
         });
 
+        // 1. Photo frame cartoon squash & stretch into elevated tilt
         if (photoFrameRef.current) {
           tl.to(
             photoFrameRef.current,
             {
-              rotate: -1,
-              y: -4,
-              boxShadow: "8px 8px 0 0 #8C0027",
-              duration: 0.35,
+              scaleX: 1.05,
+              scaleY: 0.95,
+              duration: 0.1,
               ease: "power2.out",
             },
             0
+          ).to(
+            photoFrameRef.current,
+            {
+              scaleX: 1,
+              scaleY: 1,
+              rotate: -1,
+              y: -5,
+              boxShadow: "8px 8px 0 0 #8C0027",
+              duration: 0.4,
+              ease: "elastic.out(1.2, 0.4)",
+            },
+            0.1
           );
         }
 
+        // 2. Retro Comic Cloud Puffs pop out around the frame
+        const validClouds = cloudsRef.current.filter(Boolean);
+        if (validClouds.length > 0) {
+          tl.to(
+            validClouds,
+            {
+              scale: 1,
+              opacity: 1,
+              duration: 0.45,
+              stagger: 0.04,
+              ease: "back.out(2.2)",
+            },
+            0.02
+          );
+        }
+
+        // 3. Gold star sticker bounces with excitement
         if (starStickerRef.current) {
           tl.to(
             starStickerRef.current,
             {
-              rotate: 28,
-              scale: 1.15,
+              rotate: 32,
+              scale: 1.25,
               duration: 0.45,
-              ease: "back.out(2)",
+              ease: "back.out(2.5)",
             },
-            0.05
+            0.04
           );
         }
 
-        /* 1. Formal photo slides down and exits at bottom */
+        // 4. Formal photo slides down and exits at bottom
         tl.to(
           formalPhotoRef.current,
           {
@@ -110,7 +149,7 @@ export default function Hero() {
           0
         );
 
-        /* 2. Casual photo slides down into the frame from top */
+        // 5. Casual photo slides down into the frame from top
         tl.to(
           casualPhotoRef.current,
           {
@@ -269,6 +308,165 @@ export default function Hero() {
       >
         {/* Photo — tilted polaroid frame with interactive hover reveal */}
         <div className="shrink-0 self-start relative select-none">
+          {/* ── Retro Comic Cloud Puffs (Pop out on hover) ── */}
+          <div aria-hidden="true" className="absolute inset-0 pointer-events-none z-0">
+            {/* Cloud 1: Top-Left (Chunky 4-bubble puff) */}
+            <div
+              ref={(el) => {
+                cloudsRef.current[0] = el;
+              }}
+              className="absolute -top-7 -left-10 w-20 md:w-24 -rotate-12 origin-bottom-right"
+              style={{ filter: "drop-shadow(4px 4px 0 #8C0027)" }}
+            >
+              <svg viewBox="0 0 100 70" fill="none" className="w-full h-auto">
+                <path
+                  d="M 22 52 C 10 52, 4 42, 10 30 C 5 18, 18 10, 32 14 C 40 4, 62 4, 72 14 C 84 8, 96 18, 92 32 C 100 42, 92 54, 80 52 C 78 62, 66 68, 52 64 C 40 68, 26 64, 22 52 Z"
+                  fill="#F5F0E8"
+                  stroke="#8C0027"
+                  strokeWidth="3.5"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M 28 34 C 34 28, 44 28, 48 34"
+                  fill="none"
+                  stroke="#8C0027"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M 58 36 C 64 30, 72 32, 76 38"
+                  fill="none"
+                  stroke="#8C0027"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
+
+            {/* Cloud 2: Top-Right (Mint pastel accent puff) */}
+            <div
+              ref={(el) => {
+                cloudsRef.current[1] = el;
+              }}
+              className="absolute -top-7 -right-8 w-18 md:w-22 rotate-8 origin-bottom-left"
+              style={{ filter: "drop-shadow(4px 4px 0 #8C0027)" }}
+            >
+              <svg viewBox="0 0 85 65" fill="none" className="w-full h-auto">
+                <path
+                  d="M 18 48 C 8 48, 4 36, 12 26 C 8 14, 22 8, 34 12 C 44 4, 64 6, 70 18 C 82 20, 84 34, 76 44 C 78 52, 68 60, 56 58 C 45 62, 30 60, 24 52 C 20 52, 18 50, 18 48 Z"
+                  fill="#C8E4CF"
+                  stroke="#8C0027"
+                  strokeWidth="3.5"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M 30 30 C 36 26, 46 26, 50 32"
+                  fill="none"
+                  stroke="#8C0027"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
+
+            {/* Cloud 3: Mid-Left (Side smoke puff) */}
+            <div
+              ref={(el) => {
+                cloudsRef.current[2] = el;
+              }}
+              className="absolute top-[38%] -left-9 w-14 md:w-16 -rotate-6 origin-right"
+              style={{ filter: "drop-shadow(3px 3px 0 #8C0027)" }}
+            >
+              <svg viewBox="0 0 65 55" fill="none" className="w-full h-auto">
+                <path
+                  d="M 16 42 C 6 42, 2 30, 10 22 C 8 12, 20 6, 32 10 C 40 4, 54 6, 58 18 C 66 22, 66 34, 56 40 C 52 48, 38 50, 26 46 C 20 46, 18 44, 16 42 Z"
+                  fill="#F5F0E8"
+                  stroke="#8C0027"
+                  strokeWidth="3"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M 24 26 C 28 22, 36 22, 40 26"
+                  fill="none"
+                  stroke="#8C0027"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
+
+            {/* Cloud 4: Bottom-Right (Behind the Star sticker) */}
+            <div
+              ref={(el) => {
+                cloudsRef.current[3] = el;
+              }}
+              className="absolute -bottom-6 -right-7 w-20 md:w-24 rotate-12 origin-top-left"
+              style={{ filter: "drop-shadow(4px 4px 0 #8C0027)" }}
+            >
+              <svg viewBox="0 0 95 70" fill="none" className="w-full h-auto">
+                <path
+                  d="M 20 50 C 8 50, 4 38, 12 28 C 8 16, 22 8, 36 12 C 46 4, 68 6, 76 16 C 88 12, 98 22, 94 36 C 102 46, 94 58, 82 56 C 80 66, 68 72, 54 68 C 42 72, 28 68, 22 56 C 20 56, 18 54, 20 50 Z"
+                  fill="#F5F0E8"
+                  stroke="#8C0027"
+                  strokeWidth="3.5"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M 32 34 C 38 28, 48 28, 52 34"
+                  fill="none"
+                  stroke="#8C0027"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M 64 36 C 70 30, 78 32, 82 38"
+                  fill="none"
+                  stroke="#8C0027"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
+
+            {/* Sparkle 1: Top Mustard Star */}
+            <div
+              ref={(el) => {
+                cloudsRef.current[4] = el;
+              }}
+              className="absolute -top-9 left-[40%] w-6 h-6 rotate-12 origin-center"
+              style={{ filter: "drop-shadow(2px 2px 0 #8C0027)" }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+                <path
+                  d="M 12 2 L 14.5 9.5 L 22 12 L 14.5 14.5 L 12 22 L 9.5 14.5 L 2 12 L 9.5 9.5 Z"
+                  fill="#F1A512"
+                  stroke="#8C0027"
+                  strokeWidth="2.5"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+
+            {/* Sparkle 2: Right Teal Star */}
+            <div
+              ref={(el) => {
+                cloudsRef.current[5] = el;
+              }}
+              className="absolute top-[26%] -right-7 w-5 h-5 -rotate-12 origin-center"
+              style={{ filter: "drop-shadow(2px 2px 0 #8C0027)" }}
+            >
+              <svg viewBox="0 0 20 20" fill="none" className="w-full h-full">
+                <path
+                  d="M 10 1.5 L 12 8 L 18.5 10 L 12 12 L 10 18.5 L 8 12 L 1.5 10 L 8 8 Z"
+                  fill="#2BAF90"
+                  stroke="#8C0027"
+                  strokeWidth="2"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+          </div>
+
           {/* Polaroid container */}
           <div
             ref={photoFrameRef}
@@ -276,7 +474,7 @@ export default function Hero() {
             onMouseLeave={handlePhotoMouseLeave}
             onClick={handlePhotoClick}
             className="
-              relative
+              relative z-10
               w-44 h-56 md:w-56 md:h-72
               rounded-3xl
               border-4 border-wine

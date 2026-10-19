@@ -254,8 +254,22 @@
 }
 
 /* ═══════════════════════════════════════════════════
-   REDUCED MOTION
+   VINYL ROTATION ANIMATION
    ═══════════════════════════════════════════════════ */
+
+@keyframes vinyl-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-vinyl-spin {
+  animation: vinyl-spin 60s linear infinite;
+  will-change: transform;
+}
 
 /* ═══════════════════════════════════════════════════
    NAVBAR LINK STYLES

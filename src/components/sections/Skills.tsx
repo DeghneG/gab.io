@@ -279,25 +279,12 @@ function VinylSkillItem({
   const handleMouseEnter = () => {
     if (!discRef.current) return;
     gsap.killTweensOf(discRef.current);
-
-    const prefersReduced =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (prefersReduced) {
-      gsap.to(discRef.current, {
-        y: -4,
-        duration: 0.2,
-        ease: "power2.out",
-      });
-    } else {
-      gsap.to(discRef.current, {
-        y: -4,
-        rotation: "+=360",
-        duration: 1.2,
-        ease: "power2.out",
-      });
-    }
+    gsap.to(discRef.current, {
+      y: -4,
+      rotation: "+=360",
+      duration: 1.2,
+      ease: "power2.out",
+    });
   };
 
   const handleMouseLeave = () => {
@@ -415,7 +402,6 @@ function VinylSkillItem({
  * ───────────────────────────────────────────────────────────
  */
 function GiantMarginRecord() {
-  const recordRef = useRef<HTMLDivElement>(null);
   const {
     giantRecordSize,
     giantRecordCropPercent,
@@ -424,21 +410,6 @@ function GiantMarginRecord() {
   } = SKILLS_CONFIG;
 
   const cropOffsetPx = (giantRecordSize * giantRecordCropPercent) / 100;
-
-  useGSAP(() => {
-    const prefersReduced =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (!prefersReduced && recordRef.current) {
-      gsap.to(recordRef.current, {
-        rotation: 360,
-        duration: giantRecordSpinDuration,
-        repeat: -1,
-        ease: "none",
-      });
-    }
-  }, []);
 
   // Concentric groove ring radii
   const grooveRadii = [
@@ -457,12 +428,30 @@ function GiantMarginRecord() {
         transform: "translateY(-50%)",
       }}
     >
-      <div ref={recordRef} className="w-full h-full origin-center">
+      <div
+        className="w-full h-full origin-center animate-vinyl-spin relative"
+        style={{ animationDuration: `${giantRecordSpinDuration}s` }}
+      >
         <svg
           viewBox="0 0 900 900"
           className="w-full h-full"
           xmlns="http://www.w3.org/2000/svg"
         >
+          <defs>
+            {/* Top arc for curved text: center (450, 450), radius 105 */}
+            <path
+              id="giant-label-top"
+              d="M 345 450 A 105 105 0 0 1 555 450"
+              fill="none"
+            />
+            {/* Bottom arc for curved text: center (450, 450), radius 105 */}
+            <path
+              id="giant-label-bottom"
+              d="M 555 450 A 105 105 0 0 1 345 450"
+              fill="none"
+            />
+          </defs>
+
           {/* Base disc in tone-on-tone lighter wine #9A1238 */}
           <circle cx="450" cy="450" r="450" fill="#9A1238" />
 
@@ -512,9 +501,75 @@ function GiantMarginRecord() {
             strokeOpacity="0.6"
           />
 
+          {/* Vintage label horizontal divider accents */}
+          <line
+            x1="330"
+            y1="450"
+            x2="415"
+            y2="450"
+            stroke="#F1A512"
+            strokeWidth="2.5"
+            strokeOpacity="0.75"
+          />
+          <line
+            x1="485"
+            y1="450"
+            x2="570"
+            y2="450"
+            stroke="#2BAF90"
+            strokeWidth="2.5"
+            strokeOpacity="0.75"
+          />
+
+          {/* Vintage typography printed along top arc */}
+          <text
+            fill="#F5F0E8"
+            fillOpacity="0.85"
+            fontSize="12.5"
+            fontWeight="bold"
+            fontFamily="var(--font-body)"
+            letterSpacing="0.18em"
+          >
+            <textPath href="#giant-label-top" startOffset="50%" textAnchor="middle">
+              ✦ GAB.IO HI-FI SOUND SYSTEM ✦
+            </textPath>
+          </text>
+
+          {/* Vintage typography printed along bottom arc */}
+          <text
+            fill="#F1A512"
+            fillOpacity="0.9"
+            fontSize="11"
+            fontWeight="bold"
+            fontFamily="var(--font-body)"
+            letterSpacing="0.14em"
+          >
+            <textPath href="#giant-label-bottom" startOffset="50%" textAnchor="middle">
+              ✦ 33⅓ RPM • STEREO • SIDE A ✦
+            </textPath>
+          </text>
+
           {/* Spindle hole */}
           <circle cx="450" cy="450" r="14" fill="#5E001A" />
         </svg>
+
+        {/* Diagonal sheen highlight that sweeps across grooves as record spins */}
+        <div
+          className="absolute inset-0 rounded-full pointer-events-none"
+          style={{
+            background: `
+              conic-gradient(
+                from 25deg at 50% 50%,
+                transparent 0deg,
+                rgba(255, 255, 255, 0.07) 40deg,
+                transparent 80deg,
+                transparent 180deg,
+                rgba(255, 255, 255, 0.07) 220deg,
+                transparent 260deg
+              )
+            `,
+          }}
+        />
       </div>
     </div>
   );
