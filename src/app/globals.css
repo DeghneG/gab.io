@@ -325,6 +325,23 @@ html.lenis,
 }
 
 /* ═══════════════════════════════════════════════════
+   FILM STRIP RAILS DRIFT ANIMATION
+   ═══════════════════════════════════════════════════ */
+
+@keyframes film-strip-drift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(28px);
+  }
+}
+
+.film-drift {
+  animation: film-strip-drift 20s linear infinite;
+}
+
+/* ═══════════════════════════════════════════════════
    REDUCED MOTION
    ═══════════════════════════════════════════════════ */
 

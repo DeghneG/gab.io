@@ -229,9 +229,76 @@ function ProjectCardItem({
 export const PROJECTS_GRID_CONFIG = {
   dotSize: "1.5px", // Circle radius (2px dot)
   gridSpacing: "24px 24px", // Grid cell dimension
-  dotColor: "rgba(140, 0, 39, 0.10)", // Wine #8C0027 at 10% desktop opacity
+  dotColor: "rgba(140, 0, 39, 0.12)", // Wine #8C0027 raised to 12% opacity
   maskFade:
     "radial-gradient(ellipse 55% 60% at 50% 50%, transparent 55%, black 100%)", // Transparent center, solid edges
+};
+
+/**
+ * ───────────────────────────────────────────────────────────
+ * FILM-STRIP RAILS & MARKINGS CONFIGURATION
+ * Tweak these values anytime to customize the pattern!
+ * ───────────────────────────────────────────────────────────
+ */
+export const FILM_RAILS_CONFIG = {
+  stripWidth: 56, // Total width of rail in px
+  cropPercent: 43, // % of strip width shifted off-screen (~40%, leaves 32px visible with 32px clearance at 1280px)
+  holeSize: 14, // Square perforation hole dimension in px
+  holeRadius: 2, // Rounded corner radius in px
+  holePitch: 28, // Vertical spacing / repeat interval in px
+  stripOpacity: 0.1, // Wine band opacity (10%)
+  lineOpacity: 0.12, // Inner border line opacity (12%)
+  markingOpacity: 0.14, // Edge text markings opacity (14%)
+  enableDrift: false, // Optional slow vertical drift (off by default)
+};
+
+/**
+ * ───────────────────────────────────────────────────────────
+ * LARGE MARGIN SHAPES CONFIGURATION
+ * ───────────────────────────────────────────────────────────
+ */
+export const MARGIN_SHAPES_CONFIG = {
+  leftCircleWidth: 460, // Width in px
+  leftCropPercent: 60, // ~60% cropped by left screen edge
+  tealOpacity: 0.22, // 22% teal opacity
+  ringBorderWidth: 4, // 4px ring
+  ringOpacity: 0.18, // 18% wine ring opacity
+  ringOffset: 18, // Offset 18px right and down
+
+  rightMaxRadius: 380, // Outermost radius in px
+  bandThickness: 28, // 28px thickness per band
+  arcOpacity: 0.22, // 22% opacity each (teal, mustard, orange)
+};
+
+/**
+ * ───────────────────────────────────────────────────────────
+ * CONTACT-SHEET FRAMES CONFIGURATION
+ * ───────────────────────────────────────────────────────────
+ */
+export const CONTACT_FRAMES_CONFIG = {
+  borderWidth: 3, // 3px border
+  borderColor: "rgba(140, 0, 39, 0.14)", // 14% wine border
+  borderRadius: 10, // 10px rounded corners
+  frames: [
+    // Frame 1: Left margin lower area, tilted -8deg
+    { width: 120, height: 160, rotate: -8, bottom: "10%", left: "1.5vw" },
+    // Frame 2: Right margin upper area, tilted 5deg
+    { width: 160, height: 110, rotate: 5, top: "28%", right: "1.5vw" },
+    // Frame 3: Right margin lower area, tilted -4deg
+    { width: 110, height: 150, rotate: -4, bottom: "12%", right: "1.5vw" },
+  ],
+};
+
+/**
+ * ───────────────────────────────────────────────────────────
+ * REGISTRATION MARKS CONFIGURATION
+ * ───────────────────────────────────────────────────────────
+ */
+export const REGISTRATION_MARKS_CONFIG = {
+  size: 16, // 16px marks
+  strokeWidth: 1.5, // 1.5px strokes
+  opacity: 0.2, // 20% wine opacity
+  inset: 24, // 24px inset from corners
 };
 
 /**
@@ -250,6 +317,535 @@ function ProjectsDotGrid() {
         WebkitMaskImage: PROJECTS_GRID_CONFIG.maskFade,
       }}
     />
+  );
+}
+
+/**
+ * Large margin shapes:
+ * - Left: 460px teal circle (~60% cropped) + offset 4px wine ring.
+ * - Right: 3 concentric arc bands (teal, mustard, orange) entering from top-right corner.
+ * Scaled to 70% at 1280px-1440px and clamped so they never overlap the content container.
+ */
+function LargeMarginShapes() {
+  const {
+    leftCircleWidth,
+    leftCropPercent,
+    tealOpacity,
+    ringBorderWidth,
+    ringOpacity,
+    ringOffset,
+    rightMaxRadius,
+    bandThickness,
+    arcOpacity,
+  } = MARGIN_SHAPES_CONFIG;
+
+  const leftOffsetPx = (leftCircleWidth * leftCropPercent) / 100;
+
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 z-[2] hidden xl:block select-none overflow-hidden"
+    >
+      {/* ── Left Shape: Teal Circle & Offset Wine Ring ── */}
+      <div
+        className="absolute top-1/2 -translate-y-1/2 scale-70 2xl:scale-100 origin-left max-w-[calc((100vw-1152px)/2-32px)] overflow-hidden transition-transform duration-300"
+        style={{
+          left: `-${leftOffsetPx}px`,
+          width: `${leftCircleWidth + ringOffset}px`,
+          height: `${leftCircleWidth + ringOffset}px`,
+        }}
+      >
+        {/* Solid Teal Circle */}
+        <div
+          className="absolute rounded-full"
+          style={{
+            width: `${leftCircleWidth}px`,
+            height: `${leftCircleWidth}px`,
+            backgroundColor: "#2BAF90",
+            opacity: tealOpacity,
+          }}
+        />
+
+        {/* 4px Wine Ring, offset 18px right and 18px down */}
+        <div
+          className="absolute rounded-full"
+          style={{
+            width: `${leftCircleWidth}px`,
+            height: `${leftCircleWidth}px`,
+            border: `${ringBorderWidth}px solid #8C0027`,
+            opacity: ringOpacity,
+            transform: `translate(${ringOffset}px, ${ringOffset}px)`,
+          }}
+        />
+      </div>
+
+      {/* ── Right Shape: Three Concentric Arc Bands entering from top-right corner ── */}
+      <div
+        className="absolute top-0 right-0 scale-70 2xl:scale-100 origin-top-right max-w-[calc((100vw-1152px)/2-32px)] overflow-hidden transition-transform duration-300"
+        style={{
+          width: `${rightMaxRadius}px`,
+          height: `${rightMaxRadius}px`,
+        }}
+      >
+        <svg
+          className="w-full h-full"
+          width={rightMaxRadius}
+          height={rightMaxRadius}
+          viewBox={`0 0 ${rightMaxRadius} ${rightMaxRadius}`}
+        >
+          {/* Outer arc: Teal */}
+          <circle
+            cx={rightMaxRadius}
+            cy="0"
+            r={rightMaxRadius - bandThickness / 2}
+            stroke="#2BAF90"
+            strokeOpacity={arcOpacity}
+            strokeWidth={bandThickness}
+            fill="none"
+          />
+          {/* Middle arc: Mustard */}
+          <circle
+            cx={rightMaxRadius}
+            cy="0"
+            r={rightMaxRadius - bandThickness * 1.5}
+            stroke="#F1A512"
+            strokeOpacity={arcOpacity}
+            strokeWidth={bandThickness}
+            fill="none"
+          />
+          {/* Inner arc: Orange */}
+          <circle
+            cx={rightMaxRadius}
+            cy="0"
+            r={rightMaxRadius - bandThickness * 2.5}
+            stroke="#DD4111"
+            strokeOpacity={arcOpacity}
+            strokeWidth={bandThickness}
+            fill="none"
+          />
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Contact-Sheet Frames: 3 empty tilted rectangles in the outer margins.
+ * Visible at >= 1440px (2xl:block) where margin width exceeds frame dimensions.
+ */
+function ContactSheetFrames() {
+  const { borderWidth, borderColor, borderRadius, frames } =
+    CONTACT_FRAMES_CONFIG;
+
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 z-[3] hidden 2xl:block select-none overflow-hidden"
+    >
+      {frames.map((frame, idx) => (
+        <div
+          key={idx}
+          className="absolute"
+          style={{
+            width: `${frame.width}px`,
+            height: `${frame.height}px`,
+            border: `${borderWidth}px solid ${borderColor}`,
+            borderRadius: `${borderRadius}px`,
+            transform: `rotate(${frame.rotate}deg)`,
+            top: frame.top,
+            bottom: frame.bottom,
+            left: frame.left,
+            right: frame.right,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/**
+ * Registration Marks: Small crosshair-in-circle marks in the 4 corners of the section.
+ */
+function RegistrationMarks() {
+  const { size, strokeWidth, opacity, inset } = REGISTRATION_MARKS_CONFIG;
+  const half = size / 2;
+  const radius = half - 2;
+
+  const corners = [
+    { style: { top: `${inset}px`, left: `${inset}px` } },
+    { style: { top: `${inset}px`, right: `${inset}px` } },
+    { style: { bottom: `${inset}px`, left: `${inset}px` } },
+    { style: { bottom: `${inset}px`, right: `${inset}px` } },
+  ];
+
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 z-[12] hidden xl:block select-none overflow-hidden"
+    >
+      {corners.map((corner, idx) => (
+        <svg
+          key={idx}
+          className="absolute"
+          style={{ width: `${size}px`, height: `${size}px`, ...corner.style }}
+          viewBox={`0 0 ${size} ${size}`}
+        >
+          <circle
+            cx={half}
+            cy={half}
+            r={radius}
+            stroke="#8C0027"
+            strokeOpacity={opacity}
+            strokeWidth={strokeWidth}
+            fill="none"
+          />
+          <line
+            x1="1"
+            y1={half}
+            x2={size - 1}
+            y2={half}
+            stroke="#8C0027"
+            strokeOpacity={opacity}
+            strokeWidth={strokeWidth}
+          />
+          <line
+            x1={half}
+            y1="1"
+            x2={half}
+            y2={size - 1}
+            stroke="#8C0027"
+            strokeOpacity={opacity}
+            strokeWidth={strokeWidth}
+          />
+        </svg>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * Film-strip rails background decoration with printed edge markings.
+ * Visible only at >= 1280px (xl:block) to guarantee at least 32px clearance from content.
+ */
+function FilmStripRails() {
+  const {
+    stripWidth,
+    cropPercent,
+    holeSize,
+    holeRadius,
+    holePitch,
+    stripOpacity,
+    lineOpacity,
+    markingOpacity,
+    enableDrift,
+  } = FILM_RAILS_CONFIG;
+
+  const holeX = (stripWidth - holeSize) / 2;
+  const holeY = (holePitch - holeSize) / 2;
+
+  // Center coordinate for edge markings on inner side of strips
+  const leftMarkX = 45; // inner side on left rail
+  const rightMarkX = 11; // inner side on right rail
+
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 z-10 hidden xl:block select-none overflow-hidden"
+    >
+      {/* ── Left Film Strip Rail ── */}
+      <div
+        className="absolute top-0 bottom-0 left-0"
+        style={{
+          width: `${stripWidth}px`,
+          transform: `translateX(-${cropPercent}%)`,
+        }}
+      >
+        <svg
+          className="w-full h-full"
+          width={stripWidth}
+          height="100%"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <pattern
+              id="film-hole-pattern-left"
+              width={stripWidth}
+              height={holePitch}
+              patternUnits="userSpaceOnUse"
+            >
+              <rect
+                x={holeX}
+                y={holeY}
+                width={holeSize}
+                height={holeSize}
+                rx={holeRadius}
+                ry={holeRadius}
+                fill="black"
+              />
+            </pattern>
+            <mask id="film-mask-left">
+              <rect width="100%" height="100%" fill="white" />
+              <rect
+                width="100%"
+                height="100%"
+                fill="url(#film-hole-pattern-left)"
+                className={enableDrift ? "film-drift" : ""}
+              />
+            </mask>
+
+            {/* 8-hole repeating cycle (224px) for frame markings & arrow */}
+            <pattern
+              id="film-markings-pattern-left"
+              width={stripWidth}
+              height={224}
+              patternUnits="userSpaceOnUse"
+            >
+              {/* Reads upward (rotate -90) beside every second hole */}
+              <text
+                x={leftMarkX}
+                y="14"
+                fill="#8C0027"
+                fillOpacity={markingOpacity}
+                fontSize="10"
+                fontFamily="var(--font-body)"
+                textAnchor="middle"
+                dominantBaseline="central"
+                transform={`rotate(-90 ${leftMarkX} 14)`}
+              >
+                12
+              </text>
+              <text
+                x={leftMarkX}
+                y="70"
+                fill="#8C0027"
+                fillOpacity={markingOpacity}
+                fontSize="10"
+                fontFamily="var(--font-body)"
+                textAnchor="middle"
+                dominantBaseline="central"
+                transform={`rotate(-90 ${leftMarkX} 70)`}
+              >
+                12A
+              </text>
+              <text
+                x={leftMarkX}
+                y="126"
+                fill="#8C0027"
+                fillOpacity={markingOpacity}
+                fontSize="10"
+                fontFamily="var(--font-body)"
+                textAnchor="middle"
+                dominantBaseline="central"
+                transform={`rotate(-90 ${leftMarkX} 126)`}
+              >
+                13
+              </text>
+              {/* Triangle arrow marker beside hole 4 */}
+              <text
+                x={leftMarkX}
+                y="104"
+                fill="#8C0027"
+                fillOpacity={markingOpacity}
+                fontSize="8"
+                fontFamily="var(--font-body)"
+                textAnchor="middle"
+                dominantBaseline="central"
+                transform={`rotate(-90 ${leftMarkX} 104)`}
+              >
+                ▶
+              </text>
+              <text
+                x={leftMarkX}
+                y="182"
+                fill="#8C0027"
+                fillOpacity={markingOpacity}
+                fontSize="10"
+                fontFamily="var(--font-body)"
+                textAnchor="middle"
+                dominantBaseline="central"
+                transform={`rotate(-90 ${leftMarkX} 182)`}
+              >
+                13A
+              </text>
+            </pattern>
+          </defs>
+
+          {/* Flat wine band with cutout perforation holes */}
+          <rect
+            width="100%"
+            height="100%"
+            fill="#8C0027"
+            fillOpacity={stripOpacity}
+            mask="url(#film-mask-left)"
+          />
+
+          {/* Printed edge markings on inner side */}
+          <rect
+            width="100%"
+            height="100%"
+            fill="url(#film-markings-pattern-left)"
+          />
+
+          {/* Thin 2px inner border line */}
+          <line
+            x1={stripWidth - 1}
+            y1="0"
+            x2={stripWidth - 1}
+            y2="100%"
+            stroke="#8C0027"
+            strokeOpacity={lineOpacity}
+            strokeWidth="2"
+          />
+        </svg>
+      </div>
+
+      {/* ── Right Film Strip Rail ── */}
+      <div
+        className="absolute top-0 bottom-0 right-0"
+        style={{
+          width: `${stripWidth}px`,
+          transform: `translateX(${cropPercent}%)`,
+        }}
+      >
+        <svg
+          className="w-full h-full"
+          width={stripWidth}
+          height="100%"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <pattern
+              id="film-hole-pattern-right"
+              width={stripWidth}
+              height={holePitch}
+              patternUnits="userSpaceOnUse"
+            >
+              <rect
+                x={holeX}
+                y={holeY}
+                width={holeSize}
+                height={holeSize}
+                rx={holeRadius}
+                ry={holeRadius}
+                fill="black"
+              />
+            </pattern>
+            <mask id="film-mask-right">
+              <rect width="100%" height="100%" fill="white" />
+              <rect
+                width="100%"
+                height="100%"
+                fill="url(#film-hole-pattern-right)"
+                className={enableDrift ? "film-drift" : ""}
+              />
+            </mask>
+
+            {/* 8-hole repeating cycle (224px) for frame markings & arrow */}
+            <pattern
+              id="film-markings-pattern-right"
+              width={stripWidth}
+              height={224}
+              patternUnits="userSpaceOnUse"
+            >
+              {/* Reads downward (rotate 90) beside every second hole */}
+              <text
+                x={rightMarkX}
+                y="14"
+                fill="#8C0027"
+                fillOpacity={markingOpacity}
+                fontSize="10"
+                fontFamily="var(--font-body)"
+                textAnchor="middle"
+                dominantBaseline="central"
+                transform={`rotate(90 ${rightMarkX} 14)`}
+              >
+                12
+              </text>
+              <text
+                x={rightMarkX}
+                y="70"
+                fill="#8C0027"
+                fillOpacity={markingOpacity}
+                fontSize="10"
+                fontFamily="var(--font-body)"
+                textAnchor="middle"
+                dominantBaseline="central"
+                transform={`rotate(90 ${rightMarkX} 70)`}
+              >
+                12A
+              </text>
+              <text
+                x={rightMarkX}
+                y="126"
+                fill="#8C0027"
+                fillOpacity={markingOpacity}
+                fontSize="10"
+                fontFamily="var(--font-body)"
+                textAnchor="middle"
+                dominantBaseline="central"
+                transform={`rotate(90 ${rightMarkX} 126)`}
+              >
+                13
+              </text>
+              {/* Triangle arrow marker beside hole 4 */}
+              <text
+                x={rightMarkX}
+                y="104"
+                fill="#8C0027"
+                fillOpacity={markingOpacity}
+                fontSize="8"
+                fontFamily="var(--font-body)"
+                textAnchor="middle"
+                dominantBaseline="central"
+                transform={`rotate(90 ${rightMarkX} 104)`}
+              >
+                ▶
+              </text>
+              <text
+                x={rightMarkX}
+                y="182"
+                fill="#8C0027"
+                fillOpacity={markingOpacity}
+                fontSize="10"
+                fontFamily="var(--font-body)"
+                textAnchor="middle"
+                dominantBaseline="central"
+                transform={`rotate(90 ${rightMarkX} 182)`}
+              >
+                13A
+              </text>
+            </pattern>
+          </defs>
+
+          {/* Flat wine band with cutout perforation holes */}
+          <rect
+            width="100%"
+            height="100%"
+            fill="#8C0027"
+            fillOpacity={stripOpacity}
+            mask="url(#film-mask-right)"
+          />
+
+          {/* Printed edge markings on inner side */}
+          <rect
+            width="100%"
+            height="100%"
+            fill="url(#film-markings-pattern-right)"
+          />
+
+          {/* Thin 2px inner border line */}
+          <line
+            x1="1"
+            y1="0"
+            x2="1"
+            y2="100%"
+            stroke="#8C0027"
+            strokeOpacity={lineOpacity}
+            strokeWidth="2"
+          />
+        </svg>
+      </div>
+    </div>
   );
 }
 
@@ -313,8 +909,20 @@ export default function Projects() {
         style={{ height: "14px" }}
       />
 
-      {/* ── 2. Blueprint dot grid layer ───────────────── */}
+      {/* ── 1. Blueprint dot grid layer (z-0) ───────── */}
       <ProjectsDotGrid />
+
+      {/* ── 2. Large margin shapes (z-[2]) ────────── */}
+      <LargeMarginShapes />
+
+      {/* ── 3. Contact-sheet frames (z-[3]) ───────── */}
+      <ContactSheetFrames />
+
+      {/* ── 4. Film-strip rails with markings (z-10) ─ */}
+      <FilmStripRails />
+
+      {/* ── 5. Registration marks (z-[12]) ────────── */}
+      <RegistrationMarks />
 
       <div className="relative z-30 mx-auto max-w-6xl w-full px-6 md:px-8">
         {/* Section heading */}
