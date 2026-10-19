@@ -221,71 +221,35 @@ function ProjectCardItem({
 }
 
 /**
- * Subtle hand-drawn contour hill cluster behind the projects grid.
- * Concentric irregular rings centered behind the cards, extending into margins and gaps.
+ * ───────────────────────────────────────────────────────────
+ * BLUEPRINT DOT GRID CONFIGURATION
+ * Tweak these values anytime to customize the pattern!
+ * ───────────────────────────────────────────────────────────
  */
-function ProjectsContourHill() {
+export const PROJECTS_GRID_CONFIG = {
+  dotSize: "1.5px", // Circle radius (2px dot)
+  gridSpacing: "24px 24px", // Grid cell dimension
+  dotColor: "rgba(140, 0, 39, 0.10)", // Wine #8C0027 at 10% desktop opacity
+  maskFade:
+    "radial-gradient(ellipse 55% 60% at 50% 50%, transparent 55%, black 100%)", // Transparent center, solid edges
+};
+
+/**
+ * Blueprint-style dot grid background for the Projects section.
+ * Small wine dots on a 24px grid, masked so the central card area remains clean mint.
+ */
+function ProjectsDotGrid() {
   return (
     <div
       aria-hidden="true"
-      className="hidden md:block pointer-events-none absolute left-1/2 top-[58%] -translate-x-1/2 -translate-y-1/2 w-[1400px] max-w-none h-[900px] z-0 overflow-hidden"
+      className="pointer-events-none absolute inset-0 z-0 opacity-70 md:opacity-100"
       style={{
-        maskImage: "radial-gradient(ellipse at center, black 50%, transparent 90%)",
-        WebkitMaskImage: "radial-gradient(ellipse at center, black 50%, transparent 90%)",
+        backgroundImage: `radial-gradient(circle, ${PROJECTS_GRID_CONFIG.dotColor} ${PROJECTS_GRID_CONFIG.dotSize}, transparent ${PROJECTS_GRID_CONFIG.dotSize})`,
+        backgroundSize: PROJECTS_GRID_CONFIG.gridSpacing,
+        maskImage: PROJECTS_GRID_CONFIG.maskFade,
+        WebkitMaskImage: PROJECTS_GRID_CONFIG.maskFade,
       }}
-    >
-      <svg
-        viewBox="0 0 1400 900"
-        fill="none"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-full h-full"
-      >
-        {/* Ring 1 (innermost) — Wine 8% */}
-        <path
-          d="M700,380 C745,378 780,412 775,455 C770,498 740,530 698,528 C656,526 625,492 628,450 C631,408 658,382 700,380 Z"
-          stroke="#8C0027"
-          strokeOpacity="0.08"
-        />
-        {/* Ring 2 — Wine 8% */}
-        <path
-          d="M700,320 C775,316 835,376 830,455 C825,534 765,585 695,582 C625,579 568,524 572,448 C576,372 624,324 700,320 Z"
-          stroke="#8C0027"
-          strokeOpacity="0.08"
-        />
-        {/* Ring 3 — Single Accent: Mustard 35% */}
-        <path
-          d="M702,250 C815,245 905,340 900,455 C895,570 805,650 692,648 C578,646 498,560 502,445 C506,330 590,255 702,250 Z"
-          stroke="#F1A512"
-          strokeOpacity="0.35"
-        />
-        {/* Ring 4 — Wine 8% */}
-        <path
-          d="M698,175 C855,170 985,295 980,455 C975,615 855,730 690,725 C525,720 415,600 420,442 C425,285 540,180 698,175 Z"
-          stroke="#8C0027"
-          strokeOpacity="0.08"
-        />
-        {/* Ring 5 — Wine 8% */}
-        <path
-          d="M705,100 C900,95 1065,255 1060,455 C1055,655 895,815 688,810 C480,805 332,648 338,445 C344,242 510,105 705,100 Z"
-          stroke="#8C0027"
-          strokeOpacity="0.08"
-        />
-        {/* Ring 6 — Wine 8% */}
-        <path
-          d="M700,20 C945,15 1150,215 1145,455 C1140,695 935,895 685,890 C435,885 248,690 255,445 C262,200 455,25 700,20 Z"
-          stroke="#8C0027"
-          strokeOpacity="0.08"
-        />
-        {/* Ring 7 (outermost) — Wine 8% */}
-        <path
-          d="M695,-60 C990,-65 1235,175 1230,455 C1225,735 975,980 680,975 C385,970 160,735 168,445 C175,155 400,-55 695,-60 Z"
-          stroke="#8C0027"
-          strokeOpacity="0.08"
-        />
-      </svg>
-    </div>
+    />
   );
 }
 
@@ -349,8 +313,8 @@ export default function Projects() {
         style={{ height: "14px" }}
       />
 
-      {/* ── 2. Contour hill cluster behind the grid ───── */}
-      <ProjectsContourHill />
+      {/* ── 2. Blueprint dot grid layer ───────────────── */}
+      <ProjectsDotGrid />
 
       <div className="relative z-30 mx-auto max-w-6xl w-full px-6 md:px-8">
         {/* Section heading */}
