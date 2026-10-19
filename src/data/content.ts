@@ -70,12 +70,12 @@ export const projects: Project[] = [
 export interface Skill {
   name: string;
   /** Accent color token name from the palette */
-  color: "teal" | "mustard" | "orange" | "wine";
+  color: "teal" | "mustard" | "orange" | "wine" | "mint";
 }
 
 export interface SkillCategory {
   category: string;
-  accent: "teal" | "mustard" | "orange" | "wine";
+  accent: "teal" | "mustard" | "orange" | "wine" | "mint";
   skills: Skill[];
 }
 
@@ -87,40 +87,34 @@ export const skillCategories: SkillCategory[] = [
       { name: "React", color: "teal" },
       { name: "Next.js", color: "mustard" },
       { name: "TypeScript", color: "orange" },
-      { name: "Tailwind CSS", color: "teal" },
+      { name: "Tailwind CSS", color: "mint" },
     ],
   },
   {
     category: "Backend",
     accent: "mustard",
     skills: [
-      { name: "Python", color: "wine" },
-      { name: "Supabase", color: "teal" },
-    ],
-  },
-  {
-    category: "CMS",
-    accent: "orange",
-    skills: [
+      { name: "Python", color: "teal" },
+      { name: "Supabase", color: "mustard" },
       { name: "WordPress", color: "orange" },
     ],
   },
   {
     category: "Developer Tools",
-    accent: "mustard",
+    accent: "orange",
     skills: [
       { name: "GitHub", color: "mustard" },
-      { name: "Vercel", color: "mustard" },
+      { name: "Vercel", color: "mint" },
       { name: "Canva", color: "orange" },
     ],
   },
   {
     category: "AIs",
-    accent: "teal",
+    accent: "mint",
     skills: [
       { name: "Claude", color: "teal" },
       { name: "ChatGPT", color: "mustard" },
-      { name: "Gemini", color: "wine" },
+      { name: "Gemini", color: "mint" },
     ],
   },
 ];

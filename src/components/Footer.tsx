@@ -13,7 +13,7 @@ if (typeof window !== "undefined") {
 const FOOTER_LINKS = [
   { label: "Projects", href: "#projects" },
   { label: "Technology Stack", href: "#skills" },
-  { label: "About", href: "#hero" },
+  { label: "Experience", href: "#experience" },
   { label: "Contact", href: "#contact" },
 ] as const;
 
