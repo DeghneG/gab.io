@@ -41,7 +41,7 @@ export default function Hero() {
   const starStickerRef = useRef<HTMLDivElement>(null);
   const cloudsRef = useRef<(HTMLDivElement | null)[]>([]);
   const photoTimelineRef = useRef<gsap.core.Timeline | null>(null);
-  const [isCasualActive, setIsCasualActive] = useState(false);
+  const hoverCueRef = useRef<HTMLDivElement>(null);
 
   /* ── No sunburst rotation — fully static ────────── */
 
@@ -52,59 +52,61 @@ export default function Hero() {
 
     /* Setup Photo Hover Slide-Down Timeline */
     if (formalPhotoRef.current && casualPhotoRef.current) {
-      // Set initial state for comic cloud puffs
+      // Set initial states for clean GSAP transitions
       cloudsRef.current.forEach((cloud) => {
         if (cloud) gsap.set(cloud, { scale: 0, opacity: 0 });
       });
 
-      if (prefersReduced) {
-        gsap.set(formalPhotoRef.current, { yPercent: 0 });
-        gsap.set(casualPhotoRef.current, { yPercent: 0, opacity: 0 });
-        const tl = gsap.timeline({
-          paused: true,
-          onStart: () => setIsCasualActive(true),
-          onReverseComplete: () => setIsCasualActive(false),
+      if (photoFrameRef.current) {
+        gsap.set(photoFrameRef.current, {
+          rotate: -3,
+          y: 0,
+          transformOrigin: "center center",
         });
-        tl.to(formalPhotoRef.current, { opacity: 0, duration: 0.2 }, 0);
-        tl.to(casualPhotoRef.current, { opacity: 1, duration: 0.2 }, 0);
+      }
+
+      if (starStickerRef.current) {
+        gsap.set(starStickerRef.current, {
+          rotate: 12,
+          scale: 1,
+          transformOrigin: "center center",
+        });
+      }
+
+      if (prefersReduced) {
+        gsap.set(formalPhotoRef.current, { opacity: 1 });
+        gsap.set(casualPhotoRef.current, { yPercent: 0, y: 0, opacity: 0 });
+        const tl = gsap.timeline({ paused: true });
+        tl.to(formalPhotoRef.current, { opacity: 0, duration: 0.25 }, 0);
+        tl.to(casualPhotoRef.current, { opacity: 1, duration: 0.25 }, 0);
+        if (hoverCueRef.current) {
+          tl.to(hoverCueRef.current, { opacity: 0, duration: 0.2 }, 0);
+        }
         const validClouds = cloudsRef.current.filter(Boolean);
         if (validClouds.length > 0) {
-          tl.to(validClouds, { scale: 1, opacity: 1, duration: 0.2 }, 0);
+          tl.to(validClouds, { scale: 1, opacity: 1, duration: 0.25 }, 0);
         }
         photoTimelineRef.current = tl;
       } else {
-        gsap.set(formalPhotoRef.current, { yPercent: 0 });
-        gsap.set(casualPhotoRef.current, { yPercent: -100 });
+        // Casual photo starts shifted up, wiper strip completely hidden above top
+        gsap.set(formalPhotoRef.current, { yPercent: 0, y: 0 });
+        gsap.set(casualPhotoRef.current, { yPercent: -100, y: -20 });
 
         const tl = gsap.timeline({
           paused: true,
-          onStart: () => setIsCasualActive(true),
-          onReverseComplete: () => setIsCasualActive(false),
         });
 
-        // 1. Photo frame cartoon squash & stretch into elevated tilt
+        // 1. Photo frame smooth lift & subtle tilt alignment
         if (photoFrameRef.current) {
           tl.to(
             photoFrameRef.current,
             {
-              scaleX: 1.05,
-              scaleY: 0.95,
-              duration: 0.1,
+              rotate: -1,
+              y: -6,
+              duration: 0.45,
               ease: "power2.out",
             },
             0
-          ).to(
-            photoFrameRef.current,
-            {
-              scaleX: 1,
-              scaleY: 1,
-              rotate: -1,
-              y: -5,
-              boxShadow: "8px 8px 0 0 #8C0027",
-              duration: 0.4,
-              ease: "elastic.out(1.2, 0.4)",
-            },
-            0.1
           );
         }
 
@@ -116,11 +118,11 @@ export default function Hero() {
             {
               scale: 1,
               opacity: 1,
-              duration: 0.45,
-              stagger: 0.04,
-              ease: "back.out(2.2)",
+              duration: 0.38,
+              stagger: 0.025,
+              ease: "back.out(1.8)",
             },
-            0.02
+            0.04
           );
         }
 
@@ -129,36 +131,50 @@ export default function Hero() {
           tl.to(
             starStickerRef.current,
             {
-              rotate: 32,
-              scale: 1.25,
-              duration: 0.45,
-              ease: "back.out(2.5)",
+              rotate: 28,
+              scale: 1.18,
+              duration: 0.4,
+              ease: "back.out(2)",
             },
             0.04
           );
         }
 
-        // 4. Formal photo slides down and exits at bottom
+        // 4. Photos slide in perfect synchronized wipe
         tl.to(
           formalPhotoRef.current,
           {
             yPercent: 100,
-            duration: 0.65,
-            ease: "power3.inOut",
+            y: 20,
+            duration: 0.52,
+            ease: "power2.inOut",
           },
           0
         );
 
-        // 5. Casual photo slides down into the frame from top
         tl.to(
           casualPhotoRef.current,
           {
             yPercent: 0,
-            duration: 0.65,
-            ease: "power3.out",
+            y: 0,
+            duration: 0.52,
+            ease: "power2.inOut",
           },
           0
         );
+
+        // 5. Fade out the "Hover me" cue smoothly
+        if (hoverCueRef.current) {
+          tl.to(
+            hoverCueRef.current,
+            {
+              opacity: 0,
+              duration: 0.2,
+              ease: "power2.out",
+            },
+            0
+          );
+        }
 
         photoTimelineRef.current = tl;
       }
@@ -220,22 +236,22 @@ export default function Hero() {
 
   const handlePhotoMouseEnter = () => {
     if (photoTimelineRef.current) {
-      photoTimelineRef.current.play();
+      photoTimelineRef.current.timeScale(1).play();
     }
   };
 
   const handlePhotoMouseLeave = () => {
     if (photoTimelineRef.current) {
-      photoTimelineRef.current.reverse();
+      photoTimelineRef.current.timeScale(1.35).reverse();
     }
   };
 
   const handlePhotoClick = () => {
     if (!photoTimelineRef.current) return;
-    if (photoTimelineRef.current.progress() === 0) {
-      photoTimelineRef.current.play();
+    if (photoTimelineRef.current.progress() < 0.5) {
+      photoTimelineRef.current.timeScale(1).play();
     } else {
-      photoTimelineRef.current.reverse();
+      photoTimelineRef.current.timeScale(1.35).reverse();
     }
   };
 
@@ -307,7 +323,21 @@ export default function Hero() {
         className="relative z-30 mx-auto max-w-7xl w-full px-6 md:px-8 flex flex-col gap-8 md:flex-row md:items-center md:gap-14 lg:gap-16 gsap-hero-card"
       >
         {/* Photo — tilted polaroid frame with interactive hover reveal */}
-        <div className="shrink-0 self-start relative select-none">
+        <div
+          className="shrink-0 self-start relative select-none group cursor-pointer"
+          onMouseEnter={handlePhotoMouseEnter}
+          onMouseLeave={handlePhotoMouseLeave}
+          onClick={handlePhotoClick}
+          role="button"
+          tabIndex={0}
+          aria-label="Portrait photo of Gabriel - hover to reveal casual photo"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              handlePhotoClick();
+            }
+          }}
+        >
           {/* ── Retro Comic Cloud Puffs (Pop out on hover) ── */}
           <div aria-hidden="true" className="absolute inset-0 pointer-events-none z-0">
             {/* Cloud 1: Top-Left (Chunky 4-bubble puff) */}
@@ -315,7 +345,7 @@ export default function Hero() {
               ref={(el) => {
                 cloudsRef.current[0] = el;
               }}
-              className="absolute -top-7 -left-10 w-20 md:w-24 -rotate-12 origin-bottom-right"
+              className="absolute -top-7 -left-10 w-20 md:w-24 -rotate-12 origin-bottom-right scale-0 opacity-0 pointer-events-none will-change-transform"
               style={{ filter: "drop-shadow(4px 4px 0 #8C0027)" }}
             >
               <svg viewBox="0 0 100 70" fill="none" className="w-full h-auto">
@@ -348,7 +378,7 @@ export default function Hero() {
               ref={(el) => {
                 cloudsRef.current[1] = el;
               }}
-              className="absolute -top-7 -right-8 w-18 md:w-22 rotate-8 origin-bottom-left"
+              className="absolute -top-7 -right-8 w-18 md:w-22 rotate-8 origin-bottom-left scale-0 opacity-0 pointer-events-none will-change-transform"
               style={{ filter: "drop-shadow(4px 4px 0 #8C0027)" }}
             >
               <svg viewBox="0 0 85 65" fill="none" className="w-full h-auto">
@@ -374,7 +404,7 @@ export default function Hero() {
               ref={(el) => {
                 cloudsRef.current[2] = el;
               }}
-              className="absolute top-[38%] -left-9 w-14 md:w-16 -rotate-6 origin-right"
+              className="absolute top-[38%] -left-9 w-14 md:w-16 -rotate-6 origin-right scale-0 opacity-0 pointer-events-none will-change-transform"
               style={{ filter: "drop-shadow(3px 3px 0 #8C0027)" }}
             >
               <svg viewBox="0 0 65 55" fill="none" className="w-full h-auto">
@@ -400,7 +430,7 @@ export default function Hero() {
               ref={(el) => {
                 cloudsRef.current[3] = el;
               }}
-              className="absolute -bottom-6 -right-7 w-20 md:w-24 rotate-12 origin-top-left"
+              className="absolute -bottom-6 -right-7 w-20 md:w-24 rotate-12 origin-top-left scale-0 opacity-0 pointer-events-none will-change-transform"
               style={{ filter: "drop-shadow(4px 4px 0 #8C0027)" }}
             >
               <svg viewBox="0 0 95 70" fill="none" className="w-full h-auto">
@@ -433,7 +463,7 @@ export default function Hero() {
               ref={(el) => {
                 cloudsRef.current[4] = el;
               }}
-              className="absolute -top-9 left-[40%] w-6 h-6 rotate-12 origin-center"
+              className="absolute -top-9 left-[40%] w-6 h-6 rotate-12 origin-center scale-0 opacity-0 pointer-events-none will-change-transform"
               style={{ filter: "drop-shadow(2px 2px 0 #8C0027)" }}
             >
               <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
@@ -452,7 +482,7 @@ export default function Hero() {
               ref={(el) => {
                 cloudsRef.current[5] = el;
               }}
-              className="absolute top-[26%] -right-7 w-5 h-5 -rotate-12 origin-center"
+              className="absolute top-[26%] -right-7 w-5 h-5 -rotate-12 origin-center scale-0 opacity-0 pointer-events-none will-change-transform"
               style={{ filter: "drop-shadow(2px 2px 0 #8C0027)" }}
             >
               <svg viewBox="0 0 20 20" fill="none" className="w-full h-full">
@@ -470,32 +500,24 @@ export default function Hero() {
           {/* Polaroid container */}
           <div
             ref={photoFrameRef}
-            onMouseEnter={handlePhotoMouseEnter}
-            onMouseLeave={handlePhotoMouseLeave}
-            onClick={handlePhotoClick}
             className="
               relative z-10
               w-44 h-56 md:w-56 md:h-72
               rounded-3xl
               border-4 border-wine
               bg-cream overflow-hidden
-              -rotate-3 cursor-pointer group
+              shadow-[6px_6px_0_0_#8C0027] group-hover:shadow-[10px_10px_0_0_#8C0027]
+              transition-[box-shadow] duration-300
+              will-change-transform
             "
-            style={{ boxShadow: "6px 6px 0 0 #8C0027" }}
-            aria-label="Portrait photo of Gabriel - hover to reveal casual photo"
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                handlePhotoClick();
-              }
+            style={{
+              WebkitMaskImage: "-webkit-radial-gradient(white, black)",
             }}
           >
             {/* 1. Formal Photo Layer (Default view: formal.png) */}
             <div
               ref={formalPhotoRef}
-              className="absolute inset-0 w-full h-full will-change-transform z-10"
+              className="absolute inset-0 w-full h-full will-change-transform z-10 pointer-events-none select-none"
             >
               <Image
                 src={siteConfig.heroPhoto}
@@ -510,7 +532,7 @@ export default function Hero() {
             {/* 2. Casual Photo Layer (Slides down on hover: DSC03695.JPG) */}
             <div
               ref={casualPhotoRef}
-              className="absolute inset-0 w-full h-full will-change-transform z-20"
+              className="absolute inset-0 w-full h-full will-change-transform z-20 pointer-events-none select-none"
             >
               <Image
                 src={siteConfig.casualPhoto}
@@ -527,12 +549,10 @@ export default function Hero() {
               />
             </div>
 
-
-            {/* 4. Subtle hover cue label (bottom pill) */}
+            {/* 3. Subtle hover cue label (bottom pill) */}
             <div
-              className={`absolute bottom-2.5 left-1/2 -translate-x-1/2 z-30 pointer-events-none px-2 py-0.5 rounded-full bg-wine/85 text-cream text-[9px] uppercase font-bold tracking-widest transition-opacity duration-300 ${
-                isCasualActive ? "opacity-0" : "opacity-80 group-hover:opacity-100"
-              }`}
+              ref={hoverCueRef}
+              className="absolute bottom-2.5 left-1/2 -translate-x-1/2 z-30 pointer-events-none px-2 py-0.5 rounded-full bg-wine/85 text-cream text-[9px] uppercase font-bold tracking-widest opacity-80 group-hover:opacity-100 transition-opacity duration-200"
               style={{ fontFamily: "var(--font-body)" }}
             >
               Hover me ▾
