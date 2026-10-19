@@ -14,15 +14,9 @@ export default function SmoothScrollProvider({
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    // Respect OS reduced motion preference
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (prefersReducedMotion) return;
+    if (typeof window === "undefined") return;
 
-    if (typeof window !== "undefined") {
-      gsap.registerPlugin(ScrollTrigger);
-    }
+    gsap.registerPlugin(ScrollTrigger);
 
     const lenis = new Lenis({
       duration: 1.2,
@@ -32,9 +26,11 @@ export default function SmoothScrollProvider({
       smoothWheel: true,
       wheelMultiplier: 1.0,
       touchMultiplier: 1.5,
+      autoRaf: false,
     });
 
     lenisRef.current = lenis;
+    (window as unknown as { lenis?: Lenis }).lenis = lenis;
 
     // Synchronize Lenis scroll updates directly with GSAP ScrollTrigger
     lenis.on("scroll", ScrollTrigger.update);

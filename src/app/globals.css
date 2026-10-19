@@ -93,7 +93,6 @@
 
   html {
     @apply font-body;
-    scroll-behavior: smooth;
     scrollbar-gutter: stable;
   }
 
@@ -306,6 +305,8 @@ html.lenis body {
   height: auto;
 }
 
+html.lenis,
+.lenis,
 .lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }

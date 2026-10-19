@@ -31,7 +31,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${shrikhand.variable} ${specialElite.variable} h-full`}
+      className={`${shrikhand.variable} ${specialElite.variable}`}
     >
       <body className="min-h-dvh flex flex-col antialiased">
         {/* Film grain / paper texture overlay */}
