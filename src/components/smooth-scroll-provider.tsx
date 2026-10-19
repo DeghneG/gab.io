@@ -19,31 +19,24 @@ export default function SmoothScrollProvider({
     gsap.registerPlugin(ScrollTrigger);
 
     const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // smooth exponential momentum ease
-      orientation: "vertical",
-      gestureOrientation: "vertical",
+      lerp: 0.09,
       smoothWheel: true,
       wheelMultiplier: 1.0,
       touchMultiplier: 1.5,
-      autoRaf: false,
+      syncTouch: true,
+      respectReducedMotion: false,
+      autoRaf: true,
     });
 
     lenisRef.current = lenis;
     (window as unknown as { lenis?: Lenis }).lenis = lenis;
 
     // Synchronize Lenis scroll updates directly with GSAP ScrollTrigger
-    lenis.on("scroll", ScrollTrigger.update);
+    lenis.on("scroll", () => {
+      ScrollTrigger.update();
+    });
 
-    // Drive Lenis from GSAP's internal 60/120fps requestAnimationFrame ticker
-    const updateTicker = (time: number) => {
-      lenis.raf(time * 1000);
-    };
-
-    gsap.ticker.add(updateTicker);
-    gsap.ticker.lagSmoothing(0);
-
-    // Smoothly intercept in-page anchor links (e.g., #projects, #skills, #contact)
+    // Smoothly intercept in-page anchor links (e.g., #projects, #skills, #experience, #contact)
     const handleAnchorClick = (e: MouseEvent) => {
       const target = (e.target as HTMLElement).closest("a");
       if (!target) return;
@@ -54,9 +47,8 @@ export default function SmoothScrollProvider({
           e.preventDefault();
           lenis.scrollTo(targetElement as HTMLElement, {
             offset: -80, // account for 64px fixed navbar + breathing room
-            duration: 1.3,
+            duration: 1.2,
           });
-          // Update URL hash without jumping
           window.history.pushState(null, "", href);
         }
       }
@@ -66,7 +58,6 @@ export default function SmoothScrollProvider({
 
     return () => {
       document.removeEventListener("click", handleAnchorClick);
-      gsap.ticker.remove(updateTicker);
       lenis.destroy();
       lenisRef.current = null;
     };
