@@ -373,7 +373,7 @@ export default function Hero() {
               </svg>
             </div>
 
-            {/* Cloud 2: Top-Right (Mint pastel accent puff) */}
+            {/* Cloud 2: Top-Right (Cream comic puff) */}
             <div
               ref={(el) => {
                 cloudsRef.current[1] = el;
@@ -384,7 +384,7 @@ export default function Hero() {
               <svg viewBox="0 0 85 65" fill="none" className="w-full h-auto">
                 <path
                   d="M 18 48 C 8 48, 4 36, 12 26 C 8 14, 22 8, 34 12 C 44 4, 64 6, 70 18 C 82 20, 84 34, 76 44 C 78 52, 68 60, 56 58 C 45 62, 30 60, 24 52 C 20 52, 18 50, 18 48 Z"
-                  fill="#C8E4CF"
+                  fill="#F5F0E8"
                   stroke="#8C0027"
                   strokeWidth="3.5"
                   strokeLinejoin="round"
@@ -477,20 +477,20 @@ export default function Hero() {
               </svg>
             </div>
 
-            {/* Sparkle 2: Right Teal Star */}
+            {/* Sparkle 2: Right Orange Star */}
             <div
               ref={(el) => {
                 cloudsRef.current[5] = el;
               }}
-              className="absolute top-[26%] -right-7 w-5 h-5 -rotate-12 origin-center scale-0 opacity-0 pointer-events-none will-change-transform"
+              className="absolute top-[26%] -right-8 w-6 h-6 -rotate-12 origin-center scale-0 opacity-0 pointer-events-none will-change-transform"
               style={{ filter: "drop-shadow(2px 2px 0 #8C0027)" }}
             >
-              <svg viewBox="0 0 20 20" fill="none" className="w-full h-full">
+              <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
                 <path
-                  d="M 10 1.5 L 12 8 L 18.5 10 L 12 12 L 10 18.5 L 8 12 L 1.5 10 L 8 8 Z"
-                  fill="#2BAF90"
+                  d="M 12 2 L 14.5 9.5 L 22 12 L 14.5 14.5 L 12 22 L 9.5 14.5 L 2 12 L 9.5 9.5 Z"
+                  fill="#DD4111"
                   stroke="#8C0027"
-                  strokeWidth="2"
+                  strokeWidth="2.5"
                   strokeLinejoin="round"
                 />
               </svg>
