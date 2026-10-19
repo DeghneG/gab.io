@@ -293,15 +293,15 @@ function LargeMarginShapes() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 z-[2] hidden xl:block select-none overflow-hidden"
+      className="pointer-events-none absolute inset-0 z-[2] hidden xl:block select-none"
     >
       {/* ── Left Shape: Teal Circle & Offset Wine Ring ── */}
       <div
-        className="absolute top-1/2 -translate-y-1/2 scale-70 2xl:scale-100 origin-left max-w-[calc((100vw-1152px)/2-32px)] overflow-hidden transition-transform duration-300"
+        className="absolute top-1/2 -translate-y-1/2 scale-70 2xl:scale-100 origin-left transition-transform duration-300"
         style={{
           left: `-${leftOffsetPx}px`,
-          width: `${leftCircleWidth + ringOffset}px`,
-          height: `${leftCircleWidth + ringOffset}px`,
+          width: `${leftCircleWidth + ringOffset + ringBorderWidth}px`,
+          height: `${leftCircleWidth + ringOffset + ringBorderWidth}px`,
         }}
       >
         {/* Solid Teal Circle */}
@@ -330,7 +330,7 @@ function LargeMarginShapes() {
 
       {/* ── Right Shape: Three Concentric Arc Bands entering from top-right corner ── */}
       <div
-        className="absolute top-0 right-0 scale-70 2xl:scale-100 origin-top-right max-w-[calc((100vw-1152px)/2-32px)] overflow-hidden transition-transform duration-300"
+        className="absolute top-0 right-0 scale-70 2xl:scale-100 origin-top-right transition-transform duration-300"
         style={{
           width: `${rightMaxRadius}px`,
           height: `${rightMaxRadius}px`,
@@ -389,7 +389,7 @@ function ContactSheetFrames() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 z-[3] hidden 2xl:block select-none overflow-hidden"
+      className="pointer-events-none absolute inset-0 z-[3] hidden 2xl:block select-none"
     >
       {frames.map((frame, idx) => (
         <div
@@ -430,7 +430,7 @@ function RegistrationMarks() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 z-[12] hidden xl:block select-none overflow-hidden"
+      className="pointer-events-none absolute inset-0 z-[12] hidden xl:block select-none"
     >
       {corners.map((corner, idx) => (
         <svg
@@ -523,7 +523,7 @@ export default function Projects() {
       ref={sectionRef}
       id="projects"
       aria-label="Projects"
-      className="relative isolate overflow-hidden py-16 md:py-24 lg:py-28"
+      className="relative isolate overflow-x-clip py-16 md:py-24 lg:py-28"
     >
       {/* ── 3. Top stripe band divider (14px tall) ───── */}
       <div
