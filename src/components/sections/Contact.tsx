@@ -321,6 +321,18 @@ export default function Contact() {
   const [pressedKey, setPressedKey] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(false);
 
+  const getSound = useCallback(() => {
+    if (!soundRef.current || typeof soundRef.current.playStampThud !== "function") {
+      let initialMuted = isMuted;
+      try {
+        initialMuted = localStorage.getItem("typewriter_muted") === "true";
+      } catch {}
+      soundRef.current = new TypewriterSound(initialMuted);
+    }
+    soundRef.current.isMuted = isMuted;
+    return soundRef.current;
+  }, [isMuted]);
+
   useEffect(() => {
     let initialMuted = false;
     try {
@@ -335,10 +347,11 @@ export default function Contact() {
   const toggleSound = useCallback(() => {
     setIsMuted((prev) => {
       const next = !prev;
-      if (soundRef.current) {
-        soundRef.current.isMuted = next;
+      const sound = getSound();
+      if (sound) {
+        sound.isMuted = next;
         if (!next) {
-          soundRef.current.playKeyClack();
+          sound.playKeyClack?.();
         }
       }
       try {
@@ -346,7 +359,7 @@ export default function Contact() {
       } catch {}
       return next;
     });
-  }, []);
+  }, [getSound]);
 
   const MAX_CHARS_PER_LINE = 42;
 
@@ -430,14 +443,14 @@ export default function Contact() {
       if (currentLineLen >= MAX_CHARS_PER_LINE) {
         if (activeField === "message") {
           // Auto-carriage return for multiline with chime
-          soundRef.current?.playBellDing();
-          soundRef.current?.playCarriageSlide();
+          getSound()?.playBellDing?.();
+          getSound()?.playCarriageSlide?.();
           const next = prev + "\n" + char;
           syncCarriage(next);
           return next;
         } else {
           // Margin lock (can't type past margin on single line)
-          soundRef.current?.playBellDing();
+          getSound()?.playBellDing?.();
           if (carriageRef.current) {
              gsap.fromTo(carriageRef.current, 
                { x: (MAX_CHARS_PER_LINE * -8) - 4 }, 
@@ -450,20 +463,20 @@ export default function Contact() {
 
       // Audio feedback
       if (char === " ") {
-        soundRef.current?.playSpaceThud();
+        getSound()?.playSpaceThud?.();
       } else {
-        soundRef.current?.playKeyClack();
+        getSound()?.playKeyClack?.();
       }
 
       const next = prev + char;
       syncCarriage(next);
       return next;
     });
-  }, [activeField, formState, syncCarriage]);
+  }, [activeField, formState, syncCarriage, getSound]);
 
   const handleBackspace = useCallback(() => {
     if (formState !== "idle") return;
-    soundRef.current?.playKeyClack();
+    getSound()?.playKeyClack?.();
     const setter =
       activeField === "from" ? setFromEmail
       : activeField === "topic" ? setTopic
@@ -476,12 +489,12 @@ export default function Contact() {
       syncCarriage(next);
       return next;
     });
-  }, [activeField, formState, syncCarriage]);
+  }, [activeField, formState, syncCarriage, getSound]);
 
   const handleReturn = useCallback(() => {
     if (formState !== "idle") return;
-    soundRef.current?.playBellDing();
-    soundRef.current?.playCarriageSlide();
+    getSound()?.playBellDing?.();
+    getSound()?.playCarriageSlide?.();
     resetCarriage();
     
     if (activeField === "from") {
@@ -494,19 +507,19 @@ export default function Contact() {
       setActiveField("name");
       syncCarriage(fullName);
     }
-  }, [activeField, formState, topic, message, fullName, syncCarriage, resetCarriage]);
+  }, [activeField, formState, topic, message, fullName, syncCarriage, resetCarriage, getSound]);
 
   const handleNewline = useCallback(() => {
     if (formState !== "idle" || activeField !== "message") return;
-    soundRef.current?.playBellDing();
-    soundRef.current?.playCarriageSlide();
+    getSound()?.playBellDing?.();
+    getSound()?.playCarriageSlide?.();
     resetCarriage();
     setMessage((prev) => {
       const next = prev + "\n";
       syncCarriage(next);
       return next;
     });
-  }, [formState, activeField, syncCarriage, resetCarriage]);
+  }, [formState, activeField, syncCarriage, resetCarriage, getSound]);
 
   const changeField = useCallback((newField: ActiveField) => {
     setActiveField(newField);
@@ -568,7 +581,7 @@ export default function Contact() {
       else if (!topic.trim()) changeField("topic");
       else if (!message.trim()) changeField("message");
       else if (!fullName.trim()) changeField("name");
-      soundRef.current?.playBellDing();
+      getSound()?.playBellDing?.();
       return;
     }
 
@@ -584,10 +597,10 @@ export default function Contact() {
     }
 
     setFormState("sending");
-    soundRef.current?.playBellDing();
+    getSound()?.playBellDing?.();
 
     // 1. Stamp "POSTED" down onto the typed letter
-    soundRef.current?.playStampThud();
+    getSound()?.playStampThud?.();
     setIsStamped(true);
     if (stampRef.current) {
       gsap.fromTo(
@@ -653,7 +666,7 @@ export default function Contact() {
           opacity: 1,
           duration: 0.55,
           ease: "power2.out",
-          onStart: () => soundRef.current?.playCarriageSlide(),
+          onStart: () => getSound()?.playCarriageSlide?.(),
         });
       },
     });
@@ -663,7 +676,7 @@ export default function Contact() {
       y: -125,
       duration: 0.45,
       ease: "power2.out",
-      onStart: () => soundRef.current?.playPaperRustle(),
+      onStart: () => getSound()?.playPaperRustle?.(),
     });
 
     // 2. 3D Origami paper fold (folds horizontal thirds, then vertical sides into envelope)
@@ -673,7 +686,7 @@ export default function Contact() {
       rotateX: 25,
       duration: 0.35,
       ease: "power2.inOut",
-      onStart: () => soundRef.current?.playPaperRustle(),
+      onStart: () => getSound()?.playPaperRustle?.(),
     });
     tl.to(
       flyingEl,
@@ -722,7 +735,7 @@ export default function Contact() {
       rotateX: 0,
       duration: 0.22,
       ease: "bounce.out",
-      onStart: () => soundRef.current?.playMailboxSnap(),
+      onStart: () => getSound()?.playMailboxSnap?.(),
     });
   }
 
@@ -745,7 +758,7 @@ export default function Contact() {
           opacity: 1,
           duration: 0.5,
           ease: "power2.out",
-          onStart: () => soundRef.current?.playCarriageSlide(),
+          onStart: () => getSound()?.playCarriageSlide?.(),
         }
       );
     }
