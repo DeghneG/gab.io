@@ -320,6 +320,7 @@ export default function Contact() {
   const [fullName, setFullName] = useState("");
   const [pressedKey, setPressedKey] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(false);
+  const [lettersMailedCount, setLettersMailedCount] = useState(0);
 
   const getSound = useCallback(() => {
     if (!soundRef.current || typeof soundRef.current.playStampThud !== "function") {
@@ -587,6 +588,7 @@ export default function Contact() {
 
     const contentEl = contentRef.current;
     const paperEl = paperRef.current;
+    const carriageEl = carriageRef.current;
     const flapEl = postalFlapRef.current;
     const slotEl = slotApertureRef.current;
     const flyingEl = flyingLetterRef.current;
@@ -610,23 +612,30 @@ export default function Contact() {
       );
     }
 
-    // Dynamic vector calculation from paper center to mailbox slot center
-    const contentRect = contentEl.getBoundingClientRect();
-    const paperRect = paperEl.getBoundingClientRect();
-    const slotRect = slotEl.getBoundingClientRect();
+    // 2. Carriage goes back to the middle (authentic carriage return)
+    if (carriageEl) {
+      gsap.to(carriageEl, {
+        x: 0,
+        duration: 0.35,
+        ease: "power2.out",
+        onStart: () => getSound()?.playCarriageSlide?.(),
+      });
+    }
 
-    const startLeft = paperRect.left - contentRect.left;
-    const startTop = paperRect.top - contentRect.top;
-    const startWidth = paperRect.width;
-    const startHeight = paperRect.height;
-
-    const deltaX = (slotRect.left + slotRect.width / 2) - (paperRect.left + paperRect.width / 2);
-    const deltaY = (slotRect.top + slotRect.height / 2) - (paperRect.top + paperRect.height / 2);
-
+    // 3. Flight sequence timeline (begins after carriage is centered in the middle)
     const tl = gsap.timeline({
-      delay: 0.38, // Show the stamped letter before it takes off
+      delay: 0.4, // Wait for carriage to return to center & stamp to be visible
       onStart: () => {
-        // Position flying letter overlay exactly over the paper
+        // Measure coordinates with the carriage now at exact center
+        const contentRect = contentEl.getBoundingClientRect();
+        const paperRect = paperEl.getBoundingClientRect();
+
+        const startLeft = paperRect.left - contentRect.left;
+        const startTop = paperRect.top - contentRect.top;
+        const startWidth = paperRect.width;
+        const startHeight = paperRect.height;
+
+        // Position flying letter overlay exactly over the centered paper
         gsap.set(flyingEl, {
           display: "block",
           left: startLeft,
@@ -647,14 +656,22 @@ export default function Contact() {
       },
       onComplete: () => {
         gsap.set(flyingEl, { display: "none" });
-        setIsStamped(false);
-        setFormState("success");
 
-        // Fresh confirmation sheet rolls into the carriage
+        // Reset inputs and form state so fresh paper is ready to type!
+        setFromEmail("");
+        setTopic("");
+        setMessage("");
+        setFullName("");
+        setIsStamped(false);
+        setActiveField("from");
+        setFormState("idle");
+        setLettersMailedCount((prev) => prev + 1);
+
+        // Fresh new paper is put in! Rolls down from top into platen cylinder
         gsap.set(paperEl, {
           clearProps: "all",
           x: 0,
-          y: 70,
+          y: -220,
           opacity: 0,
           scale: 1,
           rotation: 0,
@@ -664,7 +681,7 @@ export default function Contact() {
         gsap.to(paperEl, {
           y: 0,
           opacity: 1,
-          duration: 0.55,
+          duration: 0.65,
           ease: "power2.out",
           onStart: () => getSound()?.playCarriageSlide?.(),
         });
@@ -673,7 +690,7 @@ export default function Contact() {
 
     // 1. Lift paper up and off the platen roller into the air
     tl.to(flyingEl, {
-      y: -125,
+      y: -130,
       duration: 0.45,
       ease: "power2.out",
       onStart: () => getSound()?.playPaperRustle?.(),
@@ -712,19 +729,29 @@ export default function Contact() {
       "-=0.15"
     );
 
-    // 4. Folded letter swooshes over and lines up with postal slot
+    // 4. Folded letter swooshes over and lines up with postal slot (calculated dynamically)
     tl.to(flyingEl, {
-      x: deltaX,
-      y: deltaY - 10,
-      scale: 0.15,
-      rotateZ: 15,
       duration: 0.58,
       ease: "power2.inOut",
+      onStart: () => {
+        const paperRect = paperEl.getBoundingClientRect();
+        const slotRect = slotEl.getBoundingClientRect();
+        const deltaX = (slotRect.left + slotRect.width / 2) - (paperRect.left + paperRect.width / 2);
+        const deltaY = (slotRect.top + slotRect.height / 2) - (paperRect.top + paperRect.height / 2);
+        gsap.to(flyingEl, {
+          x: deltaX,
+          y: deltaY - 10,
+          scale: 0.15,
+          rotateZ: 15,
+          duration: 0.58,
+          ease: "power2.inOut",
+        });
+      },
     });
 
     // 5. Letter drops straight down into the slot aperture
     tl.to(flyingEl, {
-      y: deltaY + 36,
+      y: "+=46",
       opacity: 0,
       duration: 0.22,
       ease: "power1.in",
@@ -779,6 +806,32 @@ export default function Contact() {
         >
           Type your message on the typewriter below.
         </p>
+
+        {/* Dispatch Confirmation Toast (Appears when letter has been mailed) */}
+        {lettersMailedCount > 0 && (
+          <div
+            role="status"
+            className="mb-6 max-w-lg mx-auto px-5 py-3 rounded-xl flex items-center justify-between gap-3 text-xs transition-all shadow-lg animate-fadeIn"
+            style={{
+              background: "linear-gradient(135deg, rgba(43, 175, 144, 0.22) 0%, rgba(30, 138, 108, 0.18) 100%)",
+              border: "1.5px solid #2BAF90",
+              color: "#FFF",
+              fontFamily: "var(--font-body)",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.2)",
+            }}
+          >
+            <div className="flex items-center gap-2.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#2BAF90] animate-ping" />
+              <div>
+                <span className="font-bold text-[#A1D4B1] uppercase tracking-wider text-[11px]">Letter Mailed!</span>
+                <span className="text-cream/80 ml-2">Your letter was dropped into the postal box. Fresh paper loaded.</span>
+              </div>
+            </div>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#2BAF90]/30 text-[#A1D4B1] font-bold">
+              ✓ SENT
+            </span>
+          </div>
+        )}
 
       {/* ══════════════════════════════════════════════════
           3D TYPEWRITER
@@ -947,7 +1000,12 @@ export default function Contact() {
               {/* Post collection badge below slot */}
               <div className="mt-2 w-full flex items-center justify-between px-1 text-[7px] text-cream/40 font-mono">
                 <span>NO. 70</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#2BAF90] animate-pulse" title="Ready to receive mail" />
+                <span className="flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#2BAF90] animate-pulse" title="Ready to receive mail" />
+                  {lettersMailedCount > 0 && (
+                    <span className="text-[#2BAF90] font-bold tracking-wider">{lettersMailedCount} POSTED</span>
+                  )}
+                </span>
               </div>
             </div>
           </div>
@@ -1103,6 +1161,82 @@ export default function Contact() {
                   backgroundPosition: "bottom",
                   backgroundSize: "10px 4px",
                   backgroundRepeat: "repeat-x"
+                }}
+              />
+            </div>
+
+            {/* ── PERMANENT METAL PAPER TABLE / PAPER REST PLATE (Behind Paper) ── */}
+            <div
+              aria-hidden="true"
+              className="absolute left-1/2 -translate-x-1/2 pointer-events-none select-none rounded-t-[10px] overflow-hidden"
+              style={{
+                top: 28,
+                width: "87%",
+                height: 310,
+                zIndex: 1,
+                /* Dark cast steel with satin lacquer finish matching vintage typewriter shell */
+                background: "linear-gradient(180deg, #1b2026 0%, #29303a 20%, #1a2027 60%, #101418 100%)",
+                boxShadow: "inset 0 2px 3px rgba(255,255,255,0.18), inset 0 -4px 14px rgba(0,0,0,0.85), 0 8px 24px rgba(0,0,0,0.6)",
+                border: "1.5px solid #3c4550",
+                borderBottom: "none",
+              }}
+            >
+              {/* Brushed chrome top edge rail */}
+              <div
+                className="absolute top-0 inset-x-0 h-[3px]"
+                style={{
+                  background: "linear-gradient(90deg, #555 0%, #ccc 25%, #ffffff 50%, #ccc 75%, #555 100%)",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.6)",
+                }}
+              />
+
+              {/* Stamped metal margin measurement hash marks */}
+              <div
+                className="absolute top-2 inset-x-6 h-3 opacity-30"
+                style={{
+                  backgroundImage: "repeating-linear-gradient(90deg, #fff 0px, #fff 1px, transparent 1px, transparent 10px)",
+                  backgroundSize: "10px 4px",
+                  backgroundRepeat: "repeat-x",
+                }}
+              />
+
+              {/* Vertical fluted stamped grooves in the metal */}
+              <div
+                className="absolute inset-x-8 top-8 bottom-6 opacity-20"
+                style={{
+                  backgroundImage: "repeating-linear-gradient(90deg, transparent, transparent 16px, rgba(0,0,0,0.9) 17px, rgba(255,255,255,0.2) 18px, transparent 19px)",
+                }}
+              />
+
+              {/* Vintage Century Writers Embossed Brand Insignia */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center opacity-35 text-center px-4">
+                <div
+                  className="text-[11px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#F1A512] drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
+                  style={{ fontFamily: "var(--font-display)" }}
+                >
+                  ★ CENTURY WRITERS ★
+                </div>
+                <div className="text-[7px] sm:text-[8px] tracking-[0.3em] uppercase text-cream/70 font-mono mt-1">
+                  PATENT NO. 1926-US · MODEL 70 CARRIAGE BED
+                </div>
+                <div className="mt-2 w-28 h-[1px] bg-gradient-to-r from-transparent via-[#F1A512]/50 to-transparent" />
+              </div>
+
+              {/* Left and right chrome paper finger clamp guides */}
+              <div
+                className="absolute top-4 left-3 w-3 h-28 rounded-[2px]"
+                style={{
+                  background: "linear-gradient(180deg, #d8dee4 0%, #808892 60%, #40454d 100%)",
+                  boxShadow: "1px 2px 4px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.7)",
+                  border: "1px solid #2e343d",
+                }}
+              />
+              <div
+                className="absolute top-4 right-3 w-3 h-28 rounded-[2px]"
+                style={{
+                  background: "linear-gradient(180deg, #d8dee4 0%, #808892 60%, #40454d 100%)",
+                  boxShadow: "-1px 2px 4px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.7)",
+                  border: "1px solid #2e343d",
                 }}
               />
             </div>
@@ -1343,46 +1477,6 @@ export default function Contact() {
                   WebkitMaskRepeat: "repeat-x",
                 }}
               />
-
-              {/* Success / Dispatched overlay */}
-              {formState === "success" && (
-                <div
-                  className="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center"
-                  style={{
-                    background: "linear-gradient(170deg, #e8d5a3 0%, #dcc78e 25%, #d4bc7a 50%, #e0cb90 75%, #d8c080 100%)",
-                    backgroundImage: `
-                      linear-gradient(170deg, #e8d5a3 0%, #dcc78e 25%, #d4bc7a 50%, #e0cb90 75%, #d8c080 100%),
-                      repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(100,80,50,0.18) 23px, rgba(100,80,50,0.18) 24px)
-                    `,
-                  }}
-                >
-                  {/* Vintage red postal postmark stamp */}
-                  <div className="w-16 h-16 rounded-full border-2 border-dashed border-wine flex flex-col items-center justify-center mb-3 rotate-[-8deg] opacity-90 shadow-[0_2px_4px_rgba(0,0,0,0.15)] bg-wine/5">
-                    <span
-                      className="text-[10px] font-bold tracking-widest uppercase text-wine"
-                      style={{ fontFamily: "var(--font-display)" }}
-                    >
-                      POSTED
-                    </span>
-                    <span className="text-[6px] tracking-widest text-wine/70 uppercase font-mono mt-0.5">
-                      DISPATCHED
-                    </span>
-                  </div>
-                  <p className="text-2xl text-wine mb-2" style={{ fontFamily: "var(--font-display)" }}>
-                    Letter Mailed!
-                  </p>
-                  <p className="text-xs text-wine/75 mb-5 max-w-xs leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
-                    Your letter was inserted into the postal box. I will get back to you as soon as possible.
-                  </p>
-                  <button
-                    onClick={handleReset}
-                    className="px-5 py-2.5 bg-wine text-cream rounded-xl border-2 border-wine text-xs uppercase tracking-wider font-bold transition-transform duration-150 hover:scale-[1.03] active:scale-[0.97] cursor-pointer shadow-[2px_2px_0_0_#F1A512]"
-                    style={{ fontFamily: "var(--font-body)" }}
-                  >
-                    Type another letter
-                  </button>
-                </div>
-              )}
             </div>
           </div>
 
