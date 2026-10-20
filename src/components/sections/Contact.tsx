@@ -11,7 +11,7 @@ if (typeof window !== "undefined") {
 }
 
 type FormState = "idle" | "sending" | "success" | "error";
-type ActiveField = "from" | "message" | "name";
+type ActiveField = "from" | "topic" | "message" | "name";
 
 const KEYBOARD_ROWS = [
   ["1","2","3","4","5","6","7","8","9","0"],
@@ -173,6 +173,123 @@ class TypewriterSound {
       }
     } catch {}
   }
+
+  /** Paper rustle / folding friction sound */
+  playPaperRustle() {
+    if (this.isMuted) return;
+    const ctx = this.initContext();
+    if (!ctx) return;
+
+    try {
+      const t = ctx.currentTime;
+      const bufferSize = Math.floor(ctx.sampleRate * 0.22);
+      const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        output[i] = Math.random() * 2 - 1;
+      }
+      const noise = ctx.createBufferSource();
+      noise.buffer = noiseBuffer;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = "bandpass";
+      filter.frequency.setValueAtTime(2200, t);
+      filter.frequency.exponentialRampToValueAtTime(750, t + 0.22);
+      filter.Q.setValueAtTime(1.8, t);
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.09, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      noise.start(t);
+    } catch {}
+  }
+
+  /** Mailbox brass flap spring-snap & latch sound */
+  playMailboxSnap() {
+    if (this.isMuted) return;
+    const ctx = this.initContext();
+    if (!ctx) return;
+
+    try {
+      const t = ctx.currentTime;
+      // 1. Crisp metallic transient
+      const osc = ctx.createOscillator();
+      const oscGain = ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(1100, t);
+      osc.frequency.exponentialRampToValueAtTime(140, t + 0.06);
+
+      oscGain.gain.setValueAtTime(0.22, t);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+
+      osc.connect(oscGain);
+      oscGain.connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.07);
+
+      // 2. Heavy metal box latch thud
+      const thud = ctx.createOscillator();
+      const thudGain = ctx.createGain();
+      thud.type = "sine";
+      thud.frequency.setValueAtTime(190, t + 0.01);
+      thud.frequency.exponentialRampToValueAtTime(45, t + 0.12);
+
+      thudGain.gain.setValueAtTime(0.28, t + 0.01);
+      thudGain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+
+      thud.connect(thudGain);
+      thudGain.connect(ctx.destination);
+      thud.start(t + 0.01);
+      thud.stop(t + 0.13);
+    } catch {}
+  }
+
+  /** Vintage rubber ink stamp impact thud */
+  playStampThud() {
+    if (this.isMuted) return;
+    const ctx = this.initContext();
+    if (!ctx) return;
+
+    try {
+      const t = ctx.currentTime;
+      // 1. Solid rubber / wooden handle thud
+      const osc = ctx.createOscillator();
+      const oscGain = ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(140, t);
+      osc.frequency.exponentialRampToValueAtTime(32, t + 0.08);
+
+      oscGain.gain.setValueAtTime(0.35, t);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+
+      osc.connect(oscGain);
+      oscGain.connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.09);
+
+      // 2. Paper slap transient
+      const noiseSize = Math.floor(ctx.sampleRate * 0.015);
+      const buffer = ctx.createBuffer(1, noiseSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < noiseSize; i++) data[i] = Math.random() * 2 - 1;
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+      const filter = ctx.createBiquadFilter();
+      filter.type = "bandpass";
+      filter.frequency.setValueAtTime(1200, t);
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.2, t);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.015);
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+      noise.start(t);
+    } catch {}
+  }
 }
 
 /**
@@ -186,11 +303,19 @@ export default function Contact() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const carriageRef = useRef<HTMLDivElement>(null);
+  const paperRef = useRef<HTMLDivElement>(null);
+  const flyingLetterRef = useRef<HTMLDivElement>(null);
+  const stampRef = useRef<HTMLDivElement>(null);
+  const postalSlotRef = useRef<HTMLDivElement>(null);
+  const postalFlapRef = useRef<HTMLDivElement>(null);
+  const slotApertureRef = useRef<HTMLDivElement>(null);
   const soundRef = useRef<TypewriterSound | null>(null);
 
   const [formState, setFormState] = useState<FormState>("idle");
   const [activeField, setActiveField] = useState<ActiveField>("from");
+  const [isStamped, setIsStamped] = useState(false);
   const [fromEmail, setFromEmail] = useState("");
+  const [topic, setTopic] = useState("");
   const [message, setMessage] = useState("");
   const [fullName, setFullName] = useState("");
   const [pressedKey, setPressedKey] = useState<string | null>(null);
@@ -282,9 +407,10 @@ export default function Contact() {
   /* Helper to get current field text */
   const getFieldText = useCallback((field: ActiveField) => {
     if (field === "from") return fromEmail;
+    if (field === "topic") return topic;
     if (field === "message") return message;
     return fullName;
-  }, [fromEmail, message, fullName]);
+  }, [fromEmail, topic, message, fullName]);
 
   /* ── Typing logic ───────────────────────────────── */
   const handleType = useCallback((char: string) => {
@@ -292,6 +418,7 @@ export default function Contact() {
     
     const setter =
       activeField === "from" ? setFromEmail
+      : activeField === "topic" ? setTopic
       : activeField === "message" ? setMessage
       : setFullName;
 
@@ -339,6 +466,7 @@ export default function Contact() {
     soundRef.current?.playKeyClack();
     const setter =
       activeField === "from" ? setFromEmail
+      : activeField === "topic" ? setTopic
       : activeField === "message" ? setMessage
       : setFullName;
 
@@ -357,13 +485,16 @@ export default function Contact() {
     resetCarriage();
     
     if (activeField === "from") {
+      setActiveField("topic");
+      syncCarriage(topic);
+    } else if (activeField === "topic") {
       setActiveField("message");
       syncCarriage(message);
     } else if (activeField === "message") {
       setActiveField("name");
       syncCarriage(fullName);
     }
-  }, [activeField, formState, message, fullName, syncCarriage, resetCarriage]);
+  }, [activeField, formState, topic, message, fullName, syncCarriage, resetCarriage]);
 
   const handleNewline = useCallback(() => {
     if (formState !== "idle" || activeField !== "message") return;
@@ -427,20 +558,197 @@ export default function Contact() {
     else { flashKey(key); handleType(key.toLowerCase()); }
   }
 
-  /* ── Submit ─────────────────────────────────────── */
+  /* ── Submit with GSAP Origami Fold & Mailbox Insertion ── */
   function handleSubmit(e?: FormEvent<HTMLFormElement>) {
     if (e) e.preventDefault();
-    if (!fromEmail.trim() || !message.trim() || !fullName.trim()) return;
-    soundRef.current?.playBellDing();
-    soundRef.current?.playCarriageSlide();
+    if (formState === "sending" || formState === "success") return;
+
+    if (!fromEmail.trim() || !topic.trim() || !message.trim() || !fullName.trim()) {
+      if (!fromEmail.trim()) changeField("from");
+      else if (!topic.trim()) changeField("topic");
+      else if (!message.trim()) changeField("message");
+      else if (!fullName.trim()) changeField("name");
+      soundRef.current?.playBellDing();
+      return;
+    }
+
+    const contentEl = contentRef.current;
+    const paperEl = paperRef.current;
+    const flapEl = postalFlapRef.current;
+    const slotEl = slotApertureRef.current;
+    const flyingEl = flyingLetterRef.current;
+
+    if (!paperEl || !flapEl || !slotEl || !flyingEl || !contentEl) {
+      setFormState("success");
+      return;
+    }
+
     setFormState("sending");
-    setTimeout(() => setFormState("success"), 1200);
+    soundRef.current?.playBellDing();
+
+    // 1. Stamp "POSTED" down onto the typed letter
+    soundRef.current?.playStampThud();
+    setIsStamped(true);
+    if (stampRef.current) {
+      gsap.fromTo(
+        stampRef.current,
+        { scale: 2.2, opacity: 0, rotate: -25 },
+        { scale: 1, opacity: 0.95, rotate: -10, duration: 0.28, ease: "back.out(2)" }
+      );
+    }
+
+    // Dynamic vector calculation from paper center to mailbox slot center
+    const contentRect = contentEl.getBoundingClientRect();
+    const paperRect = paperEl.getBoundingClientRect();
+    const slotRect = slotEl.getBoundingClientRect();
+
+    const startLeft = paperRect.left - contentRect.left;
+    const startTop = paperRect.top - contentRect.top;
+    const startWidth = paperRect.width;
+    const startHeight = paperRect.height;
+
+    const deltaX = (slotRect.left + slotRect.width / 2) - (paperRect.left + paperRect.width / 2);
+    const deltaY = (slotRect.top + slotRect.height / 2) - (paperRect.top + paperRect.height / 2);
+
+    const tl = gsap.timeline({
+      delay: 0.38, // Show the stamped letter before it takes off
+      onStart: () => {
+        // Position flying letter overlay exactly over the paper
+        gsap.set(flyingEl, {
+          display: "block",
+          left: startLeft,
+          top: startTop,
+          width: startWidth,
+          height: startHeight,
+          clearProps: "transform,opacity",
+          opacity: 1,
+          scale: 1,
+          x: 0,
+          y: 0,
+          rotateX: 0,
+          rotateY: 0,
+          rotateZ: 0,
+        });
+        // Seamlessly hide paper in platen so flyingEl takes over
+        gsap.set(paperEl, { opacity: 0 });
+      },
+      onComplete: () => {
+        gsap.set(flyingEl, { display: "none" });
+        setIsStamped(false);
+        setFormState("success");
+
+        // Fresh confirmation sheet rolls into the carriage
+        gsap.set(paperEl, {
+          clearProps: "all",
+          x: 0,
+          y: 70,
+          opacity: 0,
+          scale: 1,
+          rotation: 0,
+          rotationX: 0,
+          rotationZ: 0,
+        });
+        gsap.to(paperEl, {
+          y: 0,
+          opacity: 1,
+          duration: 0.55,
+          ease: "power2.out",
+          onStart: () => soundRef.current?.playCarriageSlide(),
+        });
+      },
+    });
+
+    // 1. Lift paper up and off the platen roller into the air
+    tl.to(flyingEl, {
+      y: -125,
+      duration: 0.45,
+      ease: "power2.out",
+      onStart: () => soundRef.current?.playPaperRustle(),
+    });
+
+    // 2. 3D Origami paper fold (folds horizontal thirds, then vertical sides into envelope)
+    tl.to(flyingEl, {
+      scaleY: 0.34,
+      transformOrigin: "center center",
+      rotateX: 25,
+      duration: 0.35,
+      ease: "power2.inOut",
+      onStart: () => soundRef.current?.playPaperRustle(),
+    });
+    tl.to(
+      flyingEl,
+      {
+        scaleX: 0.42,
+        rotateZ: -8,
+        boxShadow: "0 28px 50px rgba(0,0,0,0.75)",
+        duration: 0.3,
+        ease: "power2.inOut",
+      },
+      "-=0.1"
+    );
+
+    // 3. Brass postal flap tilts open on mailbox
+    tl.to(
+      flapEl,
+      {
+        rotateX: -70,
+        transformOrigin: "top center",
+        duration: 0.25,
+        ease: "back.out(2)",
+      },
+      "-=0.15"
+    );
+
+    // 4. Folded letter swooshes over and lines up with postal slot
+    tl.to(flyingEl, {
+      x: deltaX,
+      y: deltaY - 10,
+      scale: 0.15,
+      rotateZ: 15,
+      duration: 0.58,
+      ease: "power2.inOut",
+    });
+
+    // 5. Letter drops straight down into the slot aperture
+    tl.to(flyingEl, {
+      y: deltaY + 36,
+      opacity: 0,
+      duration: 0.22,
+      ease: "power1.in",
+    });
+
+    // 6. Brass postal flap snaps shut with authentic spring bounce & sound
+    tl.to(flapEl, {
+      rotateX: 0,
+      duration: 0.22,
+      ease: "bounce.out",
+      onStart: () => soundRef.current?.playMailboxSnap(),
+    });
   }
 
   function handleReset() {
     setFormState("idle");
-    setFromEmail(""); setMessage(""); setFullName("");
+    setFromEmail("");
+    setTopic("");
+    setMessage("");
+    setFullName("");
+    setIsStamped(false);
     changeField("from");
+
+    if (paperRef.current) {
+      gsap.set(paperRef.current, { clearProps: "all" });
+      gsap.fromTo(
+        paperRef.current,
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.5,
+          ease: "power2.out",
+          onStart: () => soundRef.current?.playCarriageSlide(),
+        }
+      );
+    }
   }
 
   return (
@@ -467,6 +775,63 @@ export default function Contact() {
         className="max-w-3xl mx-auto relative"
         style={{ perspective: "1400px" }}
       >
+        {/* ── FLOATING ANIMATED FOLDED LETTER OVERLAY (GSAP flight sequence) ── */}
+        <div
+          ref={flyingLetterRef}
+          aria-hidden="true"
+          className="pointer-events-none select-none absolute hidden"
+          style={{
+            zIndex: 60,
+            transformStyle: "preserve-3d",
+            willChange: "transform, opacity",
+            background: "linear-gradient(170deg, #e8d5a3 0%, #dcc78e 25%, #d4bc7a 50%, #e0cb90 75%, #d8c080 100%)",
+            boxShadow: "0 18px 42px rgba(0,0,0,0.55), inset 0 0 40px rgba(80,50,20,0.15)",
+            border: "1px solid rgba(120,80,30,0.35)",
+            borderRadius: "4px",
+            overflow: "hidden",
+          }}
+        >
+          {/* Paper lines and texture */}
+          <div
+            className="w-full h-full p-6 md:p-8 relative"
+            style={{
+              backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(100,80,50,0.18) 23px, rgba(100,80,50,0.18) 24px)`,
+            }}
+          >
+            {/* The stamped badge on flying letter */}
+            <div className="absolute top-4 right-4 md:right-8 w-16 h-16 md:w-20 md:h-20 rounded-full border-[2.5px] border-dashed border-wine flex flex-col items-center justify-center rotate-[-10deg] bg-wine/5 shadow-[0_2px_4px_rgba(140,0,39,0.2)]">
+              <span className="text-[8px] md:text-[9px] font-bold tracking-widest text-wine uppercase" style={{ fontFamily: "var(--font-display)" }}>
+                POSTED
+              </span>
+              <span className="text-[6px] tracking-widest text-wine/70 uppercase font-mono mt-0.5">
+                PARCEL POST
+              </span>
+            </div>
+
+            {/* Red margin lines */}
+            <div
+              className="absolute top-0 bottom-0"
+              style={{
+                left: 36,
+                width: 2,
+                background: "rgba(180,50,50,0.2)",
+              }}
+            />
+
+            <div className="pl-6 space-y-2 text-xs" style={{ fontFamily: "var(--font-body)", color: "#3A1520" }}>
+              <p><span className="font-bold opacity-50">To:</span> {contact.email}</p>
+              <p><span className="font-bold opacity-50">From:</span> {fromEmail}</p>
+              <p><span className="font-bold opacity-50">Topic:</span> {topic}</p>
+              <p className="line-clamp-2"><span className="font-bold opacity-50">Your message:</span> {message}</p>
+              <p className="mt-2"><span className="font-bold opacity-50">Best Regards,</span> {fullName}</p>
+            </div>
+
+            {/* Visual origami fold creases */}
+            <div className="absolute inset-x-0 top-1/3 h-[1px] bg-gradient-to-r from-transparent via-black/25 to-transparent pointer-events-none" />
+            <div className="absolute inset-x-0 top-2/3 h-[1px] bg-gradient-to-r from-transparent via-black/25 to-transparent pointer-events-none" />
+          </div>
+        </div>
+
         {/* ── GROUNDING CONTACT & AMBIENT DESK SHADOWS ────── */}
         <div
           aria-hidden="true"
@@ -492,6 +857,88 @@ export default function Contact() {
             transform: "rotateX(14deg)",
           }}
         >
+          {/* ── RETRO BRASS POSTAL SLOT / LETTER BOX (Right Side) ── */}
+          <div
+            ref={postalSlotRef}
+            className="absolute -right-2 sm:-right-6 md:-right-16 lg:-right-24 top-4 sm:top-8 z-30 select-none"
+            style={{
+              perspective: "800px",
+            }}
+            title="Postal Letter Drop Box"
+            aria-label="Postal Letter Drop Box"
+          >
+            <div
+              className="relative rounded-2xl p-2.5 sm:p-3 flex flex-col items-center"
+              style={{
+                width: "100px",
+                background: "linear-gradient(145deg, #2b323c 0%, #1e232a 50%, #121519 100%)",
+                boxShadow: "0 16px 32px rgba(0,0,0,0.85), inset 0 1px 1px rgba(255,255,255,0.2), inset 0 -2px 4px rgba(0,0,0,0.8)",
+                border: "2px solid #3d4552",
+              }}
+            >
+              {/* Brass corner rivets */}
+              <div className="absolute top-1.5 left-1.5 w-1.5 h-1.5 rounded-full bg-[#d4af37] shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]" />
+              <div className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[#d4af37] shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]" />
+              <div className="absolute bottom-1.5 left-1.5 w-1.5 h-1.5 rounded-full bg-[#d4af37] shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]" />
+              <div className="absolute bottom-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[#d4af37] shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]" />
+
+              {/* Header banner: "LETTERS" */}
+              <div
+                className="text-[8px] sm:text-[9px] font-bold tracking-[0.2em] uppercase text-[#d4af37] text-center mb-2 px-2 py-0.5 rounded border border-[#d4af37]/40 w-full"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  background: "linear-gradient(180deg, rgba(212,175,55,0.15) 0%, rgba(212,175,55,0.05) 100%)",
+                  textShadow: "0 1px 2px rgba(0,0,0,0.8)",
+                }}
+              >
+                LETTERS
+              </div>
+
+              {/* Slot aperture container */}
+              <div
+                ref={slotApertureRef}
+                className="relative w-full rounded overflow-hidden"
+                style={{
+                  height: 22,
+                  background: "#050607",
+                  boxShadow: "inset 0 4px 8px rgba(0,0,0,0.95), 0 1px 1px rgba(255,255,255,0.1)",
+                  border: "1px solid #1a1e23",
+                }}
+              >
+                {/* Interior depth shadow */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black via-black/80 to-transparent pointer-events-none" />
+
+                {/* Brass Mail Flap */}
+                <div
+                  ref={postalFlapRef}
+                  className="absolute inset-x-0 top-0 h-full origin-top"
+                  style={{
+                    background: "linear-gradient(180deg, #d4af37 0%, #aa820a 50%, #7a5d05 100%)",
+                    boxShadow: "0 3px 6px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.5)",
+                    borderBottom: "2px solid #5a4303",
+                    transformOrigin: "top center",
+                  }}
+                >
+                  {/* Embossed "POST" text on flap */}
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span
+                      className="text-[7px] sm:text-[8px] font-black tracking-widest text-[#422e02] drop-shadow-[0_1px_0_rgba(255,255,255,0.3)]"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      POST
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Post collection badge below slot */}
+              <div className="mt-2 w-full flex items-center justify-between px-1 text-[7px] text-cream/40 font-mono">
+                <span>NO. 70</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#2BAF90] animate-pulse" title="Ready to receive mail" />
+              </div>
+            </div>
+          </div>
+
           {/* ── CARRIAGE ASSEMBLY — the whole thing moves ── */}
           <div
             ref={carriageRef}
@@ -649,10 +1096,12 @@ export default function Contact() {
 
             {/* ── THE PAPER (aged, old-school) ────────── */}
             <div
+              ref={paperRef}
               className="relative mx-auto overflow-hidden"
               style={{
                 width: "85%",
                 minHeight: 300,
+                willChange: "transform, opacity",
                 /* Aged yellowed paper base */
                 background: "linear-gradient(170deg, #e8d5a3 0%, #dcc78e 25%, #d4bc7a 50%, #e0cb90 75%, #d8c080 100%)",
                 /* Notebook lines */
@@ -762,6 +1211,32 @@ export default function Contact() {
                 }}
               />
 
+              {/* Red POSTED ink stamp that slams down when sent */}
+              <div
+                ref={stampRef}
+                className="absolute top-6 right-6 md:right-10 pointer-events-none select-none"
+                style={{
+                  opacity: isStamped ? 0.95 : 0,
+                  transform: isStamped ? "rotate(-10deg) scale(1)" : "rotate(-25deg) scale(2.2)",
+                  zIndex: 25,
+                }}
+              >
+                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full border-[3px] border-dashed border-wine flex flex-col items-center justify-center p-1 shadow-[0_2px_8px_rgba(140,0,39,0.35)] bg-wine/5">
+                  <span
+                    className="text-[10px] md:text-[11px] font-bold tracking-widest uppercase text-wine"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    POSTED
+                  </span>
+                  <span className="text-[7px] text-wine/75 font-mono mt-0.5 font-bold">
+                    {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                  </span>
+                  <span className="text-[6px] tracking-widest text-wine/60 uppercase font-mono mt-0.5">
+                    PARCEL POST
+                  </span>
+                </div>
+              </div>
+
               {/* Paper content */}
               <div className="px-10 py-8 md:px-14 md:py-10">
                 <div
@@ -787,6 +1262,21 @@ export default function Contact() {
                     >
                       {fromEmail || (activeField !== "from" && (
                         <span style={{ color: "rgba(58,21,32,0.2)", fontStyle: "italic" }}>your email</span>
+                      ))}
+                    </span>
+                  </p>
+
+                  {/* Topic (under from and before your message) */}
+                  <p>
+                    <span className="font-bold" style={{ color: "rgba(58,21,32,0.4)" }}>Topic:</span>{" "}
+                    <span
+                      className={`inline cursor-text outline-none ${activeField === "topic" ? "typewriter-field-cursor" : ""}`}
+                      onClick={() => changeField("topic")}
+                      role="button"
+                      tabIndex={0}
+                    >
+                      {topic || (activeField !== "topic" && (
+                        <span style={{ color: "rgba(58,21,32,0.2)", fontStyle: "italic" }}>e.g. project inquiry, hello</span>
                       ))}
                     </span>
                   </p>
@@ -841,31 +1331,43 @@ export default function Contact() {
                 }}
               />
 
-              {/* Success overlay */}
+              {/* Success / Dispatched overlay */}
               {formState === "success" && (
-                <div className="absolute inset-0 z-20 flex flex-col items-center justify-center" style={{ background: "rgba(220,195,130,0.95)" }}>
-                  <span className="text-5xl mb-4" aria-hidden="true">✌️</span>
+                <div
+                  className="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center"
+                  style={{
+                    background: "linear-gradient(170deg, #e8d5a3 0%, #dcc78e 25%, #d4bc7a 50%, #e0cb90 75%, #d8c080 100%)",
+                    backgroundImage: `
+                      linear-gradient(170deg, #e8d5a3 0%, #dcc78e 25%, #d4bc7a 50%, #e0cb90 75%, #d8c080 100%),
+                      repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(100,80,50,0.18) 23px, rgba(100,80,50,0.18) 24px)
+                    `,
+                  }}
+                >
+                  {/* Vintage red postal postmark stamp */}
+                  <div className="w-16 h-16 rounded-full border-2 border-dashed border-wine flex flex-col items-center justify-center mb-3 rotate-[-8deg] opacity-90 shadow-[0_2px_4px_rgba(0,0,0,0.15)] bg-wine/5">
+                    <span
+                      className="text-[10px] font-bold tracking-widest uppercase text-wine"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      POSTED
+                    </span>
+                    <span className="text-[6px] tracking-widest text-wine/70 uppercase font-mono mt-0.5">
+                      DISPATCHED
+                    </span>
+                  </div>
                   <p className="text-2xl text-wine mb-2" style={{ fontFamily: "var(--font-display)" }}>
-                    Message sent!
+                    Letter Mailed!
                   </p>
-                  <p className="text-sm text-wine/70 mb-5" style={{ fontFamily: "var(--font-body)" }}>
-                    Thanks for reaching out. I will get back to you soon.
+                  <p className="text-xs text-wine/75 mb-5 max-w-xs leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
+                    Your letter was inserted into the postal box. I will get back to you as soon as possible.
                   </p>
                   <button
                     onClick={handleReset}
-                    className="px-5 py-2 bg-wine text-cream rounded-xl border-2 border-wine text-sm transition-transform duration-150 hover:scale-[1.03] active:scale-[0.97]"
-                    style={{ fontFamily: "var(--font-display)" }}
+                    className="px-5 py-2.5 bg-wine text-cream rounded-xl border-2 border-wine text-xs uppercase tracking-wider font-bold transition-transform duration-150 hover:scale-[1.03] active:scale-[0.97] cursor-pointer shadow-[2px_2px_0_0_#F1A512]"
+                    style={{ fontFamily: "var(--font-body)" }}
                   >
                     Type another letter
                   </button>
-                </div>
-              )}
-
-              {formState === "sending" && (
-                <div className="absolute inset-0 z-20 flex items-center justify-center" style={{ background: "rgba(220,195,130,0.9)" }}>
-                  <p className="text-xl text-wine animate-pulse" style={{ fontFamily: "var(--font-display)" }}>
-                    Sending...
-                  </p>
                 </div>
               )}
             </div>
@@ -1326,7 +1828,7 @@ export default function Contact() {
               className="text-center text-cream/40 text-[9px] md:text-[10px] mt-4"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              Typing: <span className="text-mustard font-bold">{activeField === "from" ? "From" : activeField === "message" ? "Message" : "Name"}</span>
+              Typing: <span className="text-mustard font-bold">{activeField === "from" ? "From" : activeField === "topic" ? "Topic" : activeField === "message" ? "Message" : "Name"}</span>
               {" "}&#183; TAB/RETURN = next field &#183; Shift+Enter = new line &#183; {isMuted ? "🔇 Muted" : "🔊 Audio ON"}
             </p>
 
