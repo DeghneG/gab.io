@@ -1,5 +1,6 @@
 import { getGitHubContributions } from "@/lib/github-contributions";
 import ContributionGraphClient from "@/components/ContributionGraphClient";
+import GiantContributionSquares from "@/components/giant-contribution-squares";
 
 /**
  * Server component that renders the GitHub Contributions section below Experience.
@@ -31,27 +32,39 @@ export default async function ContributionGraph() {
     <section
       id="github-contributions"
       aria-label="GitHub Contributions"
-      className="relative z-30 mx-auto max-w-6xl w-full px-6 md:px-8 py-10 md:py-16"
+      className="relative z-30 w-full px-6 md:px-8 py-10 md:py-16 overflow-x-clip"
     >
-      <div className="w-full bg-cream border-4 border-wine rounded-3xl p-6 md:p-8 shadow-[6px_6px_0_0_#8C0027] text-wine">
-        {/* Header */}
-        <div className="mb-6">
-          <h2
-            className="text-3xl md:text-5xl text-wine leading-tight"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            GitHub Contributions
-          </h2>
-          <p
-            className="text-base md:text-lg text-wine/80 mt-1"
-            style={{ fontFamily: "var(--font-body)" }}
-          >
-            {data.totalContributions.toLocaleString()} contributions in the last year
-          </p>
-        </div>
+      {/* Giant Contribution Squares in margins (1024px+) */}
+      <GiantContributionSquares />
 
-        {/* Animated Heatmap Grid */}
-        <ContributionGraphClient data={data} />
+      <div className="relative mx-auto max-w-6xl w-full">
+        {/* Flat teal offset block behind the card */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-teal rounded-3xl translate-x-[10px] translate-y-[10px] md:translate-x-4 md:translate-y-4 pointer-events-none -z-10"
+        />
+
+        {/* The Card */}
+        <div className="relative z-10 w-full bg-cream border-4 border-wine rounded-3xl p-6 md:p-8 shadow-[6px_6px_0_0_#8C0027] text-wine">
+          {/* Header */}
+          <div className="mb-6">
+            <h2
+              className="text-3xl md:text-5xl text-wine leading-tight"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              GitHub Contributions
+            </h2>
+            <p
+              className="text-base md:text-lg text-wine/80 mt-1"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              {data.totalContributions.toLocaleString()} contributions in the last year
+            </p>
+          </div>
+
+          {/* Animated Heatmap Grid */}
+          <ContributionGraphClient data={data} />
+        </div>
       </div>
     </section>
   );
