@@ -5,7 +5,8 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
-import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription, DialogClose } from "@/components/ui/dialog";
+import { X } from "lucide-react";
 import { projects, type Project } from "@/data/content";
 
 if (typeof window !== "undefined") {
@@ -215,6 +216,228 @@ function ProjectCardItem({
             {project.year}
           </span>
         )}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Animated Project Details Modal featuring GSAP Bouncy Pop & Staggered Cascade
+ */
+function ProjectDetailModal({ project }: { project: Project }) {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const descRef = useRef<HTMLParagraphElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+
+  useGSAP(
+    () => {
+      if (!modalRef.current) return;
+
+      const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+
+      // 1. Initial starting state (bouncy squash origin)
+      gsap.set(modalRef.current, {
+        scale: 0.72,
+        y: 40,
+        rotation: -2,
+        opacity: 0,
+        boxShadow: "0px 0px 0 0 #F1A512",
+        transformOrigin: "center center",
+      });
+
+      // 2. Energetic Pop & Spring on the main modal card
+      tl.to(modalRef.current, {
+        scale: 1,
+        y: 0,
+        rotation: 0,
+        opacity: 1,
+        boxShadow: "8px 8px 0 0 #F1A512",
+        duration: 0.52,
+        ease: "back.out(1.8)",
+      })
+
+      // 3. Close button pop & spin
+      .fromTo(
+        closeBtnRef.current,
+        { scale: 0, rotation: -120, opacity: 0 },
+        { scale: 1, rotation: 0, opacity: 1, duration: 0.38, ease: "back.out(2.2)" },
+        "-=0.36"
+      )
+
+      // 4. Title roll-up with playful skew
+      .fromTo(
+        titleRef.current,
+        { y: 24, opacity: 0, skewX: -4 },
+        { y: 0, opacity: 1, skewX: 0, duration: 0.36, ease: "power3.out" },
+        "-=0.32"
+      )
+
+      // 5. Category & Year badges drop in with rubber stamp bounce
+      .fromTo(
+        ".modal-badge",
+        { scale: 1.4, y: -12, opacity: 0, rotation: -6 },
+        {
+          scale: 1,
+          y: 0,
+          opacity: 1,
+          rotation: 0,
+          duration: 0.34,
+          stagger: 0.08,
+          ease: "elastic.out(1.3, 0.45)",
+        },
+        "-=0.28"
+      )
+
+      // 6. Description body fades and slides up smoothly
+      .fromTo(
+        descRef.current,
+        { y: 16, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.34, ease: "power2.out" },
+        "-=0.22"
+      )
+
+      // 7. Tech pills cascade in like pop pebbles
+      .fromTo(
+        ".modal-tech-tag",
+        { scale: 0, y: 10, opacity: 0 },
+        { scale: 1, y: 0, opacity: 1, duration: 0.3, stagger: 0.04, ease: "back.out(2.5)" },
+        "-=0.2"
+      )
+
+      // 8. Action buttons bounce up ready for click
+      .fromTo(
+        ".modal-action-btn",
+        { scale: 0.85, y: 15, opacity: 0 },
+        {
+          scale: 1,
+          y: 0,
+          opacity: 1,
+          duration: 0.35,
+          stagger: 0.08,
+          ease: "elastic.out(1.2, 0.45)",
+        },
+        "-=0.15"
+      );
+    },
+    { scope: modalRef }
+  );
+
+  const handleCloseMouseEnter = () => {
+    if (closeBtnRef.current) {
+      gsap.to(closeBtnRef.current, {
+        rotation: 90,
+        scale: 1.15,
+        duration: 0.22,
+        ease: "back.out(2)",
+      });
+    }
+  };
+
+  const handleCloseMouseLeave = () => {
+    if (closeBtnRef.current) {
+      gsap.to(closeBtnRef.current, {
+        rotation: 0,
+        scale: 1,
+        duration: 0.2,
+        ease: "power2.out",
+      });
+    }
+  };
+
+  return (
+    <div
+      ref={modalRef}
+      className="pointer-events-auto relative w-full max-w-2xl bg-wine text-cream border-4 border-mustard rounded-2xl p-6 sm:p-8"
+      style={{ willChange: "transform, opacity, box-shadow" }}
+    >
+      {/* Playful Close Button */}
+      <DialogClose
+        ref={closeBtnRef}
+        onMouseEnter={handleCloseMouseEnter}
+        onMouseLeave={handleCloseMouseLeave}
+        className="absolute top-4 right-4 sm:top-6 sm:right-6 w-9 h-9 rounded-full bg-cream/15 hover:bg-mustard hover:text-wine text-cream flex items-center justify-center transition-colors border-2 border-cream/20 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-mustard"
+        aria-label="Close dialog"
+      >
+        <X className="w-5 h-5 stroke-[2.5]" />
+      </DialogClose>
+
+      <div className="flex flex-col gap-6 pr-6 sm:pr-8">
+        <div>
+          <DialogTitle
+            ref={titleRef}
+            className="text-3xl sm:text-4xl mb-3 leading-tight text-cream"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            {project.title}
+          </DialogTitle>
+
+          <div className="flex flex-wrap gap-2.5 mb-6">
+            {project.type && (
+              <span
+                className="modal-badge inline-block px-3 py-1 text-xs uppercase tracking-wider bg-mustard text-wine rounded-md border-2 border-wine/20 font-bold shadow-[2px_2px_0_0_#8C0027]"
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                {project.type}
+              </span>
+            )}
+            {project.year && (
+              <span
+                className="modal-badge inline-block px-3 py-1 text-xs uppercase tracking-wider bg-cream/20 text-cream rounded-md border-2 border-cream/20 font-bold"
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                {project.year}
+              </span>
+            )}
+          </div>
+
+          <DialogDescription
+            ref={descRef}
+            className="text-base sm:text-lg leading-relaxed text-cream/90 mb-6"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
+            {project.description}
+          </DialogDescription>
+
+          {/* Tech tags */}
+          <div className="flex flex-wrap gap-2">
+            {project.tech.map((t) => (
+              <span
+                key={t}
+                className="modal-tech-tag inline-block text-xs sm:text-sm px-3 py-1 bg-mustard text-wine rounded-full border-2 border-cream/30 font-bold transition-transform hover:-translate-y-0.5"
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Links */}
+        <div className="flex flex-wrap gap-4 pt-4 border-t border-cream/20">
+          {project.liveUrl && project.liveUrl !== "#" && (
+            <a
+              href={project.liveUrl}
+              className="modal-action-btn inline-flex items-center justify-center text-sm sm:text-base px-6 py-3 bg-teal text-cream rounded-xl border-2 border-cream/30 font-bold shadow-[3px_3px_0_0_#F5F0E8] transition-transform duration-150 hover:scale-[1.04] active:scale-[0.96]"
+              style={{ fontFamily: "var(--font-display)" }}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Live site
+            </a>
+          )}
+          {project.repoUrl && project.repoUrl !== "#" && (
+            <a
+              href={project.repoUrl}
+              className="modal-action-btn inline-flex items-center justify-center text-sm sm:text-base px-6 py-3 bg-cream/20 hover:bg-cream/30 text-cream rounded-xl border-2 border-cream/30 font-bold shadow-[3px_3px_0_0_#F1A512] transition-transform duration-150 hover:scale-[1.04] active:scale-[0.96]"
+              style={{ fontFamily: "var(--font-display)" }}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Source code
+            </a>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -597,74 +820,11 @@ export default function Projects() {
                   </DialogTrigger>
 
                   <DialogContent
-                    className="bg-wine text-cream border-4 border-mustard rounded-2xl p-6 sm:p-8 max-w-2xl"
-                    style={{ boxShadow: "8px 8px 0 0 #F1A512" }}
+                    disableAnimation
+                    showCloseButton={false}
+                    className="w-full max-w-2xl p-4 sm:p-6 flex items-center justify-center pointer-events-none"
                   >
-                    <div className="flex flex-col gap-6">
-                      <div>
-                        <DialogTitle
-                          className="text-3xl mb-2"
-                          style={{ fontFamily: "var(--font-display)" }}
-                        >
-                          {project.title}
-                        </DialogTitle>
-                        <div className="flex flex-wrap gap-2 mb-6">
-                          {project.type && (
-                            <span className="px-2 py-1 text-xs uppercase tracking-wider bg-mustard text-wine rounded-md border-2 border-wine/20 font-bold">
-                              {project.type}
-                            </span>
-                          )}
-                          {project.year && (
-                            <span className="px-2 py-1 text-xs uppercase tracking-wider bg-cream/20 text-cream rounded-md border-2 border-cream/20 font-bold">
-                              {project.year}
-                            </span>
-                          )}
-                        </div>
-                        <DialogDescription
-                          className="text-base leading-relaxed text-cream/90 mb-6"
-                          style={{ fontFamily: "var(--font-body)" }}
-                        >
-                          {project.description}
-                        </DialogDescription>
-                        {/* Tech tags */}
-                        <div className="flex flex-wrap gap-2">
-                          {project.tech.map((t) => (
-                            <span
-                              key={t}
-                              className="text-xs px-2 py-1 bg-mustard text-wine rounded-full border-2 border-cream/30"
-                              style={{ fontFamily: "var(--font-body)" }}
-                            >
-                              {t}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                      {/* Links */}
-                      <div className="flex gap-4 pt-4 border-t border-cream/20">
-                        {project.liveUrl && project.liveUrl !== "#" && (
-                          <a
-                            href={project.liveUrl}
-                            className="text-sm px-6 py-3 bg-teal text-cream rounded-xl border-2 border-cream/30 transition-transform duration-150 hover:scale-[1.03] active:scale-[0.97]"
-                            style={{ fontFamily: "var(--font-display)" }}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Live site
-                          </a>
-                        )}
-                        {project.repoUrl && project.repoUrl !== "#" && (
-                          <a
-                            href={project.repoUrl}
-                            className="text-sm px-6 py-3 bg-cream/20 text-cream rounded-xl border-2 border-cream/30 transition-transform duration-150 hover:scale-[1.03] active:scale-[0.97]"
-                            style={{ fontFamily: "var(--font-display)" }}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Source code
-                          </a>
-                        )}
-                      </div>
-                    </div>
+                    <ProjectDetailModal project={project} />
                   </DialogContent>
                 </Dialog>
               </div>
