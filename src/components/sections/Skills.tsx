@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -29,6 +29,7 @@ export const SKILLS_CONFIG = {
 
   // Groove styling on skill discs
   grooveContrast: 0.045, // Groove rings opacity (0.01 - 0.15)
+  sheenOpacity: 0.08, // Vinyl reflection light sheen opacity
 
   // Giant decorative record in right margin
   giantRecordSize: 900, // Diameter in px
@@ -336,9 +337,6 @@ function VinylSkillItem({
   className?: string;
 }) {
   const discRef = useRef<HTMLDivElement>(null);
-  const labelRef = useRef<HTMLSpanElement>(null);
-  const spinTweenRef = useRef<gsap.core.Tween | null>(null);
-
   const size = SKILLS_CONFIG.discSize; // Uniform 64px across all tiles
   const labelSize = Math.round(size * 0.38); // ~24px
   const iconSize = Math.round(labelSize * 0.62); // ~15px
@@ -347,87 +345,24 @@ function VinylSkillItem({
   const iconColor =
     labelColor === "orange" || labelColor === "wine" ? "#F5F0E8" : "#8C0027";
 
-  useEffect(() => {
-    return () => {
-      if (spinTweenRef.current) {
-        spinTweenRef.current.kill();
-      }
-    };
-  }, []);
-
   const handleMouseEnter = () => {
     if (!discRef.current) return;
-    const prefersReduced =
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (spinTweenRef.current) {
-      spinTweenRef.current.kill();
-      spinTweenRef.current = null;
-    }
-    gsap.killTweensOf([discRef.current, labelRef.current]);
-
-    if (prefersReduced) {
-      gsap.to(discRef.current, {
-        scale: 1.08,
-        duration: 0.25,
-        ease: "power2.out",
-      });
-      return;
-    }
-
-    // 1. Continuous turntable spin (approx 33-45 RPM feel: 1 rotation every 1.2s)
-    spinTweenRef.current = gsap.to(discRef.current, {
+    gsap.killTweensOf(discRef.current);
+    gsap.to(discRef.current, {
+      y: -4,
       rotation: "+=360",
       duration: 1.2,
-      repeat: -1,
-      ease: "none",
-    });
-
-    // 2. Disc lifts & expands shadow
-    gsap.to(discRef.current, {
-      scale: 1.1,
-      boxShadow: "4px 4px 0 0 #4A0014",
-      duration: 0.25,
       ease: "power2.out",
     });
-
-    // 3. Label brightens
-    if (labelRef.current) {
-      gsap.to(labelRef.current, {
-        color: "#FFFFFF",
-        duration: 0.25,
-        ease: "power2.out",
-      });
-    }
   };
 
   const handleMouseLeave = () => {
     if (!discRef.current) return;
-
-    // Stop continuous loop and coast forward to a natural inertia stop
-    if (spinTweenRef.current) {
-      spinTweenRef.current.kill();
-      spinTweenRef.current = null;
-    }
-    gsap.killTweensOf([discRef.current, labelRef.current]);
-
-    // Coast to stop: continues rotating forward by 120deg while decelerating
     gsap.to(discRef.current, {
-      rotation: "+=120",
-      scale: 1,
-      boxShadow: "3px 3px 0 0 #4A0014",
-      duration: 0.7,
+      y: 0,
+      duration: 0.25,
       ease: "power2.out",
     });
-
-    if (labelRef.current) {
-      gsap.to(labelRef.current, {
-        color: "#F5F0E8",
-        duration: 0.3,
-        ease: "power2.out",
-      });
-    }
   };
 
   return (
@@ -445,12 +380,21 @@ function VinylSkillItem({
       <div
         ref={discRef}
         aria-hidden="true"
-        className="rounded-full relative flex items-center justify-center select-none shadow-[3px_3px_0_0_#4A0014] transition-shadow duration-200 origin-center"
+        className="rounded-full relative flex items-center justify-center select-none shadow-[3px_3px_0_0_#4A0014] transition-shadow duration-200"
         style={{
           width: `${size}px`,
           height: `${size}px`,
           backgroundColor: "#1c1416",
           backgroundImage: `
+            conic-gradient(
+              from 45deg at 50% 50%,
+              transparent 0deg,
+              rgba(255, 255, 255, ${SKILLS_CONFIG.sheenOpacity}) 45deg,
+              transparent 90deg,
+              transparent 180deg,
+              rgba(255, 255, 255, ${SKILLS_CONFIG.sheenOpacity}) 225deg,
+              transparent 270deg
+            ),
             repeating-radial-gradient(
               circle at center,
               transparent 0px,
@@ -512,7 +456,6 @@ function VinylSkillItem({
 
       {/* Skill name label */}
       <span
-        ref={labelRef}
         className="text-base text-cream select-none text-center mt-2.5 font-normal leading-tight tracking-wide whitespace-nowrap"
         style={{ fontFamily: "var(--font-body)" }}
       >
