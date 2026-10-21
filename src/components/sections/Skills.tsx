@@ -16,13 +16,19 @@ if (typeof window !== "undefined") {
  * ───────────────────────────────────────────────────────────
  */
 export const SKILLS_CONFIG = {
-  // Disc dimensions (px)
-  featuredDiscSize: 80, // Size for Frontend tile
-  standardDiscSize: 64, // Size for Backend, Tools, AIs tiles
+  // Disc dimensions (px) - uniform 64px across all tiles
+  discSize: 64,
+
+  // Grid layout column split on desktop (12-column grid: left + right = 12)
+  leftColSpan: "lg:col-span-5", // Frontend tile
+  rightColSpan: "lg:col-span-7", // 3 strips column
+
+  // Strip layout split (% width: heading vs discs on md/lg screens)
+  stripHeadingWidth: "md:w-[28%] lg:w-[30%]",
+  stripDiscsWidth: "md:w-[72%] lg:w-[70%]",
 
   // Groove styling on skill discs
   grooveContrast: 0.045, // Groove rings opacity (0.01 - 0.15)
-  sheenOpacity: 0.08, // Diagonal light reflection opacity (0.04 - 0.15)
 
   // Giant decorative record in right margin
   giantRecordSize: 900, // Diameter in px
@@ -217,6 +223,58 @@ function GeminiIcon({ className }: { className?: string }) {
   );
 }
 
+function GsapIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M9.83,7.59C10.647,7.595 11.267,7.828 11.672,8.282C12.055,8.713 12.239,9.336 12.219,10.132L12.205,10.193C12.197,10.211 12.185,10.229 12.17,10.243C12.14,10.272 12.099,10.288 12.057,10.288L10.398,10.288C10.29,10.288 10.199,10.2 10.199,10.093C10.199,9.669 10.071,9.435 9.809,9.383L9.689,9.372C9.347,9.372 9.125,9.583 9.119,9.951C9.112,10.361 9.344,10.734 10.004,11.374C10.872,12.19 11.221,12.913 11.204,13.867C11.177,15.411 10.127,16.41 8.531,16.41C7.716,16.41 7.093,16.191 6.678,15.761C6.258,15.324 6.066,14.683 6.106,13.855C6.108,13.813 6.125,13.772 6.155,13.743C6.185,13.714 6.226,13.698 6.267,13.698L7.983,13.698C8.007,13.699 8.03,13.705 8.052,13.715C8.073,13.726 8.092,13.741 8.107,13.76C8.12,13.775 8.129,13.793 8.135,13.813C8.14,13.832 8.141,13.853 8.137,13.873C8.118,14.171 8.171,14.394 8.288,14.518C8.363,14.598 8.469,14.639 8.599,14.639C8.916,14.639 9.102,14.414 9.109,14.024C9.115,13.687 9.007,13.39 8.427,12.792C7.676,12.058 7.003,11.3 7.024,10.108C7.037,9.416 7.311,8.784 7.798,8.327C8.312,7.845 9.014,7.59 9.83,7.59ZM4.047,7.618C4.794,7.612 5.381,7.842 5.789,8.303C6.221,8.79 6.44,9.524 6.441,10.485C6.44,10.527 6.422,10.567 6.392,10.597C6.362,10.626 6.322,10.643 6.28,10.643L4.479,10.643C4.448,10.642 4.417,10.629 4.395,10.607C4.373,10.584 4.361,10.553 4.36,10.522C4.346,9.899 4.172,9.576 3.828,9.538L3.757,9.534C3.067,9.535 2.66,10.472 2.444,10.992C2.142,11.719 1.988,12.507 2.018,13.293C2.033,13.659 2.092,14.173 2.438,14.386C2.746,14.575 3.185,14.45 3.451,14.24C3.716,14.031 3.93,13.669 4.02,13.339C4.033,13.293 4.033,13.258 4.021,13.241C4.015,13.233 4.003,13.229 3.989,13.226L3.485,13.222C3.461,13.222 3.436,13.216 3.414,13.206C3.392,13.196 3.372,13.181 3.356,13.162C3.344,13.148 3.335,13.13 3.331,13.112C3.327,13.093 3.327,13.074 3.331,13.056L3.647,11.682C3.663,11.611 3.726,11.558 3.804,11.548L3.804,11.545L6.839,11.545C6.846,11.545 6.854,11.545 6.86,11.546C6.939,11.556 6.995,11.63 6.994,11.71L6.994,11.714L6.678,13.085C6.661,13.163 6.583,13.22 6.494,13.22L6.113,13.22C6.1,13.22 6.086,13.225 6.075,13.233C6.064,13.241 6.056,13.253 6.052,13.266C5.7,14.46 5.223,15.282 4.594,15.775C4.058,16.195 3.399,16.391 2.517,16.391C1.725,16.391 1.191,16.136 0.738,15.633C0.14,14.967 -0.107,13.879 0.043,12.566C0.313,10.103 1.589,7.618 4.047,7.618ZM21.016,7.75C23.026,7.75 24.03,8.662 23.999,10.461C23.962,12.569 22.678,14.119 20.745,14.477C20.47,14.527 20.191,14.547 19.912,14.545L18.978,14.541C18.963,14.541 18.948,14.547 18.937,14.558C18.926,14.568 18.92,14.583 18.92,14.598C18.92,14.608 18.922,14.618 18.928,14.627C18.933,14.636 18.941,14.643 18.95,14.648L19.744,15.062C19.809,15.096 19.835,15.153 19.82,15.226C19.815,15.249 19.618,16.139 19.613,16.159C19.596,16.237 19.533,16.282 19.442,16.282L17.739,16.282C17.715,16.282 17.69,16.277 17.668,16.267C17.646,16.257 17.626,16.241 17.61,16.223C17.598,16.208 17.589,16.191 17.585,16.173C17.58,16.155 17.581,16.135 17.585,16.116L19.481,7.875C19.5,7.789 19.581,7.751 19.653,7.751L21.016,7.75ZM17.273,7.762C17.292,7.77 17.31,7.781 17.324,7.795C17.338,7.81 17.351,7.828 17.358,7.847C17.366,7.866 17.369,7.886 17.369,7.906L17.358,16.119C17.361,16.138 17.36,16.158 17.355,16.177C17.35,16.196 17.34,16.213 17.328,16.228C17.313,16.245 17.295,16.259 17.274,16.268C17.254,16.277 17.232,16.282 17.21,16.281L15.397,16.281C15.377,16.282 15.356,16.277 15.337,16.27C15.318,16.262 15.3,16.25 15.286,16.236C15.272,16.221 15.26,16.204 15.253,16.185C15.245,16.166 15.241,16.146 15.241,16.125L15.28,15.328C15.282,15.241 15.28,15.217 15.229,15.211L15.161,15.209L13.447,15.209C13.323,15.209 13.314,15.22 13.27,15.334L12.914,16.191C12.882,16.252 12.818,16.281 12.722,16.281L10.927,16.281C10.818,16.281 10.74,16.173 10.781,16.072L14.499,7.873C14.524,7.824 14.562,7.75 14.648,7.75L17.214,7.75C17.234,7.75 17.254,7.754 17.273,7.762ZM15.5,9.985C15.492,9.953 15.466,9.956 15.445,9.998C15.43,10.028 15.416,10.06 15.405,10.091L14.121,13.274C14.114,13.294 14.109,13.31 14.105,13.322C14.104,13.328 14.103,13.335 14.104,13.341C14.105,13.347 14.108,13.353 14.111,13.358C14.115,13.363 14.12,13.367 14.126,13.37C14.131,13.373 14.137,13.376 14.143,13.376L15.215,13.39C15.334,13.38 15.34,13.374 15.352,13.253C15.354,13.21 15.506,10.022 15.5,9.985ZM20.112,9.582C20.097,9.582 20.083,9.588 20.072,9.599C20.061,9.609 20.055,9.624 20.054,9.639C20.054,9.649 20.057,9.659 20.062,9.668C20.068,9.677 20.075,9.685 20.084,9.69C20.097,9.697 20.869,10.104 20.926,10.135C20.968,10.158 20.969,10.198 20.955,10.267C20.948,10.298 20.415,12.642 20.416,12.644C20.419,12.647 20.435,12.655 20.515,12.655L20.551,12.655C21.446,12.619 21.934,11.561 21.952,10.534C21.961,9.979 21.772,9.638 21.429,9.588L21.358,9.582L20.112,9.582Z" />
+    </svg>
+  );
+}
+
+function ThreejsIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M.38 0a.268.268 0 0 0-.256.332l2.894 11.716a.268.268 0 0 0 .01.04l2.89 11.708a.268.268 0 0 0 .447.128L23.802 7.15a.268.268 0 0 0-.112-.45l-5.784-1.667a.268.268 0 0 0-.123-.035L6.38 1.715a.268.268 0 0 0-.144-.04L.456.01A.268.268 0 0 0 .38 0zm.374.654L5.71 2.08 1.99 5.664zM6.61 2.34l4.864 1.4-3.65 3.515zm-.522.12l1.217 4.926-4.877-1.4zm6.28 1.538l4.878 1.404-3.662 3.53zm-.52.13l1.208 4.9-4.853-1.392zm6.3 1.534l4.947 1.424-3.715 3.574zm-.524.12l1.215 4.926-4.876-1.398zm-15.432.696l4.964 1.424-3.726 3.586zM8.047 8.15l4.877 1.4-3.66 3.527zm-.518.137l1.236 5.017-4.963-1.432zm6.274 1.535l4.965 1.425-3.73 3.586zm-.52.127l1.235 5.012-4.958-1.43zm-9.63 2.438l4.873 1.406-3.656 3.523zm5.854 1.687l4.863 1.403-3.648 3.51zm-.54.04l1.214 4.927-4.875-1.4zm-3.896 4.02l5.037 1.442-3.782 3.638z" />
+    </svg>
+  );
+}
+
+function FramerMotionIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M4 0h16v8h-8zM4 8h8l8 8H4zM4 16h8v8z" />
+    </svg>
+  );
+}
+
+function NodejsIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M11.998,24c-0.321,0-0.641-0.084-0.922-0.247l-2.936-1.737c-0.438-0.245-0.224-0.332-0.08-0.383 c0.585-0.203,0.703-0.25,1.328-0.604c0.065-0.037,0.151-0.023,0.218,0.017l2.256,1.339c0.082,0.045,0.197,0.045,0.272,0l8.795-5.076 c0.082-0.047,0.134-0.141,0.134-0.238V6.921c0-0.099-0.053-0.192-0.137-0.242l-8.791-5.072c-0.081-0.047-0.189-0.047-0.271,0 L3.075,6.68C2.99,6.729,2.936,6.825,2.936,6.921v10.15c0,0.097,0.054,0.189,0.139,0.235l2.409,1.392 c1.307,0.654,2.108-0.116,2.108-0.89V7.787c0-0.142,0.114-0.253,0.256-0.253h1.115c0.139,0,0.255,0.112,0.255,0.253v10.021 c0,1.745-0.95,2.745-2.604,2.745c-0.508,0-0.909,0-2.026-0.551L2.28,18.675c-0.57-0.329-0.922-0.945-0.922-1.604V6.921 c0-0.659,0.353-1.275,0.922-1.603l8.795-5.082c0.557-0.315,1.296-0.315,1.848,0l8.794,5.082c0.57,0.329,0.924,0.944,0.924,1.603 v10.15c0,0.659-0.354,1.273-0.924,1.604l-8.794,5.078C12.643,23.916,12.324,24,11.998,24z M19.099,13.993 c0-1.9-1.284-2.406-3.987-2.763c-2.731-0.361-3.009-0.548-3.009-1.187c0-0.528,0.235-1.233,2.258-1.233 c1.807,0,2.473,0.389,2.747,1.607c0.024,0.115,0.129,0.199,0.247,0.199h1.141c0.071,0,0.138-0.031,0.186-0.081 c0.048-0.054,0.074-0.123,0.067-0.196c-0.177-2.098-1.571-3.076-4.388-3.076c-2.508,0-4.004,1.058-4.004,2.833 c0,1.925,1.488,2.457,3.895,2.695c2.88,0.282,3.103,0.703,3.103,1.269c0,0.983-0.789,1.402-2.642,1.402 c-2.327,0-2.839-0.584-3.011-1.742c-0.02-0.124-0.126-0.215-0.253-0.215h-1.137c-0.141,0-0.254,0.112-0.254,0.253 c0,1.482,0.806,3.248,4.655,3.248C17.501,17.007,19.099,15.91,19.099,13.993z" />
+    </svg>
+  );
+}
+
 function SkillIcon({ name, className }: { name: string; className?: string }) {
   const n = name.toLowerCase();
   switch (n) {
@@ -230,6 +288,18 @@ function SkillIcon({ name, className }: { name: string; className?: string }) {
       return <TypeScriptIcon className={className} />;
     case "tailwind css":
       return <TailwindIcon className={className} />;
+    case "gsap":
+      return <GsapIcon className={className} />;
+    case "three.js":
+    case "threejs":
+      return <ThreejsIcon className={className} />;
+    case "framer motion":
+    case "framer":
+      return <FramerMotionIcon className={className} />;
+    case "node.js":
+    case "nodejs":
+    case "node":
+      return <NodejsIcon className={className} />;
     case "python":
       return <PythonIcon className={className} />;
     case "supabase":
@@ -258,19 +328,15 @@ function SkillIcon({ name, className }: { name: string; className?: string }) {
  */
 function VinylSkillItem({
   skill,
-  isFeatured = false,
   labelColor,
 }: {
   skill: Skill;
-  isFeatured?: boolean;
   labelColor: keyof typeof colorHex;
 }) {
   const discRef = useRef<HTMLDivElement>(null);
-  const size = isFeatured
-    ? SKILLS_CONFIG.featuredDiscSize
-    : SKILLS_CONFIG.standardDiscSize;
-  const labelSize = Math.round(size * 0.38);
-  const iconSize = Math.round(labelSize * 0.6);
+  const size = SKILLS_CONFIG.discSize; // Uniform 64px across all tiles
+  const labelSize = Math.round(size * 0.38); // ~24px
+  const iconSize = Math.round(labelSize * 0.62); // ~15px
   const centerHex = colorHex[labelColor] || colorHex.teal;
   // High contrast icon color on the center label: wine on light pastel, cream on deep orange/wine
   const iconColor =
@@ -278,13 +344,21 @@ function VinylSkillItem({
 
   const handleMouseEnter = () => {
     if (!discRef.current) return;
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     gsap.killTweensOf(discRef.current);
-    gsap.to(discRef.current, {
-      y: -4,
-      rotation: "+=360",
-      duration: 1.2,
-      ease: "power2.out",
-    });
+    if (prefersReduced) {
+      gsap.to(discRef.current, { y: -4, duration: 0.25, ease: "power2.out" });
+    } else {
+      gsap.to(discRef.current, {
+        y: -4,
+        rotation: "+=360",
+        duration: 1.2,
+        ease: "power2.out",
+      });
+    }
   };
 
   const handleMouseLeave = () => {
@@ -298,7 +372,7 @@ function VinylSkillItem({
 
   return (
     <li
-      className="list-none flex flex-col items-center justify-center p-2 rounded-2xl cursor-pointer group outline-none focus-visible:ring-2 focus-visible:ring-cream focus-visible:ring-offset-2 focus-visible:ring-offset-wine min-h-[44px] transition-colors duration-150 hover:bg-white/[0.04]"
+      className="list-none flex flex-col items-center justify-center p-2 rounded-2xl cursor-pointer group outline-none focus-visible:ring-2 focus-visible:ring-cream focus-visible:ring-offset-2 focus-visible:ring-offset-wine min-h-[44px] min-w-[44px] transition-colors duration-150 hover:bg-white/[0.04]"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onFocus={handleMouseEnter}
@@ -307,25 +381,16 @@ function VinylSkillItem({
       role="button"
       aria-label={skill.name}
     >
-      {/* Vinyl record disc */}
+      {/* Vinyl record disc (64px, flattened, 3px hard wine shadow) */}
       <div
         ref={discRef}
         aria-hidden="true"
-        className="rounded-full relative flex items-center justify-center select-none shadow-[2px_3px_6px_rgba(0,0,0,0.5)] transition-shadow duration-200 group-hover:shadow-[4px_6px_10px_rgba(0,0,0,0.6)]"
+        className="rounded-full relative flex items-center justify-center select-none shadow-[3px_3px_0_0_#4A0014] transition-shadow duration-200"
         style={{
           width: `${size}px`,
           height: `${size}px`,
           backgroundColor: "#1c1416",
           backgroundImage: `
-            conic-gradient(
-              from 45deg at 50% 50%,
-              transparent 0deg,
-              rgba(255, 255, 255, ${SKILLS_CONFIG.sheenOpacity}) 45deg,
-              transparent 90deg,
-              transparent 180deg,
-              rgba(255, 255, 255, ${SKILLS_CONFIG.sheenOpacity}) 225deg,
-              transparent 270deg
-            ),
             repeating-radial-gradient(
               circle at center,
               transparent 0px,
@@ -337,23 +402,23 @@ function VinylSkillItem({
           willChange: "transform",
         }}
       >
-        {/* 3 thin concentric groove rings */}
+        {/* Concentric groove rings */}
         <div
-          className="absolute inset-[16%] rounded-full border border-white/[0.06] pointer-events-none"
+          className="absolute inset-[18%] rounded-full border border-white/[0.06] pointer-events-none"
           aria-hidden="true"
         />
         <div
-          className="absolute inset-[24%] rounded-full border border-white/[0.06] pointer-events-none"
+          className="absolute inset-[26%] rounded-full border border-white/[0.06] pointer-events-none"
           aria-hidden="true"
         />
         <div
-          className="absolute inset-[31%] rounded-full border border-white/[0.06] pointer-events-none"
+          className="absolute inset-[33%] rounded-full border border-white/[0.06] pointer-events-none"
           aria-hidden="true"
         />
 
         {/* Center label */}
         <div
-          className="rounded-full relative flex items-center justify-center shadow-xs border border-white/20 shrink-0"
+          className="rounded-full relative flex items-center justify-center border border-white/20 shrink-0"
           style={{
             width: `${labelSize}px`,
             height: `${labelSize}px`,
@@ -387,7 +452,7 @@ function VinylSkillItem({
 
       {/* Skill name label */}
       <span
-        className="text-base text-cream select-none text-center mt-2.5 font-normal leading-tight tracking-wide"
+        className="text-base text-cream select-none text-center mt-2.5 font-normal leading-tight tracking-wide whitespace-nowrap"
         style={{ fontFamily: "var(--font-body)" }}
       >
         {skill.name}
@@ -437,21 +502,6 @@ function GiantMarginRecord() {
           className="w-full h-full"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <defs>
-            {/* Top arc for curved text: center (450, 450), radius 105 */}
-            <path
-              id="giant-label-top"
-              d="M 345 450 A 105 105 0 0 1 555 450"
-              fill="none"
-            />
-            {/* Bottom arc for curved text: center (450, 450), radius 105 */}
-            <path
-              id="giant-label-bottom"
-              d="M 555 450 A 105 105 0 0 1 345 450"
-              fill="none"
-            />
-          </defs>
-
           {/* Base disc in tone-on-tone lighter wine #9A1238 */}
           <circle cx="450" cy="450" r="450" fill="#9A1238" />
 
@@ -500,54 +550,6 @@ function GiantMarginRecord() {
             strokeWidth="1.5"
             strokeOpacity="0.6"
           />
-
-          {/* Vintage label horizontal divider accents */}
-          <line
-            x1="330"
-            y1="450"
-            x2="415"
-            y2="450"
-            stroke="#F1A512"
-            strokeWidth="2.5"
-            strokeOpacity="0.75"
-          />
-          <line
-            x1="485"
-            y1="450"
-            x2="570"
-            y2="450"
-            stroke="#2BAF90"
-            strokeWidth="2.5"
-            strokeOpacity="0.75"
-          />
-
-          {/* Vintage typography printed along top arc */}
-          <text
-            fill="#F5F0E8"
-            fillOpacity="0.85"
-            fontSize="12.5"
-            fontWeight="bold"
-            fontFamily="var(--font-body)"
-            letterSpacing="0.18em"
-          >
-            <textPath href="#giant-label-top" startOffset="50%" textAnchor="middle">
-              ✦ GAB.IO HI-FI SOUND SYSTEM ✦
-            </textPath>
-          </text>
-
-          {/* Vintage typography printed along bottom arc */}
-          <text
-            fill="#F1A512"
-            fillOpacity="0.9"
-            fontSize="11"
-            fontWeight="bold"
-            fontFamily="var(--font-body)"
-            letterSpacing="0.14em"
-          >
-            <textPath href="#giant-label-bottom" startOffset="50%" textAnchor="middle">
-              ✦ 33⅓ RPM • STEREO • SIDE A ✦
-            </textPath>
-          </text>
 
           {/* Spindle hole */}
           <circle cx="450" cy="450" r="14" fill="#5E001A" />
@@ -642,9 +644,9 @@ export default function Skills() {
       <GiantMarginRecord />
 
       {/* ── Content Container (z-10) ────────────────── */}
-      <div className="relative z-10 mx-auto max-w-6xl w-full px-6 md:px-8">
+      <div className="relative z-10 mx-auto max-w-6xl w-full px-6">
         {/* Section Header */}
-        <div className="mb-10 md:mb-12">
+        <div className="mb-12">
           {/* Catalog badge above heading */}
           <div className="flex items-center gap-3 mb-3">
             <span
@@ -671,9 +673,9 @@ export default function Skills() {
           </p>
         </div>
 
-        {/* ── Bento Grid ──────────────────────────────── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 items-stretch">
-          {/* 1. FRONTEND TILE (Col 1-5, spanning both rows) */}
+        {/* ── Tile Grid (12-col on desktop, stacked on mobile/tablet) ──── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          {/* 1. FRONTEND TILE (Col 1-5, spanning full height) */}
           {frontend && (
             <section
               ref={(el) => {
@@ -681,20 +683,13 @@ export default function Skills() {
               }}
               aria-label="Frontend skills"
               className="
-                col-span-1 md:col-span-2 lg:col-span-5 lg:row-span-2
+                col-span-1 lg:col-span-5
                 bg-white/[0.04] border-[3px] border-cream/30 rounded-3xl
                 shadow-[6px_6px_0_0_#5A0019]
-                p-6 md:p-8 flex flex-col justify-between relative overflow-hidden
+                p-6 md:p-8 flex flex-col justify-between
               "
             >
-              {/* Colored top stripe */}
-              <div
-                className="absolute top-0 left-0 right-0 h-1.5"
-                style={{ backgroundColor: colorHex[frontend.accent] }}
-                aria-hidden="true"
-              />
-
-              {/* Tile Heading */}
+              {/* Tile Heading with teal underline */}
               <div>
                 <h3
                   className="text-2xl md:text-3xl text-cream tracking-wide whitespace-nowrap"
@@ -709,169 +704,149 @@ export default function Skills() {
                 />
               </div>
 
-              {/* 2x2 grid of 80px record discs */}
-              <ul className="grid grid-cols-2 gap-4 sm:gap-6 my-auto pt-6 pb-2">
-                {frontend.skills.map((skill) => (
-                  <VinylSkillItem
-                    key={skill.name}
-                    skill={skill}
-                    isFeatured={true}
-                    labelColor={skill.color}
-                  />
-                ))}
-              </ul>
-            </section>
-          )}
-
-          {/* 2. BACKEND TILE (Col 6-9, row 1) */}
-          {backend && (
-            <section
-              ref={(el) => {
-                tilesRef.current[1] = el;
-              }}
-              aria-label="Backend skills"
-              className="
-                col-span-1 md:col-span-1 lg:col-span-4 lg:row-span-1
-                bg-white/[0.04] border-[3px] border-cream/30 rounded-3xl
-                shadow-[6px_6px_0_0_#5A0019]
-                p-6 md:p-8 flex flex-col justify-between relative overflow-hidden
-              "
-            >
-              {/* Colored top stripe */}
-              <div
-                className="absolute top-0 left-0 right-0 h-1.5"
-                style={{ backgroundColor: colorHex[backend.accent] }}
-                aria-hidden="true"
-              />
-
-              {/* Tile Heading */}
-              <div>
-                <h3
-                  className="text-2xl md:text-3xl text-cream tracking-wide whitespace-nowrap"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  {backend.category}
-                </h3>
-                <div
-                  className="h-1 w-10 mt-2 rounded-full"
-                  style={{ backgroundColor: colorHex[backend.accent] }}
-                  aria-hidden="true"
-                />
+              {/* 7 discs: 3-col on desktop (3 + 3 + 1 centered), balanced wrap on tablet, 2-col on mobile */}
+              <div className="flex-1 flex items-center justify-center py-6 my-auto">
+                <ul className="grid grid-cols-2 lg:grid-cols-3 md:flex md:flex-wrap md:justify-center gap-x-4 gap-y-6 sm:gap-x-6 sm:gap-y-6 w-full max-w-sm md:max-w-xl lg:max-w-md justify-items-center [&>*:last-child]:col-span-2 lg:[&>*:last-child]:col-span-3 [&>*:last-child]:justify-self-center">
+                  {frontend.skills.map((skill) => (
+                    <VinylSkillItem
+                      key={skill.name}
+                      skill={skill}
+                      labelColor={skill.color}
+                    />
+                  ))}
+                </ul>
               </div>
-
-              {/* 3 discs in one row */}
-              <ul className="grid grid-cols-3 gap-2 sm:gap-4 my-auto pt-6 pb-2">
-                {backend.skills.map((skill) => (
-                  <VinylSkillItem
-                    key={skill.name}
-                    skill={skill}
-                    isFeatured={false}
-                    labelColor={skill.color}
-                  />
-                ))}
-              </ul>
             </section>
           )}
 
-          {/* 3. TOOLS TILE (Col 10-12, row 1) */}
-          {tools && (
-            <section
-              ref={(el) => {
-                tilesRef.current[2] = el;
-              }}
-              aria-label="Developer tools skills"
-              className="
-                col-span-1 md:col-span-1 lg:col-span-3 lg:row-span-1
-                bg-white/[0.04] border-[3px] border-cream/30 rounded-3xl
-                shadow-[6px_6px_0_0_#5A0019]
-                p-6 md:p-8 flex flex-col justify-between relative overflow-hidden
-              "
-            >
-              {/* Colored top stripe */}
-              <div
-                className="absolute top-0 left-0 right-0 h-1.5"
-                style={{ backgroundColor: colorHex[tools.accent] }}
-                aria-hidden="true"
-              />
-
-              {/* Tile Heading — 'Tools' on tight lg, 'Developer Tools' when wide */}
-              <div>
-                <h3
-                  className="text-2xl md:text-3xl text-cream tracking-wide whitespace-nowrap"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  <span className="hidden xl:inline">Developer </span>Tools
-                </h3>
-                <div
-                  className="h-1 w-10 mt-2 rounded-full"
-                  style={{ backgroundColor: colorHex[tools.accent] }}
-                  aria-hidden="true"
-                />
-              </div>
-
-              {/* 3 discs in one row */}
-              <ul className="grid grid-cols-3 gap-1 sm:gap-3 my-auto pt-6 pb-2">
-                {tools.skills.map((skill) => (
-                  <VinylSkillItem
-                    key={skill.name}
-                    skill={skill}
-                    isFeatured={false}
-                    labelColor={skill.color}
+          {/* ── RIGHT COLUMN: Stack of 3 equal-height horizontal strips ──── */}
+          <div className="col-span-1 lg:col-span-7 flex flex-col gap-6 h-full">
+            {/* 2. BACKEND STRIP */}
+            {backend && (
+              <section
+                ref={(el) => {
+                  tilesRef.current[1] = el;
+                }}
+                aria-label="Backend skills"
+                className="
+                  flex-1
+                  bg-white/[0.04] border-[3px] border-cream/30 rounded-3xl
+                  shadow-[6px_6px_0_0_#5A0019]
+                  p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6
+                "
+              >
+                {/* Heading (left ~30% width) */}
+                <div className="md:w-[28%] lg:w-[30%] shrink-0">
+                  <h3
+                    className="text-2xl md:text-3xl text-cream tracking-wide whitespace-nowrap"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    {backend.category}
+                  </h3>
+                  <div
+                    className="h-1 w-10 mt-2 rounded-full"
+                    style={{ backgroundColor: colorHex[backend.accent] }}
+                    aria-hidden="true"
                   />
-                ))}
-              </ul>
-            </section>
-          )}
+                </div>
 
-          {/* 4. AIS TILE (Col 6-12, row 2) */}
-          {ais && (
-            <section
-              ref={(el) => {
-                tilesRef.current[3] = el;
-              }}
-              aria-label="Artificial intelligence tools"
-              className="
-                col-span-1 md:col-span-2 lg:col-span-7 lg:row-span-1
-                bg-white/[0.04] border-[3px] border-cream/30 rounded-3xl
-                shadow-[6px_6px_0_0_#5A0019]
-                p-6 md:p-8 flex flex-col justify-between relative overflow-hidden
-              "
-            >
-              {/* Colored top stripe */}
-              <div
-                className="absolute top-0 left-0 right-0 h-1.5"
-                style={{ backgroundColor: colorHex[ais.accent] }}
-                aria-hidden="true"
-              />
+                {/* 3 discs in one evenly spaced row (right ~70% width) */}
+                <ul className="flex-1 flex items-center justify-evenly gap-2 sm:gap-4 my-auto">
+                  {backend.skills.map((skill) => (
+                    <VinylSkillItem
+                      key={skill.name}
+                      skill={skill}
+                      labelColor={skill.color}
+                    />
+                  ))}
+                </ul>
+              </section>
+            )}
 
-              {/* Tile Heading */}
-              <div>
-                <h3
-                  className="text-2xl md:text-3xl text-cream tracking-wide whitespace-nowrap"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  {ais.category}
-                </h3>
-                <div
-                  className="h-1 w-10 mt-2 rounded-full"
-                  style={{ backgroundColor: colorHex[ais.accent] }}
-                  aria-hidden="true"
-                />
-              </div>
-
-              {/* 3 discs in one wide row */}
-              <ul className="grid grid-cols-3 gap-4 sm:gap-6 my-auto pt-6 pb-2">
-                {ais.skills.map((skill) => (
-                  <VinylSkillItem
-                    key={skill.name}
-                    skill={skill}
-                    isFeatured={false}
-                    labelColor={skill.color}
+            {/* 3. DEVELOPER TOOLS STRIP */}
+            {tools && (
+              <section
+                ref={(el) => {
+                  tilesRef.current[2] = el;
+                }}
+                aria-label="Developer tools skills"
+                className="
+                  flex-1
+                  bg-white/[0.04] border-[3px] border-cream/30 rounded-3xl
+                  shadow-[6px_6px_0_0_#5A0019]
+                  p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6
+                "
+              >
+                {/* Heading (left ~30% width) - shortened to 'Tools' to never wrap or clip */}
+                <div className="md:w-[28%] lg:w-[30%] shrink-0">
+                  <h3
+                    className="text-2xl md:text-3xl text-cream tracking-wide whitespace-nowrap"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    Tools
+                  </h3>
+                  <div
+                    className="h-1 w-10 mt-2 rounded-full"
+                    style={{ backgroundColor: colorHex[tools.accent] }}
+                    aria-hidden="true"
                   />
-                ))}
-              </ul>
-            </section>
-          )}
+                </div>
+
+                {/* 3 discs in one evenly spaced row (right ~70% width) */}
+                <ul className="flex-1 flex items-center justify-evenly gap-2 sm:gap-4 my-auto">
+                  {tools.skills.map((skill) => (
+                    <VinylSkillItem
+                      key={skill.name}
+                      skill={skill}
+                      labelColor={skill.color}
+                    />
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {/* 4. AIS STRIP */}
+            {ais && (
+              <section
+                ref={(el) => {
+                  tilesRef.current[3] = el;
+                }}
+                aria-label="Artificial intelligence skills"
+                className="
+                  flex-1
+                  bg-white/[0.04] border-[3px] border-cream/30 rounded-3xl
+                  shadow-[6px_6px_0_0_#5A0019]
+                  p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6
+                "
+              >
+                {/* Heading (left ~30% width) */}
+                <div className="md:w-[28%] lg:w-[30%] shrink-0">
+                  <h3
+                    className="text-2xl md:text-3xl text-cream tracking-wide whitespace-nowrap"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    {ais.category}
+                  </h3>
+                  <div
+                    className="h-1 w-10 mt-2 rounded-full"
+                    style={{ backgroundColor: colorHex[ais.accent] }}
+                    aria-hidden="true"
+                  />
+                </div>
+
+                {/* 3 discs in one evenly spaced row (right ~70% width) */}
+                <ul className="flex-1 flex items-center justify-evenly gap-2 sm:gap-4 my-auto">
+                  {ais.skills.map((skill) => (
+                    <VinylSkillItem
+                      key={skill.name}
+                      skill={skill}
+                      labelColor={skill.color}
+                    />
+                  ))}
+                </ul>
+              </section>
+            )}
+          </div>
         </div>
       </div>
 

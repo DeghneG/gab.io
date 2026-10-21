@@ -88,15 +88,19 @@ export const skillCategories: SkillCategory[] = [
       { name: "Next.js", color: "mustard" },
       { name: "TypeScript", color: "orange" },
       { name: "Tailwind CSS", color: "mint" },
+      { name: "GSAP", color: "teal" },
+      { name: "Three.js", color: "orange" },
+      { name: "Framer Motion", color: "mustard" },
     ],
   },
   {
     category: "Backend",
     accent: "mustard",
     skills: [
-      { name: "Python", color: "teal" },
-      { name: "Supabase", color: "mustard" },
-      { name: "WordPress", color: "orange" },
+      { name: "Node.js", color: "teal" },
+      { name: "Python", color: "mustard" },
+      { name: "Supabase", color: "orange" },
+      { name: "WordPress", color: "mint" },
     ],
   },
   {
