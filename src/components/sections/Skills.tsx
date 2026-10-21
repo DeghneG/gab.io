@@ -329,9 +329,11 @@ function SkillIcon({ name, className }: { name: string; className?: string }) {
 function VinylSkillItem({
   skill,
   labelColor,
+  className = "",
 }: {
   skill: Skill;
   labelColor: keyof typeof colorHex;
+  className?: string;
 }) {
   const discRef = useRef<HTMLDivElement>(null);
   const size = SKILLS_CONFIG.discSize; // Uniform 64px across all tiles
@@ -372,7 +374,7 @@ function VinylSkillItem({
 
   return (
     <li
-      className="list-none flex flex-col items-center justify-center p-2 rounded-2xl cursor-pointer group outline-none focus-visible:ring-2 focus-visible:ring-cream focus-visible:ring-offset-2 focus-visible:ring-offset-wine min-h-[44px] min-w-[44px] transition-colors duration-150 hover:bg-white/[0.04]"
+      className={`list-none flex flex-col items-center justify-center p-2 rounded-2xl cursor-pointer group outline-none focus-visible:ring-2 focus-visible:ring-cream focus-visible:ring-offset-2 focus-visible:ring-offset-wine min-h-[44px] min-w-[44px] transition-colors duration-150 hover:bg-white/[0.04] ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onFocus={handleMouseEnter}
@@ -686,11 +688,11 @@ export default function Skills() {
                 col-span-1 lg:col-span-5
                 bg-white/[0.04] border-[3px] border-cream/30 rounded-3xl
                 shadow-[6px_6px_0_0_#5A0019]
-                p-6 md:p-8 flex flex-col justify-between
+                p-6 md:p-8 flex flex-col
               "
             >
               {/* Tile Heading with teal underline */}
-              <div>
+              <div className="shrink-0 mb-6 lg:mb-8">
                 <h3
                   className="text-2xl md:text-3xl text-cream tracking-wide whitespace-nowrap"
                   style={{ fontFamily: "var(--font-display)" }}
@@ -704,18 +706,21 @@ export default function Skills() {
                 />
               </div>
 
-              {/* 7 discs: 3-col on desktop (3 + 3 + 1 centered), balanced wrap on tablet, 2-col on mobile */}
-              <div className="flex-1 flex items-center justify-center py-6 my-auto">
-                <ul className="grid grid-cols-2 lg:grid-cols-3 md:flex md:flex-wrap md:justify-center gap-x-4 gap-y-6 sm:gap-x-6 sm:gap-y-6 w-full max-w-sm md:max-w-xl lg:max-w-md justify-items-center [&>*:last-child]:col-span-2 lg:[&>*:last-child]:col-span-3 [&>*:last-child]:justify-self-center">
-                  {frontend.skills.map((skill) => (
-                    <VinylSkillItem
-                      key={skill.name}
-                      skill={skill}
-                      labelColor={skill.color}
-                    />
-                  ))}
-                </ul>
-              </div>
+              {/* 7 discs: 3-col on desktop (3 + 3 + 1 centered), distributed evenly across the height */}
+              <ul className="flex-1 min-h-0 grid grid-cols-2 sm:grid-cols-3 gap-x-2 sm:gap-x-4 gap-y-6 sm:gap-y-8 lg:gap-y-0 lg:content-between justify-items-center w-full">
+                {frontend.skills.map((skill, index) => (
+                  <VinylSkillItem
+                    key={skill.name}
+                    skill={skill}
+                    labelColor={skill.color}
+                    className={
+                      index === frontend.skills.length - 1
+                        ? "col-span-2 sm:col-span-3 justify-self-center"
+                        : ""
+                    }
+                  />
+                ))}
+              </ul>
             </section>
           )}
 
