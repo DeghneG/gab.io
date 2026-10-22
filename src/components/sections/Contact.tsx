@@ -1156,491 +1156,568 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* ── CARRIAGE ASSEMBLY — the whole thing moves ── */}
+          {/* ══════════════════════════════════════════════════
+              UNIFIED 3D TYPEWRITER CHASSIS & MECHANISM
+             ══════════════════════════════════════════════════ */}
           <div
-            ref={carriageRef}
-            className="relative z-10"
-            style={{ willChange: "transform" }}
-          >
-            {/* ── SOLID CONTINUOUS CHASSIS BED (Unifies Carriage & Keyboard Body) ── */}
-            <div
-              aria-hidden="true"
-              className="absolute inset-x-0 bottom-0 pointer-events-none select-none"
-              style={{
-                top: 14,
-                zIndex: 0,
-                background: "linear-gradient(180deg, #2b333d 0%, #1c2128 50%, #121519 100%)",
-                borderRadius: "14px 14px 0 0",
-                border: "1.5px solid #3d4653",
-                borderBottom: "none",
-                boxShadow: "0 14px 28px rgba(0,0,0,0.85), inset 0 2px 2px rgba(255,255,255,0.2)",
-              }}
-            >
-              {/* Chrome carriage guide rail tracks */}
-              <div
-                className="absolute top-2 left-4 right-4 h-[4px] rounded-full"
-                style={{
-                  background: "linear-gradient(180deg, #ffffff 0%, #9ba6b2 60%, #464f59 100%)",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.8)",
-                }}
-              />
-              <div
-                className="absolute top-4 left-6 right-6 h-[2px] rounded-full opacity-60"
-                style={{
-                  background: "linear-gradient(90deg, #111 0%, #5a6470 50%, #111 100%)",
-                }}
-              />
-            </div>
-
-            {/* Paper roller bar (Platen Cylinder) */}
-            <div
-              className="relative mx-auto rounded-full"
-              style={{
-                width: "92%",
-                height: 28,
-                /* True 3D rubber platen cylinder shading */
-                background: "linear-gradient(180deg, #101316 0%, #2e353e 14%, #5e6978 30%, #293038 60%, #121518 88%, #08090a 100%)",
-                boxShadow: "0 8px 20px rgba(0,0,0,0.75), inset 0 2px 2px rgba(255,255,255,0.3), inset 0 -3px 5px rgba(0,0,0,0.9)",
-                zIndex: 5,
-              }}
-            >
-              {/* Chrome Paper Bail Bar (holds paper tight to roller) */}
-              <div
-                aria-hidden="true"
-                className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-[3px] rounded-full z-10 pointer-events-none"
-                style={{
-                  background: "linear-gradient(180deg, #ffffff 0%, #d5dde5 40%, #76818c 100%)",
-                  boxShadow: "0 2px 5px rgba(0,0,0,0.7)",
-                }}
-              >
-                {/* Left bail roller guide */}
-                <div
-                  className="absolute top-1/2 -translate-y-1/2 rounded-[2px]"
-                  style={{
-                    left: "22%",
-                    width: 14,
-                    height: 11,
-                    background: "linear-gradient(180deg, #444, #181818 60%, #0a0a0a 100%)",
-                    border: "1px solid #5a6068",
-                    boxShadow: "0 2px 4px rgba(0,0,0,0.6)",
-                  }}
-                />
-                {/* Right bail roller guide */}
-                <div
-                  className="absolute top-1/2 -translate-y-1/2 rounded-[2px]"
-                  style={{
-                    right: "22%",
-                    width: 14,
-                    height: 11,
-                    background: "linear-gradient(180deg, #444, #181818 60%, #0a0a0a 100%)",
-                    border: "1px solid #5a6068",
-                    boxShadow: "0 2px 4px rgba(0,0,0,0.6)",
-                  }}
-                />
-              </div>
-
-              {/* Carriage Return Lever (Left Side - Interactive!) */}
-              <button
-                type="button"
-                onClick={() => {
-                  flashKey("RET");
-                  handleReturn();
-                }}
-                className="absolute z-10 cursor-pointer group outline-none"
-                style={{
-                  top: -6,
-                  left: -38,
-                  width: 48,
-                  height: 12,
-                  background: "linear-gradient(180deg, #ffffff 0%, #adb6c0 30%, #4f5862 70%, #1f2429 100%)",
-                  borderRadius: "6px 0 0 6px",
-                  transformOrigin: "right center",
-                  transform: "rotate(-15deg)",
-                  boxShadow: "0 6px 10px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.8)",
-                  transition: "transform 0.1s ease-out",
-                  border: "1px solid rgba(255,255,255,0.3)",
-                }}
-                title="Carriage Return Lever (Return / Next Line)"
-                aria-label="Carriage Return Lever"
-              >
-                {/* Finger paddle on lever */}
-                <div
-                  className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 group-hover:brightness-125 group-active:scale-95 transition-all"
-                  style={{
-                    width: 20,
-                    height: 28,
-                    background: "linear-gradient(135deg, #444a52 0%, #1c2024 60%, #0d0f11 100%)",
-                    borderRadius: "45% 10% 10% 45%",
-                    boxShadow: "inset 2px 0 4px rgba(255,255,255,0.25), 4px 6px 12px rgba(0,0,0,0.85)",
-                    border: "1px solid #333a42",
-                  }}
-                />
-              </button>
-
-              {/* 3D Cylindrical Roller Knobs */}
-              <div
-                className="absolute -left-3.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full"
-                style={{
-                  background: "radial-gradient(circle at 35% 35%, #9aa2ab 0%, #4b525b 50%, #1c2024 100%)",
-                  boxShadow: "3px 4px 8px rgba(0,0,0,0.75), inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 3px rgba(0,0,0,0.6)",
-                  border: "2px solid #3b424a",
-                }}
-              >
-                {/* Fluted ribbed ring & chrome center hub */}
-                <div className="absolute inset-1 rounded-full border border-white/20" />
-                <div
-                  className="absolute inset-2 rounded-full"
-                  style={{
-                    background: "radial-gradient(circle at 40% 40%, #ffffff 0%, #adb5be 60%, #505862 100%)",
-                    boxShadow: "inset 0 1px 1px rgba(255,255,255,0.8), 0 1px 2px rgba(0,0,0,0.5)",
-                  }}
-                />
-              </div>
-              <div
-                className="absolute -right-3.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full"
-                style={{
-                  background: "radial-gradient(circle at 35% 35%, #9aa2ab 0%, #4b525b 50%, #1c2024 100%)",
-                  boxShadow: "3px 4px 8px rgba(0,0,0,0.75), inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 3px rgba(0,0,0,0.6)",
-                  border: "2px solid #3b424a",
-                }}
-              >
-                <div className="absolute inset-1 rounded-full border border-white/20" />
-                <div
-                  className="absolute inset-2 rounded-full"
-                  style={{
-                    background: "radial-gradient(circle at 40% 40%, #ffffff 0%, #adb5be 60%, #505862 100%)",
-                    boxShadow: "inset 0 1px 1px rgba(255,255,255,0.8), 0 1px 2px rgba(0,0,0,0.5)",
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Paper guide bar with ruler */}
-            <div
-              className="mx-auto flex overflow-hidden"
-              style={{
-                width: "88%",
-                height: 7,
-                background: "linear-gradient(180deg, #999, #d0d0d0 30%, #777 80%, #555)",
-                marginTop: -3,
-                zIndex: 6,
-                position: "relative",
-                borderRadius: "2px",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.4)",
-              }}
-            >
-              {/* Ruler hash marks */}
-              <div
-                className="w-full h-full opacity-50"
-                style={{
-                  backgroundImage: "repeating-linear-gradient(90deg, #333 0px, #333 1px, transparent 1px, transparent 10px)",
-                  backgroundPosition: "bottom",
-                  backgroundSize: "10px 4px",
-                  backgroundRepeat: "repeat-x"
-                }}
-              />
-            </div>
-
-            {/* ── PERMANENT METAL PAPER TABLE / PAPER REST PLATE (Behind Paper) ── */}
-            <div
-              aria-hidden="true"
-              className="absolute left-1/2 -translate-x-1/2 pointer-events-none select-none rounded-t-[10px] overflow-hidden"
-              style={{
-                top: 24,
-                bottom: 0,
-                width: "88%",
-                zIndex: 1,
-                /* Dark cast steel with satin lacquer finish matching vintage typewriter shell */
-                background: "linear-gradient(180deg, #1b2026 0%, #29303a 20%, #1a2027 60%, #101418 100%)",
-                boxShadow: "inset 0 2px 3px rgba(255,255,255,0.18), inset 0 -4px 14px rgba(0,0,0,0.85), 0 8px 24px rgba(0,0,0,0.6)",
-                border: "1.5px solid #3c4550",
-                borderBottom: "none",
-              }}
-            >
-              {/* Brushed chrome top edge rail */}
-              <div
-                className="absolute top-0 inset-x-0 h-[3px]"
-                style={{
-                  background: "linear-gradient(90deg, #555 0%, #ccc 25%, #ffffff 50%, #ccc 75%, #555 100%)",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.6)",
-                }}
-              />
-
-              {/* Stamped metal margin measurement hash marks */}
-              <div
-                className="absolute top-2 inset-x-6 h-3 opacity-30"
-                style={{
-                  backgroundImage: "repeating-linear-gradient(90deg, #fff 0px, #fff 1px, transparent 1px, transparent 10px)",
-                  backgroundSize: "10px 4px",
-                  backgroundRepeat: "repeat-x",
-                }}
-              />
-
-              {/* Vertical fluted stamped grooves in the metal */}
-              <div
-                className="absolute inset-x-8 top-8 bottom-6 opacity-20"
-                style={{
-                  backgroundImage: "repeating-linear-gradient(90deg, transparent, transparent 16px, rgba(0,0,0,0.9) 17px, rgba(255,255,255,0.2) 18px, transparent 19px)",
-                }}
-              />
-
-              {/* Vintage Century Writers Embossed Brand Insignia */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center opacity-35 text-center px-4">
-                <div
-                  className="text-[11px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#F1A512] drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  ★ CENTURY WRITERS ★
-                </div>
-                <div className="text-[7px] sm:text-[8px] tracking-[0.3em] uppercase text-cream/70 font-mono mt-1">
-                  PATENT NO. 1926-US · MODEL 70 CARRIAGE BED
-                </div>
-                <div className="mt-2 w-28 h-[1px] bg-gradient-to-r from-transparent via-[#F1A512]/50 to-transparent" />
-              </div>
-
-              {/* Left and right chrome paper finger clamp guides */}
-              <div
-                className="absolute top-4 left-3 w-3 h-28 rounded-[2px]"
-                style={{
-                  background: "linear-gradient(180deg, #d8dee4 0%, #808892 60%, #40454d 100%)",
-                  boxShadow: "1px 2px 4px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.7)",
-                  border: "1px solid #2e343d",
-                }}
-              />
-              <div
-                className="absolute top-4 right-3 w-3 h-28 rounded-[2px]"
-                style={{
-                  background: "linear-gradient(180deg, #d8dee4 0%, #808892 60%, #40454d 100%)",
-                  boxShadow: "-1px 2px 4px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.7)",
-                  border: "1px solid #2e343d",
-                }}
-              />
-            </div>
-
-            {/* ── THE PAPER (aged, old-school) ────────── */}
-            <div
-              ref={paperRef}
-              className="relative mx-auto overflow-hidden"
-              style={{
-                width: "86%",
-                minHeight: 250,
-                willChange: "transform, opacity",
-                /* Aged yellowed paper base */
-                background: "linear-gradient(170deg, #e8d5a3 0%, #dcc78e 25%, #d4bc7a 50%, #e0cb90 75%, #d8c080 100%)",
-                /* Notebook lines */
-                backgroundImage: `
-                  linear-gradient(170deg, #e8d5a3 0%, #dcc78e 25%, #d4bc7a 50%, #e0cb90 75%, #d8c080 100%),
-                  repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(100,80,50,0.18) 23px, rgba(100,80,50,0.18) 24px)
-                `,
-                backgroundBlendMode: "normal",
-                boxShadow:
-                  "inset 0 0 60px rgba(80,50,20,0.15), inset 0 0 120px rgba(60,30,10,0.08), 4px 4px 20px rgba(0,0,0,0.2)",
-                borderLeft: "1px solid rgba(120,80,30,0.25)",
-                borderRight: "1px solid rgba(120,80,30,0.25)",
-                zIndex: 3,
-              }}
-            >
-              {/* Noise/grain texture overlay for paper fiber look */}
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")",
-                  backgroundRepeat: "repeat",
-                  backgroundSize: "180px 180px",
-                  opacity: 0.06,
-                  mixBlendMode: "multiply",
-                }}
-              />
-
-              {/* Small ink blot (left side) */}
-              <div
-                aria-hidden="true"
-                className="absolute pointer-events-none rounded-full"
-                style={{
-                  top: 150,
-                  left: 20,
-                  width: 7,
-                  height: 5,
-                  background: "rgba(40,20,10,0.15)",
-                  borderRadius: "60% 40% 50% 50%",
-                }}
-              />
-
-              {/* Age spots / foxing marks */}
-              <div
-                aria-hidden="true"
-                className="absolute pointer-events-none rounded-full"
-                style={{
-                  bottom: 50,
-                  right: 60,
-                  width: 10,
-                  height: 8,
-                  background: "rgba(130,90,40,0.08)",
-                  borderRadius: "50%",
-                }}
-              />
-
-              {/* Red margin line */}
-              <div
-                className="absolute top-0 bottom-0"
-                style={{
-                  left: 44,
-                  width: 2,
-                  background: "rgba(180,50,50,0.2)",
-                }}
-              />
-              {/* Second faint margin line */}
-              <div
-                className="absolute top-0 bottom-0"
-                style={{
-                  left: 48,
-                  width: 1,
-                  background: "rgba(180,50,50,0.1)",
-                }}
-              />
-
-              {/* Red POSTED ink stamp that slams down when sent */}
-              <div
-                ref={stampRef}
-                className="absolute top-5 right-5 sm:right-8 pointer-events-none select-none"
-                style={{
-                  opacity: isStamped ? 0.95 : 0,
-                  transform: isStamped ? "rotate(-10deg) scale(1)" : "rotate(-25deg) scale(2.2)",
-                  zIndex: 25,
-                }}
-              >
-                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-[2.5px] border-dashed border-wine flex flex-col items-center justify-center p-1 shadow-[0_2px_8px_rgba(140,0,39,0.35)] bg-wine/5">
-                  <span
-                    className="text-[9px] sm:text-[10px] font-bold tracking-widest uppercase text-wine"
-                    style={{ fontFamily: "var(--font-display)" }}
-                  >
-                    POSTED
-                  </span>
-                  <span className="text-[6.5px] text-wine/75 font-mono mt-0.5 font-bold">
-                    {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                  </span>
-                  <span className="text-[5.5px] tracking-widest text-wine/60 uppercase font-mono mt-0.5">
-                    PARCEL POST
-                  </span>
-                </div>
-              </div>
-
-              {/* Paper content */}
-              <div className="px-6 py-5 sm:px-8 sm:py-6">
-                <div
-                  className="space-y-2.5 text-xs sm:text-[13px] leading-relaxed"
-                  style={{ fontFamily: "var(--font-body)", color: "#3A1520" }}
-                >
-                  {/* To */}
-                  <p>
-                    <span className="font-bold" style={{ color: "rgba(58,21,32,0.4)" }}>To:</span>{" "}
-                    <span>{contact.email}</span>
-                  </p>
-
-                  <div style={{ borderTop: "1px solid rgba(58,21,32,0.08)", margin: "12px 0" }} />
-
-                  {/* From */}
-                  <p>
-                    <span className="font-bold" style={{ color: "rgba(58,21,32,0.4)" }}>From:</span>{" "}
-                    <span
-                      className={`inline cursor-text outline-none ${activeField === "from" ? "typewriter-field-cursor" : ""}`}
-                      onClick={() => changeField("from")}
-                      role="button"
-                      tabIndex={0}
-                    >
-                      {fromEmail || (activeField !== "from" && (
-                        <span style={{ color: "rgba(58,21,32,0.2)", fontStyle: "italic" }}>your email</span>
-                      ))}
-                    </span>
-                  </p>
-
-                  {/* Topic (under from and before your message) */}
-                  <p>
-                    <span className="font-bold" style={{ color: "rgba(58,21,32,0.4)" }}>Topic:</span>{" "}
-                    <span
-                      className={`inline cursor-text outline-none ${activeField === "topic" ? "typewriter-field-cursor" : ""}`}
-                      onClick={() => changeField("topic")}
-                      role="button"
-                      tabIndex={0}
-                    >
-                      {topic || (activeField !== "topic" && (
-                        <span style={{ color: "rgba(58,21,32,0.2)", fontStyle: "italic" }}>e.g. project inquiry, hello</span>
-                      ))}
-                    </span>
-                  </p>
-
-                  {/* Message */}
-                  <div>
-                    <p className="font-bold mb-1" style={{ color: "rgba(58,21,32,0.4)" }}>Your message:</p>
-                    <div
-                      className={`min-h-[50px] whitespace-pre-wrap cursor-text outline-none ${activeField === "message" ? "typewriter-field-cursor" : ""}`}
-                      onClick={() => changeField("message")}
-                      role="button"
-                      tabIndex={0}
-                    >
-                      {message || (activeField !== "message" && (
-                        <span style={{ color: "rgba(58,21,32,0.2)", fontStyle: "italic" }}>type here</span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div style={{ borderTop: "1px solid rgba(58,21,32,0.08)", margin: "12px 0" }} />
-
-                  {/* Best Regards */}
-                  <p className="font-bold" style={{ color: "rgba(58,21,32,0.4)" }}>Best Regards,</p>
-                  <p>
-                    <span
-                      className={`inline cursor-text outline-none ${activeField === "name" ? "typewriter-field-cursor" : ""}`}
-                      onClick={() => changeField("name")}
-                      role="button"
-                      tabIndex={0}
-                    >
-                      {fullName || (activeField !== "name" && (
-                        <span style={{ color: "rgba(58,21,32,0.2)", fontStyle: "italic" }}>your full name</span>
-                      ))}
-                    </span>
-                  </p>
-                </div>
-              </div>
-
-              {/* Torn/rough bottom edge of paper */}
-              <div
-                aria-hidden="true"
-                className="absolute bottom-0 left-0 right-0"
-                style={{
-                  height: 6,
-                  background: "linear-gradient(90deg, rgba(180,150,100,0.3), rgba(200,170,120,0.1), rgba(160,130,80,0.3), rgba(190,160,110,0.1), rgba(170,140,90,0.25))",
-                  maskImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 3 Q10 0 20 4 Q30 1 40 3 Q50 5 60 2 Q70 0 80 4 Q90 1 100 3 Q110 5 120 2 Q130 0 140 4 Q150 1 160 3 Q170 5 180 2 Q190 0 200 3 L200 6 L0 6Z' fill='black'/%3E%3C/svg%3E\")",
-                  WebkitMaskImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 3 Q10 0 20 4 Q30 1 40 3 Q50 5 60 2 Q70 0 80 4 Q90 1 100 3 Q110 5 120 2 Q130 0 140 4 Q150 1 160 3 Q170 5 180 2 Q190 0 200 3 L200 6 L0 6Z' fill='black'/%3E%3C/svg%3E\")",
-                  maskSize: "200px 6px",
-                  WebkitMaskSize: "200px 6px",
-                  maskRepeat: "repeat-x",
-                  WebkitMaskRepeat: "repeat-x",
-                }}
-              />
-            </div>
-          </div>
-
-          {/* ── TYPEWRITER BODY ───────────────────────── */}
-          <div
-            className="relative -mt-3 z-20 px-3 sm:px-5 md:px-6 pt-4 pb-5"
+            className="relative z-10 w-full overflow-visible"
             style={{
-              /* Matte blue-grey shell */
+              /* Unified cast-metal industrial typewriter chassis */
               backgroundColor: "#3B444F",
               backgroundImage: `
                 url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"),
                 linear-gradient(180deg, rgba(82,94,106,0.95) 0%, rgba(62,71,82,0.95) 25%, rgba(42,49,58,0.98) 75%, rgba(24,28,33,1) 100%)
               `,
               backgroundBlendMode: "overlay, normal",
-              borderRadius: "18px 18px 24px 24px",
+              borderRadius: "20px 20px 24px 24px",
               boxShadow:
                 "0 32px 64px rgba(0,0,0,0.95), 0 14px 24px rgba(0,0,0,0.85), inset 0 2px 2px rgba(255,255,255,0.3), inset -14px 0 28px rgba(0,0,0,0.45), inset 14px 0 28px rgba(0,0,0,0.45), inset 0 -8px 16px rgba(0,0,0,0.7)",
-              border: "1px solid #1a1e23",
+              border: "1.5px solid #1a1e23",
               borderTop: "2px solid #6b7786",
             }}
           >
-            {/* The deep typebar cavity (cutout in the middle) */}
+            {/* ── 1. STATIONARY REAR CARRIAGE CRADLE & GUIDE RAILS ── */}
+            <div className="relative w-full overflow-visible px-2 sm:px-3 pt-2.5">
+              {/* Recessed stationary guide rail track cavity */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-x-2 sm:inset-x-3 bottom-0 top-2.5 pointer-events-none rounded-t-[14px]"
+                style={{
+                  background: "linear-gradient(180deg, #101418 0%, #1a2027 60%, #242c36 100%)",
+                  boxShadow: "inset 0 8px 16px rgba(0,0,0,0.95), inset 0 2px 4px rgba(0,0,0,0.8)",
+                  border: "1.5px solid #202730",
+                  borderBottom: "none",
+                }}
+              >
+                {/* Stationary Dual Chrome Guide Rails */}
+                <div
+                  className="absolute top-2 left-4 right-4 h-[4px] rounded-full"
+                  style={{
+                    background: "linear-gradient(180deg, #ffffff 0%, #c4cbd4 40%, #586370 100%)",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.9)",
+                  }}
+                />
+                <div
+                  className="absolute top-4 left-6 right-6 h-[2px] rounded-full"
+                  style={{
+                    background: "linear-gradient(90deg, #181d22 0%, #76818f 30%, #a4adb8 50%, #76818f 70%, #181d22 100%)",
+                    boxShadow: "0 1px 2px rgba(0,0,0,0.6)",
+                  }}
+                />
+
+                {/* Left Stationary Buffer Cheek & Stop */}
+                <div
+                  className="absolute left-0 top-0 bottom-0 w-4 rounded-tl-[12px] flex items-center justify-end"
+                  style={{
+                    background: "linear-gradient(90deg, #3d4754 0%, #222830 100%)",
+                    borderRight: "1px solid #15181c",
+                    boxShadow: "2px 0 4px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.25)",
+                  }}
+                >
+                  <div className="w-1.5 h-5 bg-[#0a0c0e] rounded-l-[2px] border-l border-white/10" />
+                </div>
+
+                {/* Right Stationary Buffer Cheek & Stop */}
+                <div
+                  className="absolute right-0 top-0 bottom-0 w-4 rounded-tr-[12px] flex items-center justify-start"
+                  style={{
+                    background: "linear-gradient(270deg, #3d4754 0%, #222830 100%)",
+                    borderLeft: "1px solid #15181c",
+                    boxShadow: "-2px 0 4px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.25)",
+                  }}
+                >
+                  <div className="w-1.5 h-5 bg-[#0a0c0e] rounded-r-[2px] border-r border-white/10" />
+                </div>
+              </div>
+
+              {/* ── 2. MOVING CARRIAGE ASSEMBLY — slides along the rails ── */}
+              <div
+                ref={carriageRef}
+                className="relative z-10"
+                style={{ willChange: "transform" }}
+              >
+                {/* Paper roller bar (Platen Cylinder) */}
+                <div
+                  className="relative mx-auto rounded-full"
+                  style={{
+                    width: "90%",
+                    height: 28,
+                    /* True 3D rubber platen cylinder shading */
+                    background: "linear-gradient(180deg, #101316 0%, #2e353e 14%, #5e6978 30%, #293038 60%, #121518 88%, #08090a 100%)",
+                    boxShadow: "0 8px 20px rgba(0,0,0,0.75), inset 0 2px 2px rgba(255,255,255,0.3), inset 0 -3px 5px rgba(0,0,0,0.9)",
+                    zIndex: 5,
+                  }}
+                >
+                  {/* Left Cast Platen Bearing Tower / Upright Bracket */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 sm:w-5 h-11 pointer-events-none rounded-[4px] flex items-center justify-center"
+                    style={{
+                      background: "linear-gradient(180deg, #566473 0%, #2e353e 40%, #181d22 100%)",
+                      border: "1px solid #5a6675",
+                      borderLeft: "1.5px solid rgba(255,255,255,0.35)",
+                      borderBottom: "2px solid #0f1215",
+                      boxShadow: "0 4px 8px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.4)",
+                      zIndex: 12,
+                    }}
+                  >
+                    {/* Brass axle pivot screw */}
+                    <div
+                      className="w-2.5 h-2.5 rounded-full"
+                      style={{
+                        background: "radial-gradient(circle at 35% 35%, #ffe680 0%, #d4af37 55%, #6a5205 100%)",
+                        boxShadow: "0 1px 2px rgba(0,0,0,0.8)",
+                        border: "0.5px solid #4a3a03",
+                      }}
+                    />
+                  </div>
+
+                  {/* Right Cast Platen Bearing Tower / Upright Bracket */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute -right-2 top-1/2 -translate-y-1/2 w-4 sm:w-5 h-11 pointer-events-none rounded-[4px] flex items-center justify-center"
+                    style={{
+                      background: "linear-gradient(180deg, #566473 0%, #2e353e 40%, #181d22 100%)",
+                      border: "1px solid #5a6675",
+                      borderRight: "1.5px solid rgba(255,255,255,0.35)",
+                      borderBottom: "2px solid #0f1215",
+                      boxShadow: "0 4px 8px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.4)",
+                      zIndex: 12,
+                    }}
+                  >
+                    {/* Brass axle pivot screw */}
+                    <div
+                      className="w-2.5 h-2.5 rounded-full"
+                      style={{
+                        background: "radial-gradient(circle at 35% 35%, #ffe680 0%, #d4af37 55%, #6a5205 100%)",
+                        boxShadow: "0 1px 2px rgba(0,0,0,0.8)",
+                        border: "0.5px solid #4a3a03",
+                      }}
+                    />
+                  </div>
+
+                  {/* Chrome Paper Bail Bar (holds paper tight to roller) */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-[3px] rounded-full z-10 pointer-events-none"
+                    style={{
+                      background: "linear-gradient(180deg, #ffffff 0%, #d5dde5 40%, #76818c 100%)",
+                      boxShadow: "0 2px 5px rgba(0,0,0,0.7)",
+                    }}
+                  >
+                    {/* Left bail roller guide */}
+                    <div
+                      className="absolute top-1/2 -translate-y-1/2 rounded-[2px]"
+                      style={{
+                        left: "22%",
+                        width: 14,
+                        height: 11,
+                        background: "linear-gradient(180deg, #444, #181818 60%, #0a0a0a 100%)",
+                        border: "1px solid #5a6068",
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.6)",
+                      }}
+                    />
+                    {/* Right bail roller guide */}
+                    <div
+                      className="absolute top-1/2 -translate-y-1/2 rounded-[2px]"
+                      style={{
+                        right: "22%",
+                        width: 14,
+                        height: 11,
+                        background: "linear-gradient(180deg, #444, #181818 60%, #0a0a0a 100%)",
+                        border: "1px solid #5a6068",
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.6)",
+                      }}
+                    />
+                  </div>
+
+                  {/* Carriage Return Lever (Left Side - Interactive!) */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      flashKey("RET");
+                      handleReturn();
+                    }}
+                    className="absolute z-10 cursor-pointer group outline-none"
+                    style={{
+                      top: -6,
+                      left: -42,
+                      width: 48,
+                      height: 12,
+                      background: "linear-gradient(180deg, #ffffff 0%, #adb6c0 30%, #4f5862 70%, #1f2429 100%)",
+                      borderRadius: "6px 0 0 6px",
+                      transformOrigin: "right center",
+                      transform: "rotate(-15deg)",
+                      boxShadow: "0 6px 10px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.8)",
+                      transition: "transform 0.1s ease-out",
+                      border: "1px solid rgba(255,255,255,0.3)",
+                    }}
+                    title="Carriage Return Lever (Return / Next Line)"
+                    aria-label="Carriage Return Lever"
+                  >
+                    {/* Finger paddle on lever */}
+                    <div
+                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 group-hover:brightness-125 group-active:scale-95 transition-all"
+                      style={{
+                        width: 20,
+                        height: 28,
+                        background: "linear-gradient(135deg, #444a52 0%, #1c2024 60%, #0d0f11 100%)",
+                        borderRadius: "45% 10% 10% 45%",
+                        boxShadow: "inset 2px 0 4px rgba(255,255,255,0.25), 4px 6px 12px rgba(0,0,0,0.85)",
+                        border: "1px solid #333a42",
+                      }}
+                    />
+                  </button>
+
+                  {/* 3D Cylindrical Roller Knobs */}
+                  <div
+                    className="absolute -left-6 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full z-10"
+                    style={{
+                      background: "radial-gradient(circle at 35% 35%, #9aa2ab 0%, #4b525b 50%, #1c2024 100%)",
+                      boxShadow: "3px 4px 8px rgba(0,0,0,0.75), inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 3px rgba(0,0,0,0.6)",
+                      border: "2px solid #3b424a",
+                    }}
+                  >
+                    {/* Fluted ribbed ring & chrome center hub */}
+                    <div className="absolute inset-1 rounded-full border border-white/20" />
+                    <div
+                      className="absolute inset-2 rounded-full"
+                      style={{
+                        background: "radial-gradient(circle at 40% 40%, #ffffff 0%, #adb5be 60%, #505862 100%)",
+                        boxShadow: "inset 0 1px 1px rgba(255,255,255,0.8), 0 1px 2px rgba(0,0,0,0.5)",
+                      }}
+                    />
+                  </div>
+                  <div
+                    className="absolute -right-6 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full z-10"
+                    style={{
+                      background: "radial-gradient(circle at 35% 35%, #9aa2ab 0%, #4b525b 50%, #1c2024 100%)",
+                      boxShadow: "3px 4px 8px rgba(0,0,0,0.75), inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 3px rgba(0,0,0,0.6)",
+                      border: "2px solid #3b424a",
+                    }}
+                  >
+                    <div className="absolute inset-1 rounded-full border border-white/20" />
+                    <div
+                      className="absolute inset-2 rounded-full"
+                      style={{
+                        background: "radial-gradient(circle at 40% 40%, #ffffff 0%, #adb5be 60%, #505862 100%)",
+                        boxShadow: "inset 0 1px 1px rgba(255,255,255,0.8), 0 1px 2px rgba(0,0,0,0.5)",
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Paper guide bar with ruler */}
+                <div
+                  className="mx-auto flex overflow-hidden"
+                  style={{
+                    width: "88%",
+                    height: 7,
+                    background: "linear-gradient(180deg, #999, #d0d0d0 30%, #777 80%, #555)",
+                    marginTop: -3,
+                    zIndex: 6,
+                    position: "relative",
+                    borderRadius: "2px",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.4)",
+                  }}
+                >
+                  {/* Ruler hash marks */}
+                  <div
+                    className="w-full h-full opacity-50"
+                    style={{
+                      backgroundImage: "repeating-linear-gradient(90deg, #333 0px, #333 1px, transparent 1px, transparent 10px)",
+                      backgroundPosition: "bottom",
+                      backgroundSize: "10px 4px",
+                      backgroundRepeat: "repeat-x"
+                    }}
+                  />
+                </div>
+
+                {/* ── PERMANENT METAL PAPER TABLE / PAPER REST PLATE (Behind Paper) ── */}
+                <div
+                  aria-hidden="true"
+                  className="absolute left-1/2 -translate-x-1/2 pointer-events-none select-none rounded-t-[10px] overflow-hidden"
+                  style={{
+                    top: 24,
+                    bottom: 0,
+                    width: "88%",
+                    zIndex: 1,
+                    /* Dark cast steel with satin lacquer finish matching vintage typewriter shell */
+                    background: "linear-gradient(180deg, #1b2026 0%, #29303a 20%, #1a2027 60%, #101418 100%)",
+                    boxShadow: "inset 0 2px 3px rgba(255,255,255,0.18), inset 0 -4px 14px rgba(0,0,0,0.85), 0 8px 24px rgba(0,0,0,0.6)",
+                    border: "1.5px solid #3c4550",
+                    borderBottom: "none",
+                  }}
+                >
+                  {/* Brushed chrome top edge rail */}
+                  <div
+                    className="absolute top-0 inset-x-0 h-[3px]"
+                    style={{
+                      background: "linear-gradient(90deg, #555 0%, #ccc 25%, #ffffff 50%, #ccc 75%, #555 100%)",
+                      boxShadow: "0 1px 2px rgba(0,0,0,0.6)",
+                    }}
+                  />
+
+                  {/* Stamped metal margin measurement hash marks */}
+                  <div
+                    className="absolute top-2 inset-x-6 h-3 opacity-30"
+                    style={{
+                      backgroundImage: "repeating-linear-gradient(90deg, #fff 0px, #fff 1px, transparent 1px, transparent 10px)",
+                      backgroundSize: "10px 4px",
+                      backgroundRepeat: "repeat-x",
+                    }}
+                  />
+
+                  {/* Vertical fluted stamped grooves in the metal */}
+                  <div
+                    className="absolute inset-x-8 top-8 bottom-6 opacity-20"
+                    style={{
+                      backgroundImage: "repeating-linear-gradient(90deg, transparent, transparent 16px, rgba(0,0,0,0.9) 17px, rgba(255,255,255,0.2) 18px, transparent 19px)",
+                    }}
+                  />
+
+                  {/* Vintage Century Writers Embossed Brand Insignia */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center opacity-35 text-center px-4">
+                    <div
+                      className="text-[11px] sm:text-xs font-bold tracking-[0.25em] uppercase text-[#F1A512] drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      ★ CENTURY WRITERS ★
+                    </div>
+                    <div className="text-[7px] sm:text-[8px] tracking-[0.3em] uppercase text-cream/70 font-mono mt-1">
+                      PATENT NO. 1926-US · MODEL 70 CARRIAGE BED
+                    </div>
+                    <div className="mt-2 w-28 h-[1px] bg-gradient-to-r from-transparent via-[#F1A512]/50 to-transparent" />
+                  </div>
+
+                  {/* Left and right chrome paper finger clamp guides */}
+                  <div
+                    className="absolute top-4 left-3 w-3 h-28 rounded-[2px]"
+                    style={{
+                      background: "linear-gradient(180deg, #d8dee4 0%, #808892 60%, #40454d 100%)",
+                      boxShadow: "1px 2px 4px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.7)",
+                      border: "1px solid #2e343d",
+                    }}
+                  />
+                  <div
+                    className="absolute top-4 right-3 w-3 h-28 rounded-[2px]"
+                    style={{
+                      background: "linear-gradient(180deg, #d8dee4 0%, #808892 60%, #40454d 100%)",
+                      boxShadow: "-1px 2px 4px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.7)",
+                      border: "1px solid #2e343d",
+                    }}
+                  />
+                </div>
+
+                {/* ── THE PAPER (aged, old-school) ────────── */}
+                <div
+                  ref={paperRef}
+                  className="relative mx-auto overflow-hidden"
+                  style={{
+                    width: "86%",
+                    minHeight: 250,
+                    willChange: "transform, opacity",
+                    /* Aged yellowed paper base */
+                    background: "linear-gradient(170deg, #e8d5a3 0%, #dcc78e 25%, #d4bc7a 50%, #e0cb90 75%, #d8c080 100%)",
+                    /* Notebook lines */
+                    backgroundImage: `
+                      linear-gradient(170deg, #e8d5a3 0%, #dcc78e 25%, #d4bc7a 50%, #e0cb90 75%, #d8c080 100%),
+                      repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(100,80,50,0.18) 23px, rgba(100,80,50,0.18) 24px)
+                    `,
+                    backgroundBlendMode: "normal",
+                    boxShadow:
+                      "inset 0 0 60px rgba(80,50,20,0.15), inset 0 0 120px rgba(60,30,10,0.08), 4px 4px 20px rgba(0,0,0,0.2)",
+                    borderLeft: "1px solid rgba(120,80,30,0.25)",
+                    borderRight: "1px solid rgba(120,80,30,0.25)",
+                    zIndex: 3,
+                  }}
+                >
+                  {/* Noise/grain texture overlay for paper fiber look */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")",
+                      backgroundRepeat: "repeat",
+                      backgroundSize: "180px 180px",
+                      opacity: 0.06,
+                      mixBlendMode: "multiply",
+                    }}
+                  />
+
+                  {/* Small ink blot (left side) */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute pointer-events-none rounded-full"
+                    style={{
+                      top: 150,
+                      left: 20,
+                      width: 7,
+                      height: 5,
+                      background: "rgba(40,20,10,0.15)",
+                      borderRadius: "60% 40% 50% 50%",
+                    }}
+                  />
+
+                  {/* Age spots / foxing marks */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute pointer-events-none rounded-full"
+                    style={{
+                      bottom: 50,
+                      right: 60,
+                      width: 10,
+                      height: 8,
+                      background: "rgba(130,90,40,0.08)",
+                      borderRadius: "50%",
+                    }}
+                  />
+
+                  {/* Red margin line */}
+                  <div
+                    className="absolute top-0 bottom-0"
+                    style={{
+                      left: 44,
+                      width: 2,
+                      background: "rgba(180,50,50,0.2)",
+                    }}
+                  />
+                  {/* Second faint margin line */}
+                  <div
+                    className="absolute top-0 bottom-0"
+                    style={{
+                      left: 48,
+                      width: 1,
+                      background: "rgba(180,50,50,0.1)",
+                    }}
+                  />
+
+                  {/* Red POSTED ink stamp that slams down when sent */}
+                  <div
+                    ref={stampRef}
+                    className="absolute top-5 right-5 sm:right-8 pointer-events-none select-none"
+                    style={{
+                      opacity: isStamped ? 0.95 : 0,
+                      transform: isStamped ? "rotate(-10deg) scale(1)" : "rotate(-25deg) scale(2.2)",
+                      zIndex: 25,
+                    }}
+                  >
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-[2.5px] border-dashed border-wine flex flex-col items-center justify-center p-1 shadow-[0_2px_8px_rgba(140,0,39,0.35)] bg-wine/5">
+                      <span
+                        className="text-[9px] sm:text-[10px] font-bold tracking-widest uppercase text-wine"
+                        style={{ fontFamily: "var(--font-display)" }}
+                      >
+                        POSTED
+                      </span>
+                      <span className="text-[6.5px] text-wine/75 font-mono mt-0.5 font-bold">
+                        {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                      </span>
+                      <span className="text-[5.5px] tracking-widest text-wine/60 uppercase font-mono mt-0.5">
+                        PARCEL POST
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Paper content */}
+                  <div className="px-6 py-5 sm:px-8 sm:py-6">
+                    <div
+                      className="space-y-2.5 text-xs sm:text-[13px] leading-relaxed"
+                      style={{ fontFamily: "var(--font-body)", color: "#3A1520" }}
+                    >
+                      {/* To */}
+                      <p>
+                        <span className="font-bold" style={{ color: "rgba(58,21,32,0.4)" }}>To:</span>{" "}
+                        <span>{contact.email}</span>
+                      </p>
+
+                      <div style={{ borderTop: "1px solid rgba(58,21,32,0.08)", margin: "12px 0" }} />
+
+                      {/* From */}
+                      <p>
+                        <span className="font-bold" style={{ color: "rgba(58,21,32,0.4)" }}>From:</span>{" "}
+                        <span
+                          className={`inline cursor-text outline-none ${activeField === "from" ? "typewriter-field-cursor" : ""}`}
+                          onClick={() => changeField("from")}
+                          role="button"
+                          tabIndex={0}
+                        >
+                          {fromEmail || (activeField !== "from" && (
+                            <span style={{ color: "rgba(58,21,32,0.2)", fontStyle: "italic" }}>your email</span>
+                          ))}
+                        </span>
+                      </p>
+
+                      {/* Topic (under from and before your message) */}
+                      <p>
+                        <span className="font-bold" style={{ color: "rgba(58,21,32,0.4)" }}>Topic:</span>{" "}
+                        <span
+                          className={`inline cursor-text outline-none ${activeField === "topic" ? "typewriter-field-cursor" : ""}`}
+                          onClick={() => changeField("topic")}
+                          role="button"
+                          tabIndex={0}
+                        >
+                          {topic || (activeField !== "topic" && (
+                            <span style={{ color: "rgba(58,21,32,0.2)", fontStyle: "italic" }}>e.g. project inquiry, hello</span>
+                          ))}
+                        </span>
+                      </p>
+
+                      {/* Message */}
+                      <div>
+                        <p className="font-bold mb-1" style={{ color: "rgba(58,21,32,0.4)" }}>Your message:</p>
+                        <div
+                          className={`min-h-[50px] whitespace-pre-wrap cursor-text outline-none ${activeField === "message" ? "typewriter-field-cursor" : ""}`}
+                          onClick={() => changeField("message")}
+                          role="button"
+                          tabIndex={0}
+                        >
+                          {message || (activeField !== "message" && (
+                            <span style={{ color: "rgba(58,21,32,0.2)", fontStyle: "italic" }}>type here</span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div style={{ borderTop: "1px solid rgba(58,21,32,0.08)", margin: "12px 0" }} />
+
+                      {/* Best Regards */}
+                      <p className="font-bold" style={{ color: "rgba(58,21,32,0.4)" }}>Best Regards,</p>
+                      <p>
+                        <span
+                          className={`inline cursor-text outline-none ${activeField === "name" ? "typewriter-field-cursor" : ""}`}
+                          onClick={() => changeField("name")}
+                          role="button"
+                          tabIndex={0}
+                        >
+                          {fullName || (activeField !== "name" && (
+                            <span style={{ color: "rgba(58,21,32,0.2)", fontStyle: "italic" }}>your full name</span>
+                          ))}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Torn/rough bottom edge of paper */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute bottom-0 left-0 right-0"
+                    style={{
+                      height: 6,
+                      background: "linear-gradient(90deg, rgba(180,150,100,0.3), rgba(200,170,120,0.1), rgba(160,130,80,0.3), rgba(190,160,110,0.1), rgba(170,140,90,0.25))",
+                      maskImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 3 Q10 0 20 4 Q30 1 40 3 Q50 5 60 2 Q70 0 80 4 Q90 1 100 3 Q110 5 120 2 Q130 0 140 4 Q150 1 160 3 Q170 5 180 2 Q190 0 200 3 L200 6 L0 6Z' fill='black'/%3E%3C/svg%3E\")",
+                      WebkitMaskImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 3 Q10 0 20 4 Q30 1 40 3 Q50 5 60 2 Q70 0 80 4 Q90 1 100 3 Q110 5 120 2 Q130 0 140 4 Q150 1 160 3 Q170 5 180 2 Q190 0 200 3 L200 6 L0 6Z' fill='black'/%3E%3C/svg%3E\")",
+                      maskSize: "200px 6px",
+                      WebkitMaskSize: "200px 6px",
+                      maskRepeat: "repeat-x",
+                      WebkitMaskRepeat: "repeat-x",
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* ── 3. CHASSIS FRONT DECK & SUNKEN KEYBOARD TRAY ── */}
+            <div className="relative z-20 px-3 sm:px-5 md:px-6 pt-3 pb-5 -mt-2">
+              {/* The deep typebar cavity (cutout in the middle) */}
             <div
               className="absolute left-1/2 -translate-x-1/2 top-0 overflow-hidden"
               style={{
@@ -2117,6 +2194,7 @@ export default function Contact() {
               }}
             />
           </div>
+        </div>
         </div>
       </div>
 
