@@ -853,7 +853,7 @@ export default function Contact() {
          ══════════════════════════════════════════════════ */}
       <div
         ref={contentRef}
-        className="w-full max-w-[640px] mx-auto relative"
+        className="w-full max-w-5xl mx-auto relative"
         style={{ perspective: "1400px" }}
       >
         {/* ── FLOATING ANIMATED FOLDED LETTER OVERLAY (GSAP flight sequence) ── */}
@@ -902,7 +902,7 @@ export default function Contact() {
             <div className="pl-6 space-y-1.5 text-xs" style={{ fontFamily: "var(--font-body)", color: "#3A1520" }}>
               <p><span className="font-bold opacity-50">To:</span> {contact.email}</p>
               <p><span className="font-bold opacity-50">From:</span> {fromEmail}</p>
-              <p><span className="font-bold opacity-50">Topic:</span> {topic}</p>
+              <p><span className="font-bold opacity-50">Subject:</span> {topic}</p>
               <p className="line-clamp-2"><span className="font-bold opacity-50">Your message:</span> {message}</p>
               <p className="mt-2"><span className="font-bold opacity-50">Best Regards,</span> {fullName}</p>
             </div>
@@ -913,248 +913,33 @@ export default function Contact() {
           </div>
         </div>
 
-        {/* ── GROUNDING CONTACT & AMBIENT DESK SHADOWS ────── */}
+        {/* ── 3D DESK WORKSPACE PLANE (Shares 14deg tilt across typewriter & mailbox) ── */}
         <div
-          aria-hidden="true"
-          className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[94%] h-28 pointer-events-none rounded-[50%]"
-          style={{
-            background: "radial-gradient(ellipse at 50% 50%, rgba(10,2,5,0.88) 0%, rgba(20,5,10,0.5) 45%, transparent 75%)",
-            filter: "blur(22px)",
-          }}
-        />
-        <div
-          aria-hidden="true"
-          className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[86%] h-8 pointer-events-none rounded-[50%]"
-          style={{
-            background: "rgba(0,0,0,0.95)",
-            filter: "blur(8px)",
-          }}
-        />
-
-        <div
-          className="relative"
+          className="relative flex flex-col md:flex-row items-center md:items-center justify-center gap-8 lg:gap-14"
           style={{
             transformStyle: "preserve-3d",
             transform: "rotateX(14deg)",
           }}
         >
-          {/* ── VINTAGE CAST-IRON & BRASS DESK POST BOX (Substantial Pillar Mailbox) ── */}
-          <div
-            ref={postalSlotRef}
-            className="
-              absolute
-              -right-2 sm:-right-4 md:-right-24 lg:-right-40 xl:-right-44
-              -top-6 sm:-top-4 md:top-0 lg:top-1
-              z-30 select-none
-              scale-[0.72] sm:scale-[0.78] md:scale-90 lg:scale-95
-              origin-top-right md:origin-top-left
-            "
-            style={{
-              perspective: "1000px",
-            }}
-            title="Vintage Postal Letter Box"
-            aria-label="Vintage Postal Letter Box"
-          >
-            {/* Grounding cast shadow on desk surface */}
+          {/* ── 1. TYPEWRITER (Main Instrument) ── */}
+          <div className="w-full max-w-[580px] lg:max-w-[620px] relative">
+            {/* Grounding Contact & Ambient Desk Shadows underneath Typewriter */}
             <div
               aria-hidden="true"
-              className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-[120%] h-12 pointer-events-none rounded-[50%]"
+              className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[94%] h-28 pointer-events-none rounded-[50%]"
               style={{
-                background: "radial-gradient(ellipse at center, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 50%, transparent 75%)",
-                filter: "blur(6px)",
+                background: "radial-gradient(ellipse at 50% 50%, rgba(10,2,5,0.88) 0%, rgba(20,5,10,0.5) 45%, transparent 75%)",
+                filter: "blur(22px)",
               }}
             />
-
-            {/* Pillar box main body */}
             <div
-              className="relative flex flex-col items-center overflow-hidden"
+              aria-hidden="true"
+              className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[86%] h-8 pointer-events-none rounded-[50%]"
               style={{
-                width: "205px",
-                minHeight: "315px",
-                borderRadius: "44px 44px 14px 14px",
-                background: "linear-gradient(165deg, #323b46 0%, #222830 35%, #14171c 70%, #0a0c0f 100%)",
-                boxShadow:
-                  "0 24px 48px rgba(0,0,0,0.85), inset 2px 2px 3px rgba(255,255,255,0.22), inset -3px -3px 8px rgba(0,0,0,0.85), 0 2px 4px rgba(0,0,0,0.9)",
-                border: "2px solid #3d4654",
+                background: "rgba(0,0,0,0.95)",
+                filter: "blur(8px)",
               }}
-            >
-              {/* ── 1. DOMED TOP CAP with brass finial & brand insignia ── */}
-              <div className="w-full pt-4 pb-2.5 px-4 flex flex-col items-center relative">
-                {/* Polished brass ball finial */}
-                <div
-                  className="w-4 h-4 rounded-full mb-1.5"
-                  style={{
-                    background: "radial-gradient(circle at 35% 35%, #ffe680 0%, #d4af37 45%, #7a5d05 100%)",
-                    boxShadow: "0 2px 4px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.7)",
-                    border: "1px solid #5a4303",
-                  }}
-                />
-                {/* Curved crown insignia badge */}
-                <div
-                  className="text-[9px] font-bold tracking-[0.28em] uppercase text-[#d4af37] text-center"
-                  style={{
-                    fontFamily: "var(--font-display)",
-                    textShadow: "0 1px 2px rgba(0,0,0,0.9)",
-                  }}
-                >
-                  ★ GABRIEL POST ★
-                </div>
-                <div className="text-[7px] tracking-[0.2em] uppercase text-cream/50 font-mono mt-0.5">
-                  DISPATCH NO. 70
-                </div>
-
-                {/* Embossed metal separator trim band with brass rivets */}
-                <div
-                  className="w-full mt-2.5 h-[3px] rounded-full relative"
-                  style={{
-                    background: "linear-gradient(180deg, #586474 0%, #28303a 100%)",
-                    boxShadow: "0 1px 2px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.25)",
-                  }}
-                >
-                  <span className="absolute -top-1 left-2 w-1.5 h-1.5 rounded-full bg-[#d4af37] shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]" />
-                  <span className="absolute -top-1 right-2 w-1.5 h-1.5 rounded-full bg-[#d4af37] shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]" />
-                </div>
-              </div>
-
-              {/* ── 2. BRASS MAIL SLOT APERTURE & HINGED FLAP ── */}
-              <div className="w-full px-3.5 mt-1">
-                <div
-                  className="relative rounded-lg p-2 flex flex-col items-center"
-                  style={{
-                    background: "linear-gradient(180deg, #242a33 0%, #171b20 100%)",
-                    border: "1.5px solid #363e4b",
-                    boxShadow: "inset 0 2px 4px rgba(0,0,0,0.7), 0 4px 8px rgba(0,0,0,0.5)",
-                  }}
-                >
-                  {/* Embossed "LETTERS" brass plaque header */}
-                  <div
-                    className="text-[8px] font-extrabold tracking-[0.25em] uppercase text-[#d4af37] text-center mb-1.5 py-0.5 px-3 rounded w-full border border-[#d4af37]/35"
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      background: "linear-gradient(180deg, rgba(212,175,55,0.2) 0%, rgba(120,90,10,0.1) 100%)",
-                      textShadow: "0 1px 2px rgba(0,0,0,0.9)",
-                    }}
-                  >
-                    LETTERS
-                  </div>
-
-                  {/* Slot Aperture Cavity (Deep drop chute) */}
-                  <div
-                    ref={slotApertureRef}
-                    className="relative w-full rounded overflow-hidden"
-                    style={{
-                      height: 32,
-                      background: "#040506",
-                      boxShadow: "inset 0 6px 12px rgba(0,0,0,0.98), 0 1px 1px rgba(255,255,255,0.12)",
-                      border: "1.5px solid #14171b",
-                    }}
-                  >
-                    {/* Deep chute gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-black via-black/85 to-transparent pointer-events-none" />
-
-                    {/* Hinged Brass Mail Flap */}
-                    <div
-                      ref={postalFlapRef}
-                      className="absolute inset-x-0 top-0 h-full origin-top flex items-center justify-center cursor-default"
-                      style={{
-                        background: "linear-gradient(180deg, #e5c158 0%, #b88d18 50%, #7d5e06 100%)",
-                        boxShadow: "0 4px 8px rgba(0,0,0,0.75), inset 0 1px 1px rgba(255,255,255,0.65), inset 0 -1px 2px rgba(0,0,0,0.5)",
-                        borderBottom: "2px solid #5a4203",
-                        transformOrigin: "top center",
-                      }}
-                    >
-                      {/* Embossed "P O S T" text */}
-                      <span
-                        className="text-[9px] font-black tracking-[0.3em] text-[#3d2c05] drop-shadow-[0_1px_0_rgba(255,255,255,0.35)]"
-                        style={{ fontFamily: "var(--font-display)" }}
-                      >
-                        P O S T
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* ── 3. ENAMEL COLLECTION SCHEDULE & NOTICE PLATE ── */}
-              <div className="w-full px-3.5 mt-3 mb-2 flex-1 flex flex-col justify-between">
-                <div
-                  className="rounded-md p-2.5 border border-[#3e4755]"
-                  style={{
-                    background: "linear-gradient(180deg, rgba(20,24,30,0.85) 0%, rgba(12,14,18,0.9) 100%)",
-                    boxShadow: "inset 0 1px 3px rgba(0,0,0,0.8)",
-                  }}
-                >
-                  <div className="flex items-center justify-between pb-1.5 border-b border-cream/10">
-                    <span className="text-[7.5px] font-bold uppercase tracking-wider text-cream/70 font-mono">
-                      COLLECTION
-                    </span>
-                    <span className="text-[7.5px] font-mono text-[#d4af37]">
-                      DAILY
-                    </span>
-                  </div>
-
-                  <div className="pt-1.5 space-y-1 text-[7px] font-mono text-cream/50">
-                    <div className="flex justify-between">
-                      <span>MORNING:</span>
-                      <span className="text-cream/80">09:00 AM</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>EVENING:</span>
-                      <span className="text-cream/80">05:00 PM</span>
-                    </div>
-                  </div>
-
-                  {/* Live Status Indicator Badge */}
-                  <div className="mt-2.5 pt-1.5 border-t border-cream/10 flex items-center justify-between text-[7px] font-mono">
-                    <span className="text-cream/60">STATUS:</span>
-                    <div className="flex items-center gap-1.5">
-                      <span
-                        className={`w-1.5 h-1.5 rounded-full ${lettersMailedCount > 0 ? "bg-[#2BAF90]" : "bg-[#2BAF90] animate-pulse"}`}
-                        style={{ boxShadow: "0 0 6px #2BAF90" }}
-                      />
-                      <span className="text-[#2BAF90] font-bold tracking-wider">
-                        {lettersMailedCount > 0 ? `${lettersMailedCount} POSTED` : "READY"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Brass keyhole escutcheon at bottom of door */}
-                <div className="my-2 flex items-center justify-center">
-                  <div
-                    className="w-5 h-6 rounded-full flex flex-col items-center justify-center relative"
-                    style={{
-                      background: "linear-gradient(180deg, #d4af37 0%, #8a6a08 100%)",
-                      boxShadow: "0 2px 4px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.5)",
-                      border: "1px solid #554002",
-                    }}
-                    title="Postal Key Inspection Lock"
-                  >
-                    {/* Keyhole slot */}
-                    <div className="w-1.5 h-1.5 rounded-full bg-black" />
-                    <div className="w-1 h-2 bg-black -mt-0.5 rounded-b-[1px]" />
-                  </div>
-                </div>
-              </div>
-
-              {/* ── 4. CAST-IRON STEPPED PEDESTAL BASE ── */}
-              <div
-                className="w-full h-4 relative flex items-center justify-between px-3"
-                style={{
-                  background: "linear-gradient(180deg, #3a4350 0%, #1e2329 60%, #0d0f12 100%)",
-                  borderTop: "1px solid #4a5666",
-                  boxShadow: "inset 0 1px 0 rgba(255,255,255,0.2)",
-                }}
-              >
-                {/* Heavy base mounting rivets */}
-                <div className="w-1.5 h-1.5 rounded-full bg-[#d4af37] shadow-[inset_0_1px_1px_rgba(255,255,255,0.7)]" />
-                <span className="text-[6.5px] uppercase tracking-[0.25em] text-cream/30 font-mono">
-                  IRON CAST
-                </span>
-                <div className="w-1.5 h-1.5 rounded-full bg-[#d4af37] shadow-[inset_0_1px_1px_rgba(255,255,255,0.7)]" />
-              </div>
-            </div>
-          </div>
+            />
 
           {/* ══════════════════════════════════════════════════
               UNIFIED 3D TYPEWRITER CHASSIS & MECHANISM
@@ -1647,9 +1432,9 @@ export default function Contact() {
                         </span>
                       </p>
 
-                      {/* Topic (under from and before your message) */}
+                      {/* Subject (under from and before your message) */}
                       <p>
-                        <span className="font-bold" style={{ color: "rgba(58,21,32,0.4)" }}>Topic:</span>{" "}
+                        <span className="font-bold" style={{ color: "rgba(58,21,32,0.4)" }}>Subject:</span>{" "}
                         <span
                           className={`inline cursor-text outline-none ${activeField === "topic" ? "typewriter-field-cursor" : ""}`}
                           onClick={() => changeField("topic")}
@@ -2154,7 +1939,7 @@ export default function Contact() {
               className="text-center text-cream/40 text-[9px] md:text-[10px] mt-4"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              Typing: <span className="text-mustard font-bold">{activeField === "from" ? "From" : activeField === "topic" ? "Topic" : activeField === "message" ? "Message" : "Name"}</span>
+              Typing: <span className="text-mustard font-bold">{activeField === "from" ? "From" : activeField === "topic" ? "Subject" : activeField === "message" ? "Message" : "Name"}</span>
               {" "}&#183; TAB/RETURN = next field &#183; Shift+Enter = new line &#183; {isMuted ? "🔇 Muted" : "🔊 Audio ON"}
             </p>
 
@@ -2193,12 +1978,229 @@ export default function Contact() {
                 borderTop: "2px solid #5a626c", // Chrome washer
               }}
             />
+            </div>
           </div>
         </div>
+
+        {/* ── 2. SEPARATE VINTAGE DESK POSTBOX (Desktop Postal Letter Box) ── */}
+        <div
+          ref={postalSlotRef}
+          className="
+            relative
+            shrink-0
+            z-20 select-none
+            scale-[0.88] sm:scale-95 md:scale-95 lg:scale-100
+            my-4 md:my-0
+          "
+          style={{
+            perspective: "1000px",
+          }}
+          title="Vintage Postal Letter Box"
+          aria-label="Vintage Postal Letter Box"
+        >
+          {/* Grounding cast shadow on desk surface */}
+          <div
+            aria-hidden="true"
+            className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-[120%] h-12 pointer-events-none rounded-[50%]"
+            style={{
+              background: "radial-gradient(ellipse at center, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 50%, transparent 75%)",
+              filter: "blur(6px)",
+            }}
+          />
+
+          {/* Pillar box main body */}
+          <div
+            className="relative flex flex-col items-center overflow-hidden"
+            style={{
+              width: "205px",
+              minHeight: "315px",
+              borderRadius: "44px 44px 14px 14px",
+              background: "linear-gradient(165deg, #323b46 0%, #222830 35%, #14171c 70%, #0a0c0f 100%)",
+              boxShadow:
+                "0 24px 48px rgba(0,0,0,0.85), inset 2px 2px 3px rgba(255,255,255,0.22), inset -3px -3px 8px rgba(0,0,0,0.85), 0 2px 4px rgba(0,0,0,0.9)",
+              border: "2px solid #3d4654",
+            }}
+          >
+            {/* ── 1. DOMED TOP CAP with brass finial & brand insignia ── */}
+            <div className="w-full pt-4 pb-2.5 px-4 flex flex-col items-center relative">
+              {/* Polished brass ball finial */}
+              <div
+                className="w-4 h-4 rounded-full mb-1.5"
+                style={{
+                  background: "radial-gradient(circle at 35% 35%, #ffe680 0%, #d4af37 45%, #7a5d05 100%)",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.7)",
+                  border: "1px solid #5a4303",
+                }}
+              />
+              {/* Curved crown insignia badge */}
+              <div
+                className="text-[9px] font-bold tracking-[0.28em] uppercase text-[#d4af37] text-center"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  textShadow: "0 1px 2px rgba(0,0,0,0.9)",
+                }}
+              >
+                ★ GABRIEL POST ★
+              </div>
+              <div className="text-[7px] tracking-[0.2em] uppercase text-cream/50 font-mono mt-0.5">
+                DISPATCH NO. 70
+              </div>
+
+              {/* Embossed metal separator trim band with brass rivets */}
+              <div
+                className="w-full mt-2.5 h-[3px] rounded-full relative"
+                style={{
+                  background: "linear-gradient(180deg, #586474 0%, #28303a 100%)",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.25)",
+                }}
+              >
+                <span className="absolute -top-1 left-2 w-1.5 h-1.5 rounded-full bg-[#d4af37] shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]" />
+                <span className="absolute -top-1 right-2 w-1.5 h-1.5 rounded-full bg-[#d4af37] shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]" />
+              </div>
+            </div>
+
+            {/* ── 2. BRASS MAIL SLOT APERTURE & HINGED FLAP ── */}
+            <div className="w-full px-3.5 mt-1">
+              <div
+                className="relative rounded-lg p-2 flex flex-col items-center"
+                style={{
+                  background: "linear-gradient(180deg, #242a33 0%, #171b20 100%)",
+                  border: "1.5px solid #363e4b",
+                  boxShadow: "inset 0 2px 4px rgba(0,0,0,0.7), 0 4px 8px rgba(0,0,0,0.5)",
+                }}
+              >
+                {/* Embossed "LETTERS" brass plaque header */}
+                <div
+                  className="text-[8px] font-extrabold tracking-[0.25em] uppercase text-[#d4af37] text-center mb-1.5 py-0.5 px-3 rounded w-full border border-[#d4af37]/35"
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    background: "linear-gradient(180deg, rgba(212,175,55,0.2) 0%, rgba(120,90,10,0.1) 100%)",
+                    textShadow: "0 1px 2px rgba(0,0,0,0.9)",
+                  }}
+                >
+                  LETTERS
+                </div>
+
+                {/* Slot Aperture Cavity (Deep drop chute) */}
+                <div
+                  ref={slotApertureRef}
+                  className="relative w-full rounded overflow-hidden"
+                  style={{
+                    height: 32,
+                    background: "#040506",
+                    boxShadow: "inset 0 6px 12px rgba(0,0,0,0.98), 0 1px 1px rgba(255,255,255,0.12)",
+                    border: "1.5px solid #14171b",
+                  }}
+                >
+                  {/* Deep chute gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-black via-black/85 to-transparent pointer-events-none" />
+
+                  {/* Hinged Brass Mail Flap */}
+                  <div
+                    ref={postalFlapRef}
+                    className="absolute inset-x-0 top-0 h-full origin-top flex items-center justify-center cursor-default"
+                    style={{
+                      background: "linear-gradient(180deg, #e5c158 0%, #b88d18 50%, #7d5e06 100%)",
+                      boxShadow: "0 4px 8px rgba(0,0,0,0.75), inset 0 1px 1px rgba(255,255,255,0.65), inset 0 -1px 2px rgba(0,0,0,0.5)",
+                      borderBottom: "2px solid #5a4203",
+                      transformOrigin: "top center",
+                    }}
+                  >
+                    {/* Embossed "P O S T" text */}
+                    <span
+                      className="text-[9px] font-black tracking-[0.3em] text-[#3d2c05] drop-shadow-[0_1px_0_rgba(255,255,255,0.35)]"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      P O S T
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ── 3. ENAMEL COLLECTION SCHEDULE & NOTICE PLATE ── */}
+            <div className="w-full px-3.5 mt-3 mb-2 flex-1 flex flex-col justify-between">
+              <div
+                className="rounded-md p-2.5 border border-[#3e4755]"
+                style={{
+                  background: "linear-gradient(180deg, rgba(20,24,30,0.85) 0%, rgba(12,14,18,0.9) 100%)",
+                  boxShadow: "inset 0 1px 3px rgba(0,0,0,0.8)",
+                }}
+              >
+                <div className="flex items-center justify-between pb-1.5 border-b border-cream/10">
+                  <span className="text-[7.5px] font-bold uppercase tracking-wider text-cream/70 font-mono">
+                    COLLECTION
+                  </span>
+                  <span className="text-[7.5px] font-mono text-[#d4af37]">
+                    DAILY
+                  </span>
+                </div>
+
+                <div className="pt-1.5 space-y-1 text-[7px] font-mono text-cream/50">
+                  <div className="flex justify-between">
+                    <span>MORNING:</span>
+                    <span className="text-cream/80">09:00 AM</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>EVENING:</span>
+                    <span className="text-cream/80">05:00 PM</span>
+                  </div>
+                </div>
+
+                {/* Live Status Indicator Badge */}
+                <div className="mt-2.5 pt-1.5 border-t border-cream/10 flex items-center justify-between text-[7px] font-mono">
+                  <span className="text-cream/60">STATUS:</span>
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full ${lettersMailedCount > 0 ? "bg-[#2BAF90]" : "bg-[#2BAF90] animate-pulse"}`}
+                      style={{ boxShadow: "0 0 6px #2BAF90" }}
+                    />
+                    <span className="text-[#2BAF90] font-bold tracking-wider">
+                      {lettersMailedCount > 0 ? `${lettersMailedCount} POSTED` : "READY"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Brass keyhole escutcheon at bottom of door */}
+              <div className="my-2 flex items-center justify-center">
+                <div
+                  className="w-5 h-6 rounded-full flex flex-col items-center justify-center relative"
+                  style={{
+                    background: "linear-gradient(180deg, #d4af37 0%, #8a6a08 100%)",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.5)",
+                    border: "1px solid #554002",
+                  }}
+                  title="Postal Key Inspection Lock"
+                >
+                  {/* Keyhole slot */}
+                  <div className="w-1.5 h-1.5 rounded-full bg-black" />
+                  <div className="w-1 h-2 bg-black -mt-0.5 rounded-b-[1px]" />
+                </div>
+              </div>
+            </div>
+
+            {/* ── 4. CAST-IRON STEPPED PEDESTAL BASE ── */}
+            <div
+              className="w-full h-4 relative flex items-center justify-between px-3"
+              style={{
+                background: "linear-gradient(180deg, #3a4350 0%, #1e2329 60%, #0d0f12 100%)",
+                borderTop: "1px solid #4a5666",
+                boxShadow: "inset 0 1px 0 rgba(255,255,255,0.2)",
+              }}
+            >
+              {/* Heavy base mounting rivets */}
+              <div className="w-1.5 h-1.5 rounded-full bg-[#d4af37] shadow-[inset_0_1px_1px_rgba(255,255,255,0.7)]" />
+              <span className="text-[6.5px] uppercase tracking-[0.25em] text-cream/30 font-mono">
+                IRON CAST
+              </span>
+              <div className="w-1.5 h-1.5 rounded-full bg-[#d4af37] shadow-[inset_0_1px_1px_rgba(255,255,255,0.7)]" />
+            </div>
+          </div>
         </div>
       </div>
-
-      </div>
-    </section>
+    </div>
+  </div>
+</section>
   );
 }
