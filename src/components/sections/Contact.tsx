@@ -1557,15 +1557,18 @@ export default function Contact() {
             />
 
             {/* ── LEFT: Flat Metal Faceplate with Brand & Engraved Plaque ── */}
-            <div className="absolute left-4 sm:left-6 top-5 z-10 flex flex-col gap-1.5 max-w-[170px] sm:max-w-[210px]">
+            <div className="absolute left-4 sm:left-6 top-3 sm:top-3.5 z-10 flex flex-col items-center gap-1.5 sm:gap-2 w-[175px] sm:w-[195px]">
               <span
-                className="text-[10px] md:text-xs tracking-[0.2em] font-serif font-bold italic"
+                className="text-[10px] sm:text-[11px] tracking-[0.24em] font-black uppercase text-center w-full select-none"
                 style={{
-                  color: "#C2C8CF",
-                  textShadow: "0 -1px 1px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.2)",
+                  fontFamily: "var(--font-display)",
+                  color: "#D0D6DC",
+                  textShadow: "0 -1px 1px rgba(0,0,0,0.95), 0 1px 1px rgba(255,255,255,0.25)",
+                  lineHeight: "1.3",
                   display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   gap: "6px",
-                  lineHeight: "1.1",
                 }}
               >
                 <span>CENTURY</span>
@@ -1575,33 +1578,33 @@ export default function Contact() {
               {/* Flat Vintage Metal Nameplate / Specification Plaque */}
               {contact.phone && contact.phone.length > 0 && (
                 <div 
-                  className="relative rounded-md px-2.5 sm:px-3 py-1.5"
+                  className="w-full relative rounded-md px-3 py-1.5 sm:py-2 select-none"
                   style={{
                     background: "linear-gradient(180deg, #2b333a 0%, #1e2328 100%)",
-                    border: "1px solid rgba(255,255,255,0.16)",
-                    borderTop: "1px solid rgba(255,255,255,0.26)",
-                    borderBottom: "1px solid rgba(0,0,0,0.7)",
-                    boxShadow: "0 2px 5px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.12)",
+                    border: "1px solid rgba(255,255,255,0.18)",
+                    borderTop: "1.5px solid rgba(255,255,255,0.28)",
+                    borderBottom: "1.5px solid rgba(0,0,0,0.85)",
+                    boxShadow: "0 3px 6px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.12)",
                   }}
                 >
-                  {/* Corner brass rivets */}
-                  <span className="absolute top-1 left-1.5 w-1 h-1 rounded-full bg-[#5d6772] shadow-[0_0.5px_0_rgba(255,255,255,0.3)]" />
-                  <span className="absolute top-1 right-1.5 w-1 h-1 rounded-full bg-[#5d6772] shadow-[0_0.5px_0_rgba(255,255,255,0.3)]" />
-                  <span className="absolute bottom-1 left-1.5 w-1 h-1 rounded-full bg-[#5d6772] shadow-[0_0.5px_0_rgba(255,255,255,0.3)]" />
-                  <span className="absolute bottom-1 right-1.5 w-1 h-1 rounded-full bg-[#5d6772] shadow-[0_0.5px_0_rgba(255,255,255,0.3)]" />
+                  {/* Corner brass / steel rivets */}
+                  <span className="absolute top-1.5 left-1.5 w-1.5 h-1.5 rounded-full bg-[#5d6772] shadow-[0_0.5px_0_rgba(255,255,255,0.35),inset_0_0.5px_0.5px_rgba(255,255,255,0.5)]" />
+                  <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[#5d6772] shadow-[0_0.5px_0_rgba(255,255,255,0.35),inset_0_0.5px_0.5px_rgba(255,255,255,0.5)]" />
+                  <span className="absolute bottom-1.5 left-1.5 w-1.5 h-1.5 rounded-full bg-[#5d6772] shadow-[0_0.5px_0_rgba(255,255,255,0.35),inset_0_0.5px_0.5px_rgba(255,255,255,0.5)]" />
+                  <span className="absolute bottom-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[#5d6772] shadow-[0_0.5px_0_rgba(255,255,255,0.35),inset_0_0.5px_0.5px_rgba(255,255,255,0.5)]" />
 
                   {/* Engraved Phone Numbers */}
-                  <div className="flex flex-col gap-1 px-1">
+                  <div className="flex flex-col gap-1 px-1.5">
                     {contact.phone.map((p) => (
-                      <div key={p.label} className="flex items-center justify-between gap-2">
+                      <div key={p.label} className="flex items-center justify-between gap-2.5">
                         <span
-                          className="opacity-60 uppercase text-[8px] sm:text-[9px] tracking-wider font-sans font-bold text-[#9aa4ae]"
+                          className="opacity-65 uppercase text-[8px] sm:text-[8.5px] tracking-wider font-mono font-bold text-[#9aa4ae]"
                           style={{ textShadow: "0 -1px 1px rgba(0,0,0,0.8)" }}
                         >
                           {p.label}:
                         </span>
                         <span
-                          className="font-bold tracking-wider text-[10px] sm:text-xs"
+                          className="font-bold tracking-wider text-[10px] sm:text-[11px]"
                           style={{
                             fontFamily: "var(--font-mono)",
                             color: "#E2E7EC",
