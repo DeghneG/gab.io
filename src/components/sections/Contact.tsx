@@ -1978,16 +1978,7 @@ export default function Contact() {
         </div>
       </div>
 
-      {/* ── Footer credits ───────────────────────────── */}
       </div>
-      <footer className="mt-16 md:mt-20 pt-6 border-t border-cream/10 pb-6 md:pb-8 text-center w-full max-w-6xl mx-auto px-6 md:px-8">
-        <p
-          className="text-cream/40 text-xs text-center"
-          style={{ fontFamily: "var(--font-body)" }}
-        >
-          Built with Next.js, Tailwind CSS, and a whole lot of groove.
-        </p>
-      </footer>
     </section>
   );
 }
