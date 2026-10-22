@@ -813,7 +813,7 @@ export default function Contact() {
       aria-label="Contact"
       className="relative py-16 md:py-24 lg:py-28 bg-wine overflow-hidden"
     >
-      <div className="mx-auto max-w-6xl w-full px-6 md:px-8">
+      <div className="mx-auto max-w-7xl xl:max-w-[1400px] w-full px-6 md:px-8">
         <h2 className="text-3xl md:text-5xl text-cream mb-3 md:mb-4">Get in touch</h2>
         <p
           className="text-cream/70 mb-8 md:mb-10 max-w-2xl text-base"
@@ -853,7 +853,7 @@ export default function Contact() {
          ══════════════════════════════════════════════════ */}
       <div
         ref={contentRef}
-        className="w-full max-w-5xl mx-auto relative"
+        className="w-full max-w-7xl xl:max-w-[1400px] mx-auto relative"
         style={{ perspective: "1400px" }}
       >
         {/* ── FLOATING ANIMATED FOLDED LETTER OVERLAY (GSAP flight sequence) ── */}
@@ -874,17 +874,17 @@ export default function Contact() {
         >
           {/* Paper lines and texture */}
           <div
-            className="w-full h-full p-5 sm:p-7 relative"
+            className="w-full h-full p-6 md:p-8 relative"
             style={{
               backgroundImage: `repeating-linear-gradient(0deg, transparent, transparent 23px, rgba(100,80,50,0.18) 23px, rgba(100,80,50,0.18) 24px)`,
             }}
           >
             {/* The stamped badge on flying letter */}
-            <div className="absolute top-4 right-4 md:right-8 w-14 h-14 sm:w-16 sm:h-16 rounded-full border-[2.5px] border-dashed border-wine flex flex-col items-center justify-center rotate-[-10deg] bg-wine/5 shadow-[0_2px_4px_rgba(140,0,39,0.2)]">
-              <span className="text-[7.5px] sm:text-[8.5px] font-bold tracking-widest text-wine uppercase" style={{ fontFamily: "var(--font-display)" }}>
+            <div className="absolute top-4 right-4 md:right-8 w-16 h-16 md:w-20 md:h-20 rounded-full border-[2.5px] border-dashed border-wine flex flex-col items-center justify-center rotate-[-10deg] bg-wine/5 shadow-[0_2px_4px_rgba(140,0,39,0.2)]">
+              <span className="text-[8px] md:text-[9px] font-bold tracking-widest text-wine uppercase" style={{ fontFamily: "var(--font-display)" }}>
                 POSTED
               </span>
-              <span className="text-[5.5px] tracking-widest text-wine/70 uppercase font-mono mt-0.5">
+              <span className="text-[6px] tracking-widest text-wine/70 uppercase font-mono mt-0.5">
                 PARCEL POST
               </span>
             </div>
@@ -893,13 +893,13 @@ export default function Contact() {
             <div
               className="absolute top-0 bottom-0"
               style={{
-                left: 32,
+                left: 36,
                 width: 2,
                 background: "rgba(180,50,50,0.2)",
               }}
             />
 
-            <div className="pl-6 space-y-1.5 text-xs" style={{ fontFamily: "var(--font-body)", color: "#3A1520" }}>
+            <div className="pl-6 space-y-2 text-xs" style={{ fontFamily: "var(--font-body)", color: "#3A1520" }}>
               <p><span className="font-bold opacity-50">To:</span> {contact.email}</p>
               <p><span className="font-bold opacity-50">From:</span> {fromEmail}</p>
               <p><span className="font-bold opacity-50">Subject:</span> {topic}</p>
@@ -915,14 +915,14 @@ export default function Contact() {
 
         {/* ── 3D DESK WORKSPACE PLANE (Shares 14deg tilt across typewriter & mailbox) ── */}
         <div
-          className="relative flex flex-col md:flex-row items-center md:items-center justify-center gap-8 lg:gap-14"
+          className="relative w-full max-w-3xl mx-auto"
           style={{
             transformStyle: "preserve-3d",
             transform: "rotateX(14deg)",
           }}
         >
-          {/* ── 1. TYPEWRITER (Main Instrument) ── */}
-          <div className="w-full max-w-[580px] lg:max-w-[620px] relative">
+          {/* ── 1. TYPEWRITER (Main Instrument - 100% Dead-Center) ── */}
+          <div className="w-full relative">
             {/* Grounding Contact & Ambient Desk Shadows underneath Typewriter */}
             <div
               aria-hidden="true"
@@ -1025,8 +1025,8 @@ export default function Contact() {
                 <div
                   className="relative mx-auto rounded-full"
                   style={{
-                    width: "90%",
-                    height: 28,
+                    width: "92%",
+                    height: 32,
                     /* True 3D rubber platen cylinder shading */
                     background: "linear-gradient(180deg, #101316 0%, #2e353e 14%, #5e6978 30%, #293038 60%, #121518 88%, #08090a 100%)",
                     boxShadow: "0 8px 20px rgba(0,0,0,0.75), inset 0 2px 2px rgba(255,255,255,0.3), inset 0 -3px 5px rgba(0,0,0,0.9)",
@@ -1036,7 +1036,7 @@ export default function Contact() {
                   {/* Left Cast Platen Bearing Tower / Upright Bracket */}
                   <div
                     aria-hidden="true"
-                    className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 sm:w-5 h-11 pointer-events-none rounded-[4px] flex items-center justify-center"
+                    className="absolute -left-2 top-1/2 -translate-y-1/2 w-5 sm:w-6 h-12 pointer-events-none rounded-[4px] flex items-center justify-center"
                     style={{
                       background: "linear-gradient(180deg, #566473 0%, #2e353e 40%, #181d22 100%)",
                       border: "1px solid #5a6675",
@@ -1060,7 +1060,7 @@ export default function Contact() {
                   {/* Right Cast Platen Bearing Tower / Upright Bracket */}
                   <div
                     aria-hidden="true"
-                    className="absolute -right-2 top-1/2 -translate-y-1/2 w-4 sm:w-5 h-11 pointer-events-none rounded-[4px] flex items-center justify-center"
+                    className="absolute -right-2 top-1/2 -translate-y-1/2 w-5 sm:w-6 h-12 pointer-events-none rounded-[4px] flex items-center justify-center"
                     style={{
                       background: "linear-gradient(180deg, #566473 0%, #2e353e 40%, #181d22 100%)",
                       border: "1px solid #5a6675",
@@ -1125,12 +1125,12 @@ export default function Contact() {
                     }}
                     className="absolute z-10 cursor-pointer group outline-none"
                     style={{
-                      top: -6,
-                      left: -42,
-                      width: 48,
-                      height: 12,
+                      top: -8,
+                      left: -44,
+                      width: 56,
+                      height: 14,
                       background: "linear-gradient(180deg, #ffffff 0%, #adb6c0 30%, #4f5862 70%, #1f2429 100%)",
-                      borderRadius: "6px 0 0 6px",
+                      borderRadius: "7px 0 0 7px",
                       transformOrigin: "right center",
                       transform: "rotate(-15deg)",
                       boxShadow: "0 6px 10px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.8)",
@@ -1144,8 +1144,8 @@ export default function Contact() {
                     <div
                       className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 group-hover:brightness-125 group-active:scale-95 transition-all"
                       style={{
-                        width: 20,
-                        height: 28,
+                        width: 22,
+                        height: 32,
                         background: "linear-gradient(135deg, #444a52 0%, #1c2024 60%, #0d0f11 100%)",
                         borderRadius: "45% 10% 10% 45%",
                         boxShadow: "inset 2px 0 4px rgba(255,255,255,0.25), 4px 6px 12px rgba(0,0,0,0.85)",
@@ -1156,7 +1156,7 @@ export default function Contact() {
 
                   {/* 3D Cylindrical Roller Knobs */}
                   <div
-                    className="absolute -left-6 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full z-10"
+                    className="absolute -left-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full z-10"
                     style={{
                       background: "radial-gradient(circle at 35% 35%, #9aa2ab 0%, #4b525b 50%, #1c2024 100%)",
                       boxShadow: "3px 4px 8px rgba(0,0,0,0.75), inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 3px rgba(0,0,0,0.6)",
@@ -1164,9 +1164,9 @@ export default function Contact() {
                     }}
                   >
                     {/* Fluted ribbed ring & chrome center hub */}
-                    <div className="absolute inset-1 rounded-full border border-white/20" />
+                    <div className="absolute inset-1.5 rounded-full border border-white/20" />
                     <div
-                      className="absolute inset-2 rounded-full"
+                      className="absolute inset-2.5 rounded-full"
                       style={{
                         background: "radial-gradient(circle at 40% 40%, #ffffff 0%, #adb5be 60%, #505862 100%)",
                         boxShadow: "inset 0 1px 1px rgba(255,255,255,0.8), 0 1px 2px rgba(0,0,0,0.5)",
@@ -1174,16 +1174,16 @@ export default function Contact() {
                     />
                   </div>
                   <div
-                    className="absolute -right-6 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full z-10"
+                    className="absolute -right-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full z-10"
                     style={{
                       background: "radial-gradient(circle at 35% 35%, #9aa2ab 0%, #4b525b 50%, #1c2024 100%)",
                       boxShadow: "3px 4px 8px rgba(0,0,0,0.75), inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 3px rgba(0,0,0,0.6)",
                       border: "2px solid #3b424a",
                     }}
                   >
-                    <div className="absolute inset-1 rounded-full border border-white/20" />
+                    <div className="absolute inset-1.5 rounded-full border border-white/20" />
                     <div
-                      className="absolute inset-2 rounded-full"
+                      className="absolute inset-2.5 rounded-full"
                       style={{
                         background: "radial-gradient(circle at 40% 40%, #ffffff 0%, #adb5be 60%, #505862 100%)",
                         boxShadow: "inset 0 1px 1px rgba(255,255,255,0.8), 0 1px 2px rgba(0,0,0,0.5)",
@@ -1197,9 +1197,9 @@ export default function Contact() {
                   className="mx-auto flex overflow-hidden"
                   style={{
                     width: "88%",
-                    height: 7,
+                    height: 8,
                     background: "linear-gradient(180deg, #999, #d0d0d0 30%, #777 80%, #555)",
-                    marginTop: -3,
+                    marginTop: -4,
                     zIndex: 6,
                     position: "relative",
                     borderRadius: "2px",
@@ -1299,8 +1299,8 @@ export default function Contact() {
                   ref={paperRef}
                   className="relative mx-auto overflow-hidden"
                   style={{
-                    width: "86%",
-                    minHeight: 250,
+                    width: "85%",
+                    minHeight: 300,
                     willChange: "transform, opacity",
                     /* Aged yellowed paper base */
                     background: "linear-gradient(170deg, #e8d5a3 0%, #dcc78e 25%, #d4bc7a 50%, #e0cb90 75%, #d8c080 100%)",
@@ -1335,10 +1335,10 @@ export default function Contact() {
                     aria-hidden="true"
                     className="absolute pointer-events-none rounded-full"
                     style={{
-                      top: 150,
-                      left: 20,
-                      width: 7,
-                      height: 5,
+                      top: 180,
+                      left: 25,
+                      width: 8,
+                      height: 6,
                       background: "rgba(40,20,10,0.15)",
                       borderRadius: "60% 40% 50% 50%",
                     }}
@@ -1349,12 +1349,24 @@ export default function Contact() {
                     aria-hidden="true"
                     className="absolute pointer-events-none rounded-full"
                     style={{
-                      bottom: 50,
-                      right: 60,
-                      width: 10,
-                      height: 8,
+                      bottom: 60,
+                      right: 80,
+                      width: 12,
+                      height: 10,
                       background: "rgba(130,90,40,0.08)",
                       borderRadius: "50%",
+                    }}
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="absolute pointer-events-none rounded-full"
+                    style={{
+                      bottom: 100,
+                      left: 120,
+                      width: 18,
+                      height: 14,
+                      background: "rgba(120,80,30,0.06)",
+                      borderRadius: "40% 60% 50% 50%",
                     }}
                   />
 
@@ -1362,7 +1374,7 @@ export default function Contact() {
                   <div
                     className="absolute top-0 bottom-0"
                     style={{
-                      left: 44,
+                      left: 52,
                       width: 2,
                       background: "rgba(180,50,50,0.2)",
                     }}
@@ -1371,7 +1383,7 @@ export default function Contact() {
                   <div
                     className="absolute top-0 bottom-0"
                     style={{
-                      left: 48,
+                      left: 56,
                       width: 1,
                       background: "rgba(180,50,50,0.1)",
                     }}
@@ -1380,33 +1392,33 @@ export default function Contact() {
                   {/* Red POSTED ink stamp that slams down when sent */}
                   <div
                     ref={stampRef}
-                    className="absolute top-5 right-5 sm:right-8 pointer-events-none select-none"
+                    className="absolute top-6 right-6 md:right-10 pointer-events-none select-none"
                     style={{
                       opacity: isStamped ? 0.95 : 0,
                       transform: isStamped ? "rotate(-10deg) scale(1)" : "rotate(-25deg) scale(2.2)",
                       zIndex: 25,
                     }}
                   >
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-[2.5px] border-dashed border-wine flex flex-col items-center justify-center p-1 shadow-[0_2px_8px_rgba(140,0,39,0.35)] bg-wine/5">
+                    <div className="w-20 h-20 md:w-24 md:h-24 rounded-full border-[3px] border-dashed border-wine flex flex-col items-center justify-center p-1 shadow-[0_2px_8px_rgba(140,0,39,0.35)] bg-wine/5">
                       <span
-                        className="text-[9px] sm:text-[10px] font-bold tracking-widest uppercase text-wine"
+                        className="text-[10px] md:text-[11px] font-bold tracking-widest uppercase text-wine"
                         style={{ fontFamily: "var(--font-display)" }}
                       >
                         POSTED
                       </span>
-                      <span className="text-[6.5px] text-wine/75 font-mono mt-0.5 font-bold">
+                      <span className="text-[7px] text-wine/75 font-mono mt-0.5 font-bold">
                         {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                       </span>
-                      <span className="text-[5.5px] tracking-widest text-wine/60 uppercase font-mono mt-0.5">
+                      <span className="text-[6px] tracking-widest text-wine/60 uppercase font-mono mt-0.5">
                         PARCEL POST
                       </span>
                     </div>
                   </div>
 
                   {/* Paper content */}
-                  <div className="px-6 py-5 sm:px-8 sm:py-6">
+                  <div className="px-10 py-8 md:px-14 md:py-10">
                     <div
-                      className="space-y-2.5 text-xs sm:text-[13px] leading-relaxed"
+                      className="space-y-3 text-sm leading-relaxed"
                       style={{ fontFamily: "var(--font-body)", color: "#3A1520" }}
                     >
                       {/* To */}
@@ -1415,7 +1427,7 @@ export default function Contact() {
                         <span>{contact.email}</span>
                       </p>
 
-                      <div style={{ borderTop: "1px solid rgba(58,21,32,0.08)", margin: "12px 0" }} />
+                      <div style={{ borderTop: "1px solid rgba(58,21,32,0.08)", margin: "16px 0" }} />
 
                       {/* From */}
                       <p>
@@ -1451,7 +1463,7 @@ export default function Contact() {
                       <div>
                         <p className="font-bold mb-1" style={{ color: "rgba(58,21,32,0.4)" }}>Your message:</p>
                         <div
-                          className={`min-h-[50px] whitespace-pre-wrap cursor-text outline-none ${activeField === "message" ? "typewriter-field-cursor" : ""}`}
+                          className={`min-h-[60px] whitespace-pre-wrap cursor-text outline-none ${activeField === "message" ? "typewriter-field-cursor" : ""}`}
                           onClick={() => changeField("message")}
                           role="button"
                           tabIndex={0}
@@ -1462,7 +1474,7 @@ export default function Contact() {
                         </div>
                       </div>
 
-                      <div style={{ borderTop: "1px solid rgba(58,21,32,0.08)", margin: "12px 0" }} />
+                      <div style={{ borderTop: "1px solid rgba(58,21,32,0.08)", margin: "16px 0" }} />
 
                       {/* Best Regards */}
                       <p className="font-bold" style={{ color: "rgba(58,21,32,0.4)" }}>Best Regards,</p>
@@ -1689,7 +1701,7 @@ export default function Contact() {
 
             {/* ── SUNKEN KEYBOARD TRAY (Recessed 3D Well) ── */}
             <div
-              className="relative mx-auto mt-16 sm:mt-18 rounded-2xl p-2 sm:p-3 md:p-4"
+              className="relative mx-auto mt-22 sm:mt-24 rounded-2xl p-2.5 sm:p-4 md:p-6"
               style={{
                 /* Stamped dark metal tray floor */
                 background: "linear-gradient(180deg, #181d22 0%, #232931 35%, #181c20 100%)",
@@ -1710,14 +1722,14 @@ export default function Contact() {
               />
 
               {/* ── KEYBOARD ROWS ───────────────────────── */}
-              <div className="flex flex-col items-center gap-[5px] md:gap-[7px] relative z-10">
+              <div className="flex flex-col items-center gap-[6px] md:gap-[9px] relative z-10">
                 {KEYBOARD_ROWS.map((row, rowIdx) => (
                   <div
                     key={rowIdx}
-                    className="flex gap-[3px] sm:gap-[5px] md:gap-[7px] justify-center"
+                    className="flex gap-[4px] sm:gap-[6px] md:gap-[9px] justify-center"
                     style={{
                       /* Stagger rows like a real typewriter */
-                      paddingLeft: rowIdx === 1 ? 10 : rowIdx === 2 ? 22 : rowIdx === 3 ? 38 : 0,
+                      paddingLeft: rowIdx === 1 ? 12 : rowIdx === 2 ? 26 : rowIdx === 3 ? 46 : 0,
                     }}
                   >
                     {row.map((key) => {
@@ -1735,9 +1747,9 @@ export default function Contact() {
                           <div
                             className="absolute left-1/2 -translate-x-1/2 rounded-[1px]"
                             style={{
-                              bottom: -6,
-                              width: 5,
-                              height: 12,
+                              bottom: -7,
+                              width: 6,
+                              height: 14,
                               background: "linear-gradient(180deg, #6c737c 0%, #34383e 50%, #111315 100%)",
                               boxShadow: "inset -1px 0 2px rgba(0,0,0,0.6)",
                               zIndex: 0,
@@ -1747,9 +1759,9 @@ export default function Contact() {
                           <div
                             className="relative z-10 flex items-center justify-center transition-all duration-75"
                             style={{
-                              width: 31,
-                              height: 31,
-                              borderRadius: "6px",
+                              width: 34,
+                              height: 34,
+                              borderRadius: "7px",
                               /* Vintage ivory concave dish */
                               background: isPressed
                                 ? "radial-gradient(circle at 50% 60%, #b8b3a7 0%, #999387 100%)"
@@ -1758,14 +1770,14 @@ export default function Contact() {
                               boxShadow: isPressed
                                 ? "inset 0 3px 6px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.6)"
                                 : "0 7px 12px -2px rgba(0,0,0,0.9), 0 3px 4px rgba(0,0,0,0.6), inset 0 1.5px 1.5px rgba(255,255,255,0.95), inset 0 -1.5px 2px rgba(0,0,0,0.35)",
-                              transform: isPressed ? "translateY(4px)" : "translateY(0)",
-                              fontSize: 11,
+                              transform: isPressed ? "translateY(5px)" : "translateY(0)",
+                              fontSize: 12,
                               fontWeight: 700,
                               color: isPressed ? "#5a1a2b" : "#2f3235",
                               fontFamily: "var(--font-body)",
                               cursor: "pointer",
                               border: "1.5px solid #bdc3c7", // Chrome bezel ring
-                              borderBottom: isPressed ? "2px solid #777" : "5px solid #8e949a", // 3D metal side extrusion
+                              borderBottom: isPressed ? "2px solid #777" : "6px solid #8e949a", // 3D metal side extrusion
                               borderTop: "1.5px solid rgba(255,255,255,0.9)",
                               textShadow: isPressed ? "none" : "0 1px 0 rgba(255,255,255,0.7)",
                             }}
@@ -1779,7 +1791,7 @@ export default function Contact() {
                 ))}
 
                 {/* Bottom row: BACK, SPACE BAR, RETURN, SEND */}
-                <div className="flex gap-[4px] sm:gap-[6px] md:gap-[8px] items-center justify-center mt-1.5">
+                <div className="flex gap-[5px] sm:gap-[7px] md:gap-[10px] items-center justify-center mt-2">
                   {/* BACK key */}
                   <button
                     onMouseDown={(e) => e.preventDefault()}
@@ -1790,23 +1802,23 @@ export default function Contact() {
                     <div
                       className="relative z-10 flex items-center justify-center transition-all duration-75"
                       style={{
-                        width: 48,
-                        height: 31,
-                        borderRadius: "6px",
+                        width: 56,
+                        height: 34,
+                        borderRadius: "7px",
                         background: pressedKey === "BACK"
                           ? "radial-gradient(circle at 50% 60%, #b8b3a7 0%, #999387 100%)"
                           : "radial-gradient(circle at 50% 32%, #ffffff 0%, #f6f2e9 45%, #ddd6c8 100%)",
                         boxShadow: pressedKey === "BACK"
                           ? "inset 0 3px 6px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.6)"
                           : "0 7px 12px -2px rgba(0,0,0,0.9), 0 3px 4px rgba(0,0,0,0.6), inset 0 1.5px 1.5px rgba(255,255,255,0.95), inset 0 -1.5px 2px rgba(0,0,0,0.35)",
-                        transform: pressedKey === "BACK" ? "translateY(4px)" : "translateY(0)",
-                        fontSize: 9.5,
+                        transform: pressedKey === "BACK" ? "translateY(5px)" : "translateY(0)",
+                        fontSize: 10,
                         fontWeight: 700,
                         color: "#2f3235",
                         fontFamily: "var(--font-body)",
                         cursor: "pointer",
                         border: "1.5px solid #bdc3c7",
-                        borderBottom: pressedKey === "BACK" ? "2px solid #777" : "5px solid #8e949a",
+                        borderBottom: pressedKey === "BACK" ? "2px solid #777" : "6px solid #8e949a",
                         borderTop: "1.5px solid rgba(255,255,255,0.9)",
                         textShadow: pressedKey === "BACK" ? "none" : "0 1px 0 rgba(255,255,255,0.7)",
                       }}
@@ -1826,9 +1838,9 @@ export default function Contact() {
                     <div
                       className="absolute left-[30%] -translate-x-1/2 rounded-[1px]"
                       style={{
-                        bottom: -6,
-                        width: 7,
-                        height: 12,
+                        bottom: -7,
+                        width: 8,
+                        height: 14,
                         background: "linear-gradient(180deg, #6c737c 0%, #34383e 50%, #111315 100%)",
                         zIndex: 0,
                       }}
@@ -1836,9 +1848,9 @@ export default function Contact() {
                     <div
                       className="absolute left-[70%] -translate-x-1/2 rounded-[1px]"
                       style={{
-                        bottom: -6,
-                        width: 7,
-                        height: 12,
+                        bottom: -7,
+                        width: 8,
+                        height: 14,
                         background: "linear-gradient(180deg, #6c737c 0%, #34383e 50%, #111315 100%)",
                         zIndex: 0,
                       }}
@@ -1846,19 +1858,19 @@ export default function Contact() {
                     <div
                       className="relative z-10 flex items-center justify-center transition-all duration-75"
                       style={{
-                        width: 155,
-                        height: 29,
-                        borderRadius: "7px",
+                        width: 180,
+                        height: 32,
+                        borderRadius: "8px",
                         background: pressedKey === "SPC"
                           ? "radial-gradient(ellipse at 50% 60%, #b8b3a7 0%, #999387 100%)"
                           : "radial-gradient(ellipse at 50% 32%, #ffffff 0%, #f6f2e9 45%, #ddd6c8 100%)",
                         boxShadow: pressedKey === "SPC"
                           ? "inset 0 3px 6px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.6)"
                           : "0 7px 12px -2px rgba(0,0,0,0.9), 0 3px 4px rgba(0,0,0,0.6), inset 0 1.5px 1.5px rgba(255,255,255,0.95), inset 0 -1.5px 2px rgba(0,0,0,0.35)",
-                        transform: pressedKey === "SPC" ? "translateY(4px)" : "translateY(0)",
+                        transform: pressedKey === "SPC" ? "translateY(5px)" : "translateY(0)",
                         cursor: "pointer",
                         border: "1.5px solid #bdc3c7",
-                        borderBottom: pressedKey === "SPC" ? "2px solid #777" : "5px solid #8e949a",
+                        borderBottom: pressedKey === "SPC" ? "2px solid #777" : "6px solid #8e949a",
                         borderTop: "1.5px solid rgba(255,255,255,0.9)",
                       }}
                     />
@@ -1874,23 +1886,23 @@ export default function Contact() {
                     <div
                       className="relative z-10 flex items-center justify-center transition-all duration-75"
                       style={{
-                        width: 48,
-                        height: 31,
-                        borderRadius: "6px",
+                        width: 56,
+                        height: 34,
+                        borderRadius: "7px",
                         background: pressedKey === "RET"
                           ? "radial-gradient(circle at 50% 60%, #b8b3a7 0%, #999387 100%)"
                           : "radial-gradient(circle at 50% 32%, #ffffff 0%, #f6f2e9 45%, #ddd6c8 100%)",
                         boxShadow: pressedKey === "RET"
                           ? "inset 0 3px 6px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.6)"
                           : "0 7px 12px -2px rgba(0,0,0,0.9), 0 3px 4px rgba(0,0,0,0.6), inset 0 1.5px 1.5px rgba(255,255,255,0.95), inset 0 -1.5px 2px rgba(0,0,0,0.35)",
-                        transform: pressedKey === "RET" ? "translateY(4px)" : "translateY(0)",
-                        fontSize: 9.5,
+                        transform: pressedKey === "RET" ? "translateY(5px)" : "translateY(0)",
+                        fontSize: 10,
                         fontWeight: 700,
                         color: "#2f3235",
                         fontFamily: "var(--font-body)",
                         cursor: "pointer",
                         border: "1.5px solid #bdc3c7",
-                        borderBottom: pressedKey === "RET" ? "2px solid #777" : "5px solid #8e949a",
+                        borderBottom: pressedKey === "RET" ? "2px solid #777" : "6px solid #8e949a",
                         borderTop: "1.5px solid rgba(255,255,255,0.9)",
                         textShadow: pressedKey === "RET" ? "none" : "0 1px 0 rgba(255,255,255,0.7)",
                       }}
@@ -1909,9 +1921,9 @@ export default function Contact() {
                     <div
                       className="relative z-10 flex items-center justify-center transition-all duration-75"
                       style={{
-                        width: 58,
-                        height: 31,
-                        borderRadius: "6px",
+                        width: 66,
+                        height: 34,
+                        borderRadius: "7px",
                         background: pressedKey === "SEND"
                           ? "radial-gradient(circle at 50% 60%, #155d48 0%, #0d3b2e 100%)"
                           : "radial-gradient(circle at 50% 30%, #32b591 0%, #1f8a6c 50%, #136049 100%)",
@@ -1966,7 +1978,7 @@ export default function Contact() {
 
             {/* ── RUBBER CHASSIS FEET (Grounding corner pads) ── */}
             <div
-              className="absolute -bottom-2.5 left-8 w-14 h-4 rounded-b-xl z-10"
+              className="absolute -bottom-2.5 left-8 w-16 h-5 rounded-b-xl z-10"
               style={{
                 background: "linear-gradient(180deg, #3d434a 0%, #181a1d 50%, #060708 100%)",
                 boxShadow: "0 6px 12px rgba(0,0,0,0.9), inset 0 1px 1px rgba(255,255,255,0.25)",
@@ -1974,7 +1986,7 @@ export default function Contact() {
               }}
             />
             <div
-              className="absolute -bottom-2.5 right-8 w-14 h-4 rounded-b-xl z-10"
+              className="absolute -bottom-2.5 right-8 w-16 h-5 rounded-b-xl z-10"
               style={{
                 background: "linear-gradient(180deg, #3d434a 0%, #181a1d 50%, #060708 100%)",
                 boxShadow: "0 6px 12px rgba(0,0,0,0.9), inset 0 1px 1px rgba(255,255,255,0.25)",
@@ -1989,14 +2001,16 @@ export default function Contact() {
         <div
           ref={postalSlotRef}
           className="
-            relative
-            shrink-0
-            z-20 select-none
+            relative xl:absolute
+            xl:left-[calc(100%+24px)] xl:top-12
+            mx-auto mt-8 xl:mt-0
+            flex justify-center
+            shrink-0 z-20 select-none
             scale-[0.88] sm:scale-95 md:scale-95 lg:scale-100
-            my-4 md:my-0
           "
           style={{
             perspective: "1000px",
+            transformStyle: "preserve-3d",
           }}
           title="Vintage Postal Letter Box"
           aria-label="Vintage Postal Letter Box"
