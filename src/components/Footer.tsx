@@ -160,11 +160,10 @@ export default function Footer() {
             </h2>
           </div>
 
-          {/* Right: Ticket email button & availability pill */}
+          {/* Right: Ticket email badge & availability pill */}
           <div className="flex flex-col items-start md:items-end gap-3.5">
-            <a
-              href={`mailto:${contact.email}`}
-              className="group relative inline-flex items-center justify-center px-6 py-3 bg-mustard text-wine rounded-md outline-none focus-visible:ring-4 focus-visible:ring-teal transition-transform active:scale-[0.97]"
+            <div
+              className="relative inline-flex items-center justify-center px-6 py-3 bg-mustard text-wine rounded-md cursor-default select-text"
               style={{
                 fontFamily: "var(--font-body)",
                 maskImage:
@@ -178,12 +177,12 @@ export default function Footer() {
                 {contact.email}
               </span>
               <span
-                className="text-lg leading-none transition-transform duration-200 group-hover:translate-x-0.5"
+                className="text-lg leading-none"
                 aria-hidden="true"
               >
                 ✉
               </span>
-            </a>
+            </div>
 
             {/* Pulsing availability pill */}
             <div
