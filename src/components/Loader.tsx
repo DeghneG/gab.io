@@ -3,6 +3,11 @@
 import { useRef, useState, useEffect } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 interface LoaderProps {
   onComplete?: () => void;
@@ -39,9 +44,15 @@ export const LOADER_CONFIG = {
    ─────────────────────────────────────────────────────────── */
 function CassetteSpool({
   spoolRef,
+  tapePackRef,
+  tapeRingRef,
+  initialRadius = 35,
   className,
 }: {
   spoolRef: React.RefObject<SVGSVGElement | null>;
+  tapePackRef?: React.RefObject<SVGCircleElement | null>;
+  tapeRingRef?: React.RefObject<SVGCircleElement | null>;
+  initialRadius?: number;
   className?: string;
 }) {
   return (
@@ -51,23 +62,43 @@ function CassetteSpool({
       className={className}
       aria-hidden="true"
     >
-      {/* Outer circular guide */}
+      {/* Outer circular guide groove */}
       <circle
         cx="50"
         cy="50"
         r="46"
-        fill="none"
+        fill="#E8DFC8"
         stroke="#8C0027"
-        strokeWidth="4"
+        strokeWidth="3.5"
       />
-      {/* Magnetic tape pack shadow */}
-      <circle cx="50" cy="50" r="35" fill="#8C0027" opacity="0.14" />
-      {/* Inner hub */}
+      {/* Deep Rich Magnetic Oxide Tape Pack (Bold, high-contrast dark tape roll) */}
+      <circle
+        ref={tapePackRef}
+        cx="50"
+        cy="50"
+        r={initialRadius}
+        fill="#2B0A14"
+        stroke="#6B1327"
+        strokeWidth="1.5"
+      />
+      {/* Magnetic tape outer winding coil ring (visual winding texture) */}
+      <circle
+        ref={tapeRingRef}
+        cx="50"
+        cy="50"
+        r={Math.max(24, initialRadius - 4)}
+        fill="none"
+        stroke="#C48494"
+        strokeWidth="1"
+        strokeDasharray="3 3"
+        opacity="0.8"
+      />
+      {/* Inner plastic cogged hub */}
       <circle
         cx="50"
         cy="50"
         r="23"
-        fill="#F5EEDE"
+        fill="#FDF9F0"
         stroke="#8C0027"
         strokeWidth="3.5"
       />
@@ -89,7 +120,7 @@ function CassetteSpool({
         cx="50"
         cy="50"
         r="11"
-        fill="#F5EEDE"
+        fill="#E8DFC8"
         stroke="#8C0027"
         strokeWidth="3"
       />
@@ -104,6 +135,11 @@ export default function Loader({ onComplete }: LoaderProps) {
   const deckHousingRef = useRef<HTMLDivElement>(null);
   const leftSpoolRef = useRef<SVGSVGElement>(null);
   const rightSpoolRef = useRef<SVGSVGElement>(null);
+  const leftTapePackRef = useRef<SVGCircleElement>(null);
+  const leftTapeRingRef = useRef<SVGCircleElement>(null);
+  const rightTapePackRef = useRef<SVGCircleElement>(null);
+  const rightTapeRingRef = useRef<SVGCircleElement>(null);
+  const tapeRibbonRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLImageElement>(null);
   const counterRef = useRef<HTMLSpanElement>(null);
   const vuLeftRef = useRef<HTMLDivElement>(null);
@@ -135,6 +171,9 @@ export default function Loader({ onComplete }: LoaderProps) {
         onComplete: () => {
           setIsDone(true);
           onComplete?.();
+          setTimeout(() => {
+            ScrollTrigger.refresh();
+          }, 150);
         },
       });
 
@@ -163,7 +202,7 @@ export default function Loader({ onComplete }: LoaderProps) {
         0.05
       );
 
-      // ── Step 2: Spools Spin & Tape Reads ───────────────────────
+      // ── Step 2: Spools Spin & Realistic Magnetic Tape Transfer ──
       // Spools spin smoothly as magnetic tape winds (4 full rotations over 2.65s)
       tl.to(
         [leftSpoolRef.current, rightSpoolRef.current],
@@ -174,6 +213,69 @@ export default function Loader({ onComplete }: LoaderProps) {
         },
         0.15
       );
+
+      // Left Supply Reel: Tape pack shrinks as it unwinds (r: 43 -> r: 25)
+      if (leftTapePackRef.current) {
+        tl.to(
+          leftTapePackRef.current,
+          {
+            attr: { r: 25 },
+            duration: LOADER_CONFIG.spinDuration,
+            ease: "power1.inOut",
+          },
+          0.15
+        );
+      }
+      if (leftTapeRingRef.current) {
+        tl.to(
+          leftTapeRingRef.current,
+          {
+            attr: { r: 22 },
+            opacity: 0.2,
+            duration: LOADER_CONFIG.spinDuration,
+            ease: "power1.inOut",
+          },
+          0.15
+        );
+      }
+
+      // Right Take-Up Reel: Tape pack expands as it collects tape (r: 25 -> r: 43)
+      if (rightTapePackRef.current) {
+        tl.to(
+          rightTapePackRef.current,
+          {
+            attr: { r: 43 },
+            duration: LOADER_CONFIG.spinDuration,
+            ease: "power1.inOut",
+          },
+          0.15
+        );
+      }
+      if (rightTapeRingRef.current) {
+        tl.to(
+          rightTapeRingRef.current,
+          {
+            attr: { r: 40 },
+            opacity: 0.45,
+            duration: LOADER_CONFIG.spinDuration,
+            ease: "power1.inOut",
+          },
+          0.15
+        );
+      }
+
+      // Center Magnetic Ribbon: physical tape stream traveling horizontally
+      if (tapeRibbonRef.current) {
+        tl.to(
+          tapeRibbonRef.current,
+          {
+            x: -120,
+            duration: LOADER_CONFIG.spinDuration,
+            ease: "none",
+          },
+          0.15
+        );
+      }
 
       // Logo wipes in horizontally like magnetic tape passing the playback head
       tl.to(
@@ -335,14 +437,32 @@ export default function Loader({ onComplete }: LoaderProps) {
       >
         {/* Outer Cassette Deck Shell */}
         <div
-          className="w-full border-[3px] rounded-3xl p-5 sm:p-6 shadow-[6px_6px_0px_0px_#8C0027] flex flex-col items-center gap-4"
+          className="relative w-full border-[3px] rounded-3xl p-5 sm:p-6 shadow-[6px_6px_0px_0px_#8C0027] flex flex-col items-center gap-3.5"
           style={{
             backgroundColor: LOADER_CONFIG.backgroundColor,
             borderColor: LOADER_CONFIG.borderColor,
           }}
         >
+          {/* 4 Corner Vintage Metal Screws */}
+          <div className="absolute top-2.5 left-2.5 w-3 h-3 rounded-full bg-[#E2D5BE] border border-[#8C0027]/50 flex items-center justify-center shadow-inner" title="Cassette Shell Screw">
+            <div className="w-2 h-[1px] bg-[#8C0027]/80" />
+            <div className="h-2 w-[1px] bg-[#8C0027]/80 absolute" />
+          </div>
+          <div className="absolute top-2.5 right-2.5 w-3 h-3 rounded-full bg-[#E2D5BE] border border-[#8C0027]/50 flex items-center justify-center shadow-inner" title="Cassette Shell Screw">
+            <div className="w-2 h-[1px] bg-[#8C0027]/80 rotate-45" />
+            <div className="h-2 w-[1px] bg-[#8C0027]/80 -rotate-45 absolute" />
+          </div>
+          <div className="absolute bottom-2.5 left-2.5 w-3 h-3 rounded-full bg-[#E2D5BE] border border-[#8C0027]/50 flex items-center justify-center shadow-inner" title="Cassette Shell Screw">
+            <div className="w-2 h-[1px] bg-[#8C0027]/80 rotate-12" />
+            <div className="h-2 w-[1px] bg-[#8C0027]/80 -rotate-78 absolute" />
+          </div>
+          <div className="absolute bottom-2.5 right-2.5 w-3 h-3 rounded-full bg-[#E2D5BE] border border-[#8C0027]/50 flex items-center justify-center shadow-inner" title="Cassette Shell Screw">
+            <div className="w-2 h-[1px] bg-[#8C0027]/80 rotate-60" />
+            <div className="h-2 w-[1px] bg-[#8C0027]/80 -rotate-30 absolute" />
+          </div>
+
           {/* Deck Top Header: Deck Brand & Status LED */}
-          <div className="w-full flex items-center justify-between border-b-2 border-[#8C0027]/20 pb-2.5 font-mono text-[11px] sm:text-xs text-[#8C0027]">
+          <div className="w-full flex items-center justify-between border-b-2 border-[#8C0027]/20 pb-2 font-mono text-[11px] sm:text-xs text-[#8C0027]">
             <div className="flex items-center gap-2">
               <span
                 ref={recDotRef}
@@ -353,9 +473,16 @@ export default function Loader({ onComplete }: LoaderProps) {
                 {LOADER_CONFIG.brandName}
               </span>
             </div>
-            <span className="tracking-wider opacity-75">
-              {LOADER_CONFIG.tapeType}
-            </span>
+
+            {/* Vintage Cassette Sub-Labels */}
+            <div className="flex items-center gap-2">
+              <span className="px-1.5 py-0.5 rounded text-[9px] font-bold border border-[#8C0027]/40 bg-[#8C0027]/5">
+                SIDE A
+              </span>
+              <span className="tracking-wider text-[10px] opacity-75 font-mono hidden sm:inline">
+                TYPE II · CrO2
+              </span>
+            </div>
           </div>
 
           {/* Tape Cassette Window */}
@@ -364,24 +491,37 @@ export default function Loader({ onComplete }: LoaderProps) {
             style={{ backgroundColor: LOADER_CONFIG.tapeWindowBg }}
           >
             {/* Guide Ruler Behind Tape */}
-            <div className="w-full flex justify-between px-2 mb-2 text-[9px] font-mono text-[#8C0027]/40 tracking-widest">
+            <div className="w-full flex justify-between px-2 mb-1.5 text-[9px] font-mono text-[#8C0027]/50 tracking-widest font-semibold">
               <span>| 100</span>
-              <span>| 50</span>
+              <span className="text-[8px] uppercase tracking-[0.2em] opacity-60">◄◄ REW · PLAY ▶ · FF ▶▶</span>
               <span>0 |</span>
             </div>
 
             {/* Central Spools & Wordmark Area */}
             <div className="relative w-full flex items-center justify-between px-2 sm:px-4 my-1">
-              {/* Left Supply Reel */}
+              {/* Left Supply Reel (Starts full of dark magnetic tape) */}
               <CassetteSpool
                 spoolRef={leftSpoolRef}
+                tapePackRef={leftTapePackRef}
+                tapeRingRef={leftTapeRingRef}
+                initialRadius={44}
                 className="w-14 h-14 sm:w-16 sm:h-16 will-change-transform shrink-0"
               />
 
               {/* Center Magnetic Tape Track & gab.io Logo */}
               <div className="relative flex-1 mx-2 sm:mx-3 flex items-center justify-center">
                 {/* Magnetic tape ribbon bar */}
-                <div className="absolute inset-x-0 h-4 bg-[#3A1520]/15 rounded-sm" />
+                <div className="absolute inset-x-0 h-4 bg-[#2B0A14] rounded-sm overflow-hidden flex items-center shadow-inner border-y border-[#6B1327]/60">
+                  {/* Dynamic tape oxide traveling stream */}
+                  <div
+                    ref={tapeRibbonRef}
+                    className="w-[300%] h-full shrink-0 opacity-35"
+                    style={{
+                      backgroundImage:
+                        "repeating-linear-gradient(90deg, transparent, transparent 5px, rgba(245,238,222,0.3) 5px, rgba(245,238,222,0.3) 8px)",
+                    }}
+                  />
+                </div>
 
                 {/* The Logo (Wipes in along tape path) */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -389,19 +529,30 @@ export default function Loader({ onComplete }: LoaderProps) {
                   ref={logoRef}
                   src="/logo/gab_io_log/logl.png"
                   alt="gab.io logo"
-                  className="relative z-10 w-full max-w-[190px] sm:max-w-[220px] aspect-[1930/815] object-contain will-change-transform"
+                  className="relative z-10 w-full max-w-[190px] sm:max-w-[220px] aspect-[1930/815] object-contain will-change-transform drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)]"
                 />
               </div>
 
-              {/* Right Take-Up Reel */}
+              {/* Right Take-Up Reel (Starts empty, gathers dark magnetic tape) */}
               <CassetteSpool
                 spoolRef={rightSpoolRef}
+                tapePackRef={rightTapePackRef}
+                tapeRingRef={rightTapeRingRef}
+                initialRadius={25}
                 className="w-14 h-14 sm:w-16 sm:h-16 will-change-transform shrink-0"
               />
             </div>
 
-            {/* Bottom Window Bevel Cut */}
-            <div className="w-3/4 h-2 bg-[#8C0027]/15 rounded-full mt-3" />
+            {/* Bottom Tape Head Trapezoid Well */}
+            <div className="relative w-40 h-3 mt-2 flex items-center justify-center">
+              <div
+                className="w-full h-full bg-[#8C0027]/10 border-t border-[#8C0027]/30"
+                style={{
+                  clipPath: "polygon(12% 0%, 88% 0%, 100% 100%, 0% 100%)",
+                }}
+              />
+              <div className="absolute w-6 h-1.5 bg-[#8C0027]/30 rounded-sm" />
+            </div>
           </div>
 
           {/* Deck Lower Controls / Analog Readouts */}

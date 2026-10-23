@@ -69,7 +69,7 @@ function CertificationTicket({
       ref={cardRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="relative select-none h-full transition-all duration-200"
+      className="cert-ticket-item relative select-none h-full transition-all duration-200"
       style={{
         filter: "drop-shadow(5px 5px 0 #8C0027)",
         willChange: "transform, filter",
@@ -172,6 +172,7 @@ export default function Experience() {
   const desktopLineProgressRef = useRef<HTMLDivElement>(null);
   const mobileLineProgressRef = useRef<HTMLDivElement>(null);
   const markersRef = useRef<(HTMLDivElement | null)[]>([]);
+  const stemsRef = useRef<(HTMLDivElement | null)[]>([]);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const pulseDotRef = useRef<HTMLSpanElement | null>(null);
 
@@ -190,24 +191,7 @@ export default function Experience() {
 
   useGSAP(
     () => {
-      const prefersReduced =
-        typeof window !== "undefined" &&
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
       if (!timelineRef.current) return;
-
-      if (prefersReduced) {
-        if (desktopLineProgressRef.current) {
-          gsap.set(desktopLineProgressRef.current, { scaleX: 1 });
-        }
-        if (mobileLineProgressRef.current) {
-          gsap.set(mobileLineProgressRef.current, { scaleY: 1 });
-        }
-        markersRef.current.forEach((m) => m && gsap.set(m, { scale: 1, opacity: 1 }));
-        cardsRef.current.forEach((c) => c && gsap.set(c, { x: 0, y: 0, opacity: 1 }));
-        if (pulseDotRef.current) gsap.set(pulseDotRef.current, { scale: 1, opacity: 1 });
-        return;
-      }
 
       // Initial hidden states
       if (desktopLineProgressRef.current) {
@@ -223,7 +207,10 @@ export default function Experience() {
         });
       }
       markersRef.current.forEach((m) => {
-        if (m) gsap.set(m, { scale: 0, opacity: 0 });
+        if (m) gsap.set(m, { scale: 0, opacity: 0, rotation: -30 });
+      });
+      stemsRef.current.forEach((s) => {
+        if (s) gsap.set(s, { scaleY: 0, transformOrigin: "top center" });
       });
       if (pulseDotRef.current) {
         gsap.set(pulseDotRef.current, { scale: 0, opacity: 0 });
@@ -234,100 +221,148 @@ export default function Experience() {
       cardsRef.current.forEach((c) => {
         if (c) {
           if (isDesktop) {
-            gsap.set(c, { y: 30, x: 0, opacity: 0 });
+            gsap.set(c, {
+              y: -35,
+              rotationX: -25,
+              opacity: 0,
+              scale: 0.94,
+              transformOrigin: "top center",
+            });
           } else {
-            gsap.set(c, { x: 35, y: 0, opacity: 0 });
+            gsap.set(c, { x: 40, opacity: 0 });
           }
         }
       });
 
-      // Master scroll timeline
+      // ── Triggered Cinematic Sequence ──
+      // Triggers when the timeline reaches comfortable viewing position (top 62%)
+      // and replays when scrolling back so it's always easy to see and test!
       const masterTl = gsap.timeline({
         scrollTrigger: {
           trigger: timelineRef.current,
-          start: "top 80%",
-          once: true,
+          start: "top 62%",
+          toggleActions: "play none none reverse",
         },
       });
 
-      const totalItems = timeline.length;
+      // 1. Multi-color gradient line shoots across like an electric transit track
+      if (desktopLineProgressRef.current) {
+        masterTl.to(
+          desktopLineProgressRef.current,
+          { scaleX: 1, duration: 1.35, ease: "power2.inOut" },
+          0.05
+        );
+      }
+      if (mobileLineProgressRef.current) {
+        masterTl.to(
+          mobileLineProgressRef.current,
+          { scaleY: 1, duration: 1.35, ease: "power2.inOut" },
+          0.05
+        );
+      }
 
-      timeline.forEach((_, i) => {
-        const marker = markersRef.current[i];
-        const card = cardsRef.current[i];
-        const timeSlot = i * 0.75;
+      // 2. Sequential waypoint punch & hanging signboard drop as the line reaches each stop
+      // Node 01 punches down at 0.1s
+      if (markersRef.current[0]) {
+        masterTl.to(
+          markersRef.current[0],
+          { scale: 1, rotation: 0, opacity: 1, duration: 0.5, ease: "back.out(2.2)" },
+          0.1
+        );
+      }
+      if (stemsRef.current[0]) {
+        masterTl.to(
+          stemsRef.current[0],
+          { scaleY: 1, duration: 0.35, ease: "power2.out" },
+          0.2
+        );
+      }
+      if (cardsRef.current[0]) {
+        masterTl.to(
+          cardsRef.current[0],
+          isDesktop
+            ? { y: 0, rotationX: 0, opacity: 1, scale: 1, duration: 0.55, ease: "back.out(1.5)" }
+            : { x: 0, opacity: 1, duration: 0.5, ease: "power2.out" },
+          0.25
+        );
+      }
 
-        // Numbered Circle bounce
-        if (marker) {
-          masterTl.fromTo(
-            marker,
-            { scale: 0, opacity: 0 },
-            {
-              scale: 1,
-              opacity: 1,
-              duration: 0.6,
-              ease: "back.out(1.8)",
-            },
-            timeSlot
-          );
-        }
+      // Node 02 punches down at 0.6s
+      if (markersRef.current[1]) {
+        masterTl.to(
+          markersRef.current[1],
+          { scale: 1, rotation: 0, opacity: 1, duration: 0.5, ease: "back.out(2.2)" },
+          0.6
+        );
+      }
+      if (stemsRef.current[1]) {
+        masterTl.to(
+          stemsRef.current[1],
+          { scaleY: 1, duration: 0.35, ease: "power2.out" },
+          0.7
+        );
+      }
+      if (cardsRef.current[1]) {
+        masterTl.to(
+          cardsRef.current[1],
+          isDesktop
+            ? { y: 0, rotationX: 0, opacity: 1, scale: 1, duration: 0.55, ease: "back.out(1.5)" }
+            : { x: 0, opacity: 1, duration: 0.5, ease: "power2.out" },
+          0.75
+        );
+      }
 
-        // Card entrance
-        if (card) {
-          masterTl.fromTo(
-            card,
-            isDesktop ? { y: 30, opacity: 0 } : { x: 35, opacity: 0 },
-            {
-              x: 0,
-              y: 0,
-              opacity: 1,
-              duration: 0.65,
-              ease: "power3.out",
-            },
-            timeSlot + 0.08
-          );
-        }
-
-        // Ink line drawing to the next node
-        if (i < totalItems - 1) {
-          const targetScale = (i + 1) / (totalItems - 1);
-          if (desktopLineProgressRef.current) {
-            masterTl.to(
-              desktopLineProgressRef.current,
-              {
-                scaleX: targetScale,
-                duration: 0.55,
-                ease: "power1.inOut",
-              },
-              timeSlot + 0.3
-            );
-          }
-          if (mobileLineProgressRef.current) {
-            masterTl.to(
-              mobileLineProgressRef.current,
-              {
-                scaleY: targetScale,
-                duration: 0.55,
-                ease: "power1.inOut",
-              },
-              timeSlot + 0.3
-            );
-          }
-        }
-      });
-
-      // Live beacon pulse on current/last milestone
+      // Node 03 punches down at 1.1s + Live beacon turns on
+      if (markersRef.current[2]) {
+        masterTl.to(
+          markersRef.current[2],
+          { scale: 1, rotation: 0, opacity: 1, duration: 0.5, ease: "back.out(2.2)" },
+          1.1
+        );
+      }
+      if (stemsRef.current[2]) {
+        masterTl.to(
+          stemsRef.current[2],
+          { scaleY: 1, duration: 0.35, ease: "power2.out" },
+          1.2
+        );
+      }
+      if (cardsRef.current[2]) {
+        masterTl.to(
+          cardsRef.current[2],
+          isDesktop
+            ? { y: 0, rotationX: 0, opacity: 1, scale: 1, duration: 0.55, ease: "back.out(1.5)" }
+            : { x: 0, opacity: 1, duration: 0.5, ease: "power2.out" },
+          1.25
+        );
+      }
       if (pulseDotRef.current) {
-        masterTl.fromTo(
+        masterTl.to(
           pulseDotRef.current,
-          { scale: 0, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(2.5)" },
+          1.4
+        );
+      }
+
+      // ── Certifications Staggered Ticket Entrance ──
+      const certCards = sectionRef.current?.querySelectorAll(".cert-ticket-item");
+      if (certCards && certCards.length > 0) {
+        gsap.fromTo(
+          certCards,
+          { y: 35, opacity: 0, scale: 0.96 },
           {
-            scale: 1,
+            y: 0,
             opacity: 1,
-            duration: 0.4,
-            ease: "back.out(2)",
-          },
-          2.0
+            scale: 1,
+            duration: 0.6,
+            stagger: 0.12,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: certCards[0],
+              start: "top 85%",
+              once: true,
+            },
+          }
         );
       }
     },
@@ -452,7 +487,10 @@ export default function Experience() {
 
                 {/* 2px wine stem connecting circle to card on desktop */}
                 <div
-                  className="hidden lg:block w-0.5 h-6 bg-wine shrink-0"
+                  ref={(el) => {
+                    stemsRef.current[i] = el;
+                  }}
+                  className="hidden lg:block w-0.5 h-6 bg-wine shrink-0 origin-top will-change-transform"
                   aria-hidden="true"
                 />
 
@@ -544,8 +582,16 @@ export default function Experience() {
               className="w-full h-3 stripe-band rounded-full border border-wine/20 mb-8"
             />
 
-            {/* Certifications Grid: Desktop 3 cols, Tablet 2 cols, Mobile 1 col */}
-            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+            {/* Certifications Grid: Desktop 3 cols, Tablet 2 cols, Mobile 1 col (Centered if single item) */}
+            <ul
+              className={`grid gap-6 items-stretch ${
+                displayedCerts.length === 1
+                  ? "grid-cols-1 max-w-md mx-auto"
+                  : displayedCerts.length === 2
+                  ? "grid-cols-1 md:grid-cols-2 max-w-3xl mx-auto"
+                  : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+              }`}
+            >
               {displayedCerts.map((cert, idx) => {
                 const stubColor = STUB_COLORS[idx % STUB_COLORS.length];
                 const serialNo = `No. ${String(idx + 1).padStart(3, "0")}`;
