@@ -312,12 +312,14 @@ export default function Contact() {
   const soundRef = useRef<TypewriterSound | null>(null);
 
   const [formState, setFormState] = useState<FormState>("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [activeField, setActiveField] = useState<ActiveField>("from");
   const [isStamped, setIsStamped] = useState(false);
   const [fromEmail, setFromEmail] = useState("");
   const [topic, setTopic] = useState("");
   const [message, setMessage] = useState("");
   const [fullName, setFullName] = useState("");
+  const [honeypot, setHoneypot] = useState("");
   const [pressedKey, setPressedKey] = useState<string | null>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [lettersMailedCount, setLettersMailedCount] = useState(0);
@@ -580,15 +582,17 @@ export default function Contact() {
   }
 
   /* ── Submit with GSAP Origami Fold & Mailbox Insertion ── */
-  function handleSubmit(e?: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e?: FormEvent<HTMLFormElement>) {
     if (e) e.preventDefault();
-    if (formState === "sending" || formState === "success") return;
+    if (formState === "sending") return;
 
     if (!fromEmail.trim() || !topic.trim() || !message.trim() || !fullName.trim()) {
-      if (!fromEmail.trim()) changeField("from");
-      else if (!topic.trim()) changeField("topic");
-      else if (!message.trim()) changeField("message");
-      else if (!fullName.trim()) changeField("name");
+      let missing = "";
+      if (!fromEmail.trim()) { changeField("from"); missing = "From: (your email)"; }
+      else if (!topic.trim()) { changeField("topic"); missing = "Subject:"; }
+      else if (!message.trim()) { changeField("message"); missing = "Your message:"; }
+      else if (!fullName.trim()) { changeField("name"); missing = "Best Regards, (your name)"; }
+      setErrorMessage(`Please fill in ${missing} on the typewriter paper.`);
       getSound()?.playBellDing?.();
       return;
     }
@@ -601,11 +605,12 @@ export default function Contact() {
     const flyingEl = flyingLetterRef.current;
 
     if (!paperEl || !flapEl || !slotEl || !flyingEl || !contentEl) {
-      setFormState("success");
+      setFormState("idle");
       return;
     }
 
     setFormState("sending");
+    setErrorMessage(null);
     getSound()?.playBellDing?.();
 
     // 1. Stamp "POSTED" down onto the typed letter
@@ -629,7 +634,34 @@ export default function Contact() {
       });
     }
 
-    // 3. Flight sequence timeline (begins after carriage is centered in the middle)
+    // 3. Dispatch to API endpoint
+    try {
+      const response = await fetch("/api/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fromEmail,
+          topic,
+          message,
+          fullName,
+          website: honeypot,
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to dispatch email");
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Error sending email";
+      setErrorMessage(msg);
+      setFormState("error");
+      setIsStamped(false);
+      getSound()?.playBellDing?.();
+      return;
+    }
+
+    // 4. Flight sequence timeline (runs after successful dispatch)
     const tl = gsap.timeline({
       delay: 0.35, // Wait for carriage to return to center & stamp to be visible
       onStart: () => {
@@ -822,8 +854,20 @@ export default function Contact() {
           Type your message on the typewriter below.
         </p>
 
+        {/* Anti-Bot Honeypot trap (Invisible to humans, catches automated bots) */}
+        <input
+          type="text"
+          name="website"
+          value={honeypot}
+          onChange={(e) => setHoneypot(e.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
+          className="hidden opacity-0 pointer-events-none absolute -left-[9999px]"
+          aria-hidden="true"
+        />
+
         {/* Dispatch Confirmation Toast (Appears when letter has been mailed) */}
-        {lettersMailedCount > 0 && (
+        {lettersMailedCount > 0 && !errorMessage && (
           <div
             role="status"
             className="mb-6 max-w-lg mx-auto px-5 py-3 rounded-xl flex items-center justify-between gap-3 text-xs transition-all shadow-lg animate-fadeIn"
@@ -839,12 +883,42 @@ export default function Contact() {
               <span className="w-2.5 h-2.5 rounded-full bg-[#2BAF90] animate-ping" />
               <div>
                 <span className="font-bold text-[#A1D4B1] uppercase tracking-wider text-[11px]">Letter Mailed!</span>
-                <span className="text-cream/80 ml-2">Your letter was dropped into the postal box. Fresh paper loaded.</span>
+                <span className="text-cream/80 ml-2">Your letter was delivered directly to inbox. Fresh paper loaded.</span>
               </div>
             </div>
             <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#2BAF90]/30 text-[#A1D4B1] font-bold">
               ✓ SENT
             </span>
+          </div>
+        )}
+
+        {/* Error Notification Banner */}
+        {errorMessage && (
+          <div
+            role="alert"
+            className="mb-6 max-w-lg mx-auto px-5 py-3 rounded-xl flex items-center justify-between gap-3 text-xs transition-all shadow-lg animate-fadeIn"
+            style={{
+              background: "linear-gradient(135deg, rgba(239, 68, 68, 0.22) 0%, rgba(185, 28, 28, 0.18) 100%)",
+              border: "1.5px solid #EF4444",
+              color: "#FFF",
+              fontFamily: "var(--font-body)",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.2)",
+            }}
+          >
+            <div className="flex items-center gap-2.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#EF4444]" />
+              <div>
+                <span className="font-bold text-[#FCA5A5] uppercase tracking-wider text-[11px]">Dispatch Failed</span>
+                <span className="text-cream/80 ml-2">{errorMessage}</span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setErrorMessage(null)}
+              className="text-[11px] font-mono px-2 py-0.5 rounded bg-[#EF4444]/30 hover:bg-[#EF4444]/50 text-[#FCA5A5] font-bold cursor-pointer transition-colors"
+            >
+              ✕
+            </button>
           </div>
         )}
 
@@ -2115,7 +2189,11 @@ export default function Contact() {
                   {/* Hinged Brass Mail Flap */}
                   <div
                     ref={postalFlapRef}
-                    className="absolute inset-x-0 top-0 h-full origin-top flex items-center justify-center cursor-default"
+                    onClick={() => handleSubmit()}
+                    role="button"
+                    tabIndex={0}
+                    title="Click to dispatch letter"
+                    className="absolute inset-x-0 top-0 h-full origin-top flex items-center justify-center cursor-pointer transition-all hover:brightness-110 active:scale-95"
                     style={{
                       background: "linear-gradient(180deg, #e5c158 0%, #b88d18 50%, #7d5e06 100%)",
                       boxShadow: "0 4px 8px rgba(0,0,0,0.75), inset 0 1px 1px rgba(255,255,255,0.65), inset 0 -1px 2px rgba(0,0,0,0.5)",
@@ -2125,7 +2203,7 @@ export default function Contact() {
                   >
                     {/* Embossed "P O S T" text */}
                     <span
-                      className="text-[9px] font-black tracking-[0.3em] text-[#3d2c05] drop-shadow-[0_1px_0_rgba(255,255,255,0.35)]"
+                      className="text-[9px] font-black tracking-[0.3em] text-[#3d2c05] drop-shadow-[0_1px_0_rgba(255,255,255,0.35)] select-none"
                       style={{ fontFamily: "var(--font-display)" }}
                     >
                       P O S T
@@ -2169,11 +2247,40 @@ export default function Contact() {
                   <span className="text-cream/60">STATUS:</span>
                   <div className="flex items-center gap-1.5">
                     <span
-                      className={`w-1.5 h-1.5 rounded-full ${lettersMailedCount > 0 ? "bg-[#2BAF90]" : "bg-[#2BAF90] animate-pulse"}`}
-                      style={{ boxShadow: "0 0 6px #2BAF90" }}
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        formState === "error"
+                          ? "bg-[#EF4444]"
+                          : formState === "sending"
+                          ? "bg-[#EAB308] animate-ping"
+                          : lettersMailedCount > 0
+                          ? "bg-[#2BAF90]"
+                          : "bg-[#2BAF90] animate-pulse"
+                      }`}
+                      style={{
+                        boxShadow:
+                          formState === "error"
+                            ? "0 0 6px #EF4444"
+                            : formState === "sending"
+                            ? "0 0 6px #EAB308"
+                            : "0 0 6px #2BAF90",
+                      }}
                     />
-                    <span className="text-[#2BAF90] font-bold tracking-wider">
-                      {lettersMailedCount > 0 ? `${lettersMailedCount} POSTED` : "READY"}
+                    <span
+                      className={`font-bold tracking-wider ${
+                        formState === "error"
+                          ? "text-[#EF4444]"
+                          : formState === "sending"
+                          ? "text-[#EAB308]"
+                          : "text-[#2BAF90]"
+                      }`}
+                    >
+                      {formState === "sending"
+                        ? "DISPATCHING..."
+                        : formState === "error"
+                        ? "FAILED"
+                        : lettersMailedCount > 0
+                        ? `${lettersMailedCount} POSTED`
+                        : "READY"}
                     </span>
                   </div>
                 </div>
