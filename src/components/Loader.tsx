@@ -140,7 +140,6 @@ export default function Loader({ onComplete }: LoaderProps) {
   const rightTapePackRef = useRef<SVGCircleElement>(null);
   const rightTapeRingRef = useRef<SVGCircleElement>(null);
   const tapeRibbonRef = useRef<HTMLDivElement>(null);
-  const logoRef = useRef<HTMLImageElement>(null);
   const counterRef = useRef<HTMLSpanElement>(null);
   const vuLeftRef = useRef<HTMLDivElement>(null);
   const vuRightRef = useRef<HTMLDivElement>(null);
@@ -183,11 +182,6 @@ export default function Loader({ onComplete }: LoaderProps) {
         yPercent: 0,
       });
       gsap.set(deckHousingRef.current, { scale: 0.95, opacity: 0 });
-      gsap.set(logoRef.current, {
-        clipPath: "inset(0 100% 0 0)",
-        opacity: 0,
-        filter: "drop-shadow(2px 2px 0px rgba(140,0,39,0.3))",
-      });
 
       // ── Step 1: Deck Power On ──────────────────────────────────
       // Cassette housing fades and pops into place
@@ -276,18 +270,6 @@ export default function Loader({ onComplete }: LoaderProps) {
           0.15
         );
       }
-
-      // Logo wipes in horizontally like magnetic tape passing the playback head
-      tl.to(
-        logoRef.current,
-        {
-          opacity: 1,
-          clipPath: "inset(0 0% 0 0)",
-          duration: LOADER_CONFIG.logoWipeDuration,
-          ease: "power2.inOut",
-        },
-        0.2
-      );
 
       // Mechanical 3-digit counter ticks up from 000 to 100
       const counterVal = { val: 0 };
@@ -508,14 +490,14 @@ export default function Loader({ onComplete }: LoaderProps) {
                 className="w-14 h-14 sm:w-16 sm:h-16 will-change-transform shrink-0"
               />
 
-              {/* Center Magnetic Tape Track & gab.io Logo */}
-              <div className="relative flex-1 mx-2 sm:mx-3 flex items-center justify-center">
-                {/* Magnetic tape ribbon bar */}
+              {/* Center Magnetic Tape Track & Inspection Window */}
+              <div className="relative flex-1 mx-2 sm:mx-3 h-8 flex items-center justify-center">
+                {/* Magnetic tape ribbon track */}
                 <div className="absolute inset-x-0 h-4 bg-[#2B0A14] rounded-sm overflow-hidden flex items-center shadow-inner border-y border-[#6B1327]/60">
                   {/* Dynamic tape oxide traveling stream */}
                   <div
                     ref={tapeRibbonRef}
-                    className="w-[300%] h-full shrink-0 opacity-35"
+                    className="w-[300%] h-full shrink-0 opacity-40"
                     style={{
                       backgroundImage:
                         "repeating-linear-gradient(90deg, transparent, transparent 5px, rgba(245,238,222,0.3) 5px, rgba(245,238,222,0.3) 8px)",
@@ -523,14 +505,26 @@ export default function Loader({ onComplete }: LoaderProps) {
                   />
                 </div>
 
-                {/* The Logo (Wipes in along tape path) */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  ref={logoRef}
-                  src="/logo/gab_io_log/logl.png"
-                  alt="gab.io logo"
-                  className="relative z-10 w-full max-w-[190px] sm:max-w-[220px] aspect-[1930/815] object-contain will-change-transform drop-shadow-[0_2px_4px_rgba(0,0,0,0.25)]"
-                />
+                {/* Classic Cassette Window Gauge Level: 100 · 50 · 0 */}
+                <div className="relative z-10 flex items-center justify-between w-full px-2 text-[9px] font-mono text-[#F5EEDE]/80 font-bold select-none pointer-events-none drop-shadow-[0_1px_1px_rgba(0,0,0,0.8)]">
+                  <span>100</span>
+                  <div className="flex gap-1 items-center opacity-70">
+                    <span className="w-0.5 h-1.5 bg-[#F5EEDE]" />
+                    <span className="w-0.5 h-1 bg-[#F5EEDE]" />
+                    <span className="w-0.5 h-2.5 bg-[#F5EEDE]" />
+                    <span className="w-0.5 h-1 bg-[#F5EEDE]" />
+                    <span className="w-0.5 h-1.5 bg-[#F5EEDE]" />
+                  </div>
+                  <span>50</span>
+                  <div className="flex gap-1 items-center opacity-70">
+                    <span className="w-0.5 h-1.5 bg-[#F5EEDE]" />
+                    <span className="w-0.5 h-1 bg-[#F5EEDE]" />
+                    <span className="w-0.5 h-2.5 bg-[#F5EEDE]" />
+                    <span className="w-0.5 h-1 bg-[#F5EEDE]" />
+                    <span className="w-0.5 h-1.5 bg-[#F5EEDE]" />
+                  </div>
+                  <span>0</span>
+                </div>
               </div>
 
               {/* Right Take-Up Reel (Starts empty, gathers dark magnetic tape) */}

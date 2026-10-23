@@ -69,7 +69,7 @@ function CertificationTicket({
       ref={cardRef}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="cert-ticket-item relative select-none h-full transition-all duration-200"
+      className="cert-ticket-item relative select-none h-full"
       style={{
         filter: "drop-shadow(5px 5px 0 #8C0027)",
         willChange: "transform, filter",
@@ -82,6 +82,7 @@ function CertificationTicket({
         {/* Horizontal Year Strip on Top */}
         <div
           className={`
+            cert-stub-top
             h-[42px] shrink-0
             ${stubColor.bg} ${stubColor.text}
             flex items-center justify-between
@@ -132,7 +133,7 @@ function CertificationTicket({
 
           <div className="mt-auto flex items-center justify-between gap-2 pt-3 border-t border-wine/10">
             <span
-              className="inline-flex text-xs px-2.5 py-0.5 bg-teal text-cream rounded-full border border-wine/30 font-bold"
+              className="cert-badge inline-flex text-xs px-2.5 py-0.5 bg-teal text-cream rounded-full border border-wine/30 font-bold will-change-transform"
               style={{ fontFamily: "var(--font-body)" }}
             >
               {cert.category}
@@ -145,12 +146,14 @@ function CertificationTicket({
                 rel="noopener noreferrer"
                 aria-label={`View credential: ${cert.title}`}
                 className="
+                  cert-link-btn
                   w-8 h-8 rounded-full shrink-0
                   flex items-center justify-center
                   border-2 border-wine bg-cream text-wine
-                  transition-all duration-150
+                  transition-colors duration-150
                   hover:bg-mustard hover:shadow-[2px_2px_0_0_#8C0027]
                   focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mustard
+                  will-change-transform
                 "
               >
                 <ArrowUpRight className="w-4 h-4 stroke-[2.5]" />
@@ -175,6 +178,11 @@ export default function Experience() {
   const stemsRef = useRef<(HTMLDivElement | null)[]>([]);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const pulseDotRef = useRef<HTMLSpanElement | null>(null);
+
+  // Certifications refs
+  const certSectionRef = useRef<HTMLDivElement>(null);
+  const certHeaderRef = useRef<HTMLDivElement>(null);
+  const certStripeRef = useRef<HTMLDivElement>(null);
 
   const [showAll, setShowAll] = useState(false);
 
@@ -344,29 +352,107 @@ export default function Experience() {
         );
       }
 
-      // ── Certifications Staggered Ticket Entrance ──
-      const certCards = sectionRef.current?.querySelectorAll(".cert-ticket-item");
-      if (certCards && certCards.length > 0) {
-        gsap.fromTo(
-          certCards,
-          { y: 35, opacity: 0, scale: 0.96 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            duration: 0.6,
-            stagger: 0.12,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: certCards[0],
-              start: "top 85%",
-              once: true,
+      // ── Certifications Ticket Dispenser Sequence ──
+      if (certSectionRef.current) {
+        const certCards = certSectionRef.current.querySelectorAll(".cert-ticket-item");
+        const certBadges = certSectionRef.current.querySelectorAll(".cert-badge");
+        const certBtns = certSectionRef.current.querySelectorAll(".cert-link-btn");
+        const certTops = certSectionRef.current.querySelectorAll(".cert-stub-top");
+
+        // Initial hidden states
+        if (certHeaderRef.current) {
+          gsap.set(certHeaderRef.current, { opacity: 0, y: 15 });
+        }
+        if (certStripeRef.current) {
+          gsap.set(certStripeRef.current, { scaleX: 0, transformOrigin: "left center" });
+        }
+        if (certCards.length > 0) {
+          gsap.set(certCards, {
+            y: -55,
+            opacity: 0,
+            scale: 0.94,
+            rotation: -2,
+            transformOrigin: "top center",
+          });
+        }
+        if (certBadges.length > 0) {
+          gsap.set(certBadges, { scale: 0, opacity: 0 });
+        }
+        if (certBtns.length > 0) {
+          gsap.set(certBtns, { scale: 0, rotation: -90, opacity: 0 });
+        }
+
+        const certTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: certSectionRef.current,
+            start: "top 72%",
+            toggleActions: "play none none reverse",
+          },
+        });
+
+        // 1. Heading softly glides in
+        if (certHeaderRef.current) {
+          certTl.to(
+            certHeaderRef.current,
+            { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" },
+            0
+          );
+        }
+
+        // 2. Stripe dispenser slot rail unrolls across
+        if (certStripeRef.current) {
+          certTl.to(
+            certStripeRef.current,
+            { scaleX: 1, duration: 0.65, ease: "power3.inOut" },
+            0.1
+          );
+        }
+
+        // 3. Ticket card ejects downward from behind the dispenser rail
+        if (certCards.length > 0) {
+          certTl.to(
+            certCards,
+            {
+              y: 0,
+              opacity: 1,
+              scale: 1,
+              rotation: 0,
+              duration: 0.75,
+              stagger: 0.15,
+              ease: "back.out(1.8)",
             },
-          }
-        );
+            0.45
+          );
+        }
+
+        // 4. Perforation stub header stamps / clicks
+        if (certTops.length > 0) {
+          certTl.fromTo(
+            certTops,
+            { filter: "brightness(1.2)" },
+            { filter: "brightness(1)", duration: 0.35, ease: "power2.out", stagger: 0.15 },
+            0.75
+          );
+        }
+
+        // 5. Category badge and credential link pop in
+        if (certBadges.length > 0) {
+          certTl.to(
+            certBadges,
+            { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(2.2)", stagger: 0.15 },
+            0.78
+          );
+        }
+        if (certBtns.length > 0) {
+          certTl.to(
+            certBtns,
+            { scale: 1, rotation: 0, opacity: 1, duration: 0.45, ease: "back.out(2)", stagger: 0.15 },
+            0.82
+          );
+        }
       }
     },
-    { scope: sectionRef }
+    { scope: sectionRef, dependencies: [showAll] }
   );
 
   return (
@@ -557,9 +643,12 @@ export default function Experience() {
 
         {/* ── 3. Certifications ────────────────────────── */}
         {hasCerts && (
-          <div className="mt-20">
+          <div ref={certSectionRef} className="mt-20">
             {/* Row Heading */}
-            <div className="flex items-baseline justify-between mb-3">
+            <div
+              ref={certHeaderRef}
+              className="flex items-baseline justify-between mb-3 will-change-transform"
+            >
               <h3
                 className="text-2xl md:text-3xl text-wine"
                 style={{ fontFamily: "var(--font-display)" }}
@@ -576,15 +665,16 @@ export default function Experience() {
               )}
             </div>
 
-            {/* Stripe band under the heading */}
+            {/* Stripe band dispenser slot rail */}
             <div
+              ref={certStripeRef}
               aria-hidden="true"
-              className="w-full h-3 stripe-band rounded-full border border-wine/20 mb-8"
+              className="w-full h-3.5 stripe-band rounded-full border border-wine/20 mb-8 will-change-transform origin-left relative z-20 shadow-[0_2px_4px_rgba(140,0,39,0.15)]"
             />
 
             {/* Certifications Grid: Desktop 3 cols, Tablet 2 cols, Mobile 1 col (Centered if single item) */}
             <ul
-              className={`grid gap-6 items-stretch ${
+              className={`relative z-10 grid gap-6 items-stretch ${
                 displayedCerts.length === 1
                   ? "grid-cols-1 max-w-md mx-auto"
                   : displayedCerts.length === 2

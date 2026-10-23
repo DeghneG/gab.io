@@ -2023,15 +2023,6 @@ export default function Contact() {
               </div>
             </div>
 
-            {/* Status line */}
-            <p
-              className="text-center text-cream/40 text-[9px] md:text-[10px] mt-4"
-              style={{ fontFamily: "var(--font-body)" }}
-            >
-              Typing: <span className="text-mustard font-bold">{activeField === "from" ? "From" : activeField === "topic" ? "Subject" : activeField === "message" ? "Message" : "Name"}</span>
-              {" "}&#183; TAB/RETURN = next field &#183; Shift+Enter = new line &#183; {isMuted ? "🔇 Muted" : "🔊 Audio ON"}
-            </p>
-
             {/* ── MOLDED FRONT BUMPER / APRON (Cast metal 3D thickness) ── */}
             <div
               className="mt-4 -mx-5 h-5 rounded-b-[22px] relative overflow-hidden"
