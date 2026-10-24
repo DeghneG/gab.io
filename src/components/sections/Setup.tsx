@@ -6,6 +6,8 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { setupItems, SetupItem } from "@/data/setup";
+import Setup3DLayer from "@/components/setup-3d/Setup3DLayer";
+
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -247,9 +249,15 @@ function HardwareIcon({
 function CompactPegboardItem({
   item,
   index,
+  isMouseSlot,
+  slotRef,
+  hideIcon,
 }: {
   item: SetupItem;
   index: number;
+  isMouseSlot?: boolean;
+  slotRef?: React.Ref<HTMLDivElement>;
+  hideIcon?: boolean;
 }) {
   const [imageFailed, setImageFailed] = useState(false);
   const gearRef = useRef<HTMLDivElement>(null);
@@ -346,12 +354,22 @@ function CompactPegboardItem({
 
       {/* ── 2. Floating Hardware Gear (Compact Silhouette) ── */}
       <div
-        ref={gearRef}
-        className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 flex items-center justify-center -mt-0.5"
+        ref={
+          isMouseSlot
+            ? (node) => {
+                gearRef.current = node;
+                if (typeof slotRef === "function") slotRef(node);
+                else if (slotRef) (slotRef as any).current = node;
+              }
+            : gearRef
+        }
+        className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 flex items-center justify-center -mt-0.5 transition-opacity duration-300"
         style={{
           transformOrigin: "50% 0%",
           filter: "drop-shadow(0 6px 8px rgba(140, 0, 39, 0.18))",
           willChange: "transform, filter",
+          opacity: isMouseSlot && hideIcon ? 0 : 1,
+          pointerEvents: isMouseSlot && hideIcon ? "none" : undefined,
         }}
       >
         {/* Soft radial glow */}
@@ -484,6 +502,16 @@ function CompactPegboardItem({
    ─────────────────────────────────────────────────────────── */
 export default function Setup() {
   const containerRef = useRef<HTMLElement>(null);
+  const boardRef = useRef<HTMLDivElement>(null);
+  const mouseSlotRef = useRef<HTMLDivElement>(null);
+  const resetFnRef = useRef<(() => void) | null>(null);
+
+  const [is3DActive, setIs3DActive] = useState(false);
+  const [mousePos, setMousePos] = useState<{
+    x: number;
+    z: number;
+    isDefault: boolean;
+  } | null>(null);
 
   useGSAP(
     () => {
@@ -530,6 +558,7 @@ export default function Setup() {
       <div className="relative mx-auto max-w-5xl w-full">
         {/* ── Slim Perforated Pegboard Surface (Low-profile, no giant card) ── */}
         <div
+          ref={boardRef}
           className="
             relative w-full
             bg-[#FAF6EE] border-3 border-wine rounded-2xl
@@ -538,6 +567,17 @@ export default function Setup() {
             overflow-hidden
           "
         >
+          {/* 3D Canvas Layer over the board */}
+          <Setup3DLayer
+            boardContainerRef={boardRef}
+            mouseSlotRef={mouseSlotRef}
+            onActiveStateChange={setIs3DActive}
+            onResetReady={(fn) => {
+              resetFnRef.current = fn;
+            }}
+            onMousePosChange={setMousePos}
+          />
+
           {/* Subtle Pegboard Dot Matrix Pattern */}
           <div
             aria-hidden="true"
@@ -593,12 +633,35 @@ export default function Setup() {
                 Setup
               </h2>
             </div>
-            <p
-              className="text-xs sm:text-sm text-wine/75"
-              style={{ fontFamily: "var(--font-body)" }}
-            >
-              What I build and play on.
-            </p>
+
+            <div className="flex items-center gap-3">
+              <p
+                className="text-xs sm:text-sm text-wine/75"
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                What I build and play on.
+              </p>
+
+              {is3DActive && (
+                <button
+                  type="button"
+                  onClick={() => resetFnRef.current?.()}
+                  className="text-xs uppercase font-bold text-wine/80 hover:text-wine underline underline-offset-2 transition-colors cursor-pointer ml-1"
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
+                  Reset position
+                </button>
+              )}
+
+              {process.env.NODE_ENV !== "production" && is3DActive && mousePos && (
+                <span
+                  className="text-[9px] font-mono text-wine/50 font-bold hidden sm:inline-block"
+                  title="3D Mouse coordinates"
+                >
+                  [3D: {mousePos.x.toFixed(1)}, {mousePos.z.toFixed(1)}]
+                </span>
+              )}
+            </div>
           </div>
 
           {/* ── 8 Hanging Items Grid (Tight & Proportioned) ── */}
@@ -612,7 +675,14 @@ export default function Setup() {
             "
           >
             {setupItems.map((item, index) => (
-              <CompactPegboardItem key={item.id} item={item} index={index} />
+              <CompactPegboardItem
+                key={item.id}
+                item={item}
+                index={index}
+                isMouseSlot={item.category === "Mouse"}
+                slotRef={item.category === "Mouse" ? mouseSlotRef : undefined}
+                hideIcon={item.category === "Mouse" && is3DActive}
+              />
             ))}
           </ul>
 

@@ -9,11 +9,33 @@ export interface SetupItem {
 }
 
 /**
+ * Master feature toggle for 3D hardware canvas over the setup board.
+ * Set to false to immediately fall back to standard 2D layout.
+ */
+export const ENABLE_3D = true;
+
+/**
  * Hostnames allowlist for remote images.
  * Add exact hostnames here only if using remote URLs (e.g., "images.unsplash.com").
  * Never use wildcards.
  */
 export const ALLOWED_IMAGE_HOSTS: string[] = [];
+
+/**
+ * Check if WebGL is supported in the current browser environment.
+ */
+export function isWebGLAvailable(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const canvas = document.createElement("canvas");
+    return Boolean(
+      window.WebGLRenderingContext &&
+        (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
+    );
+  } catch {
+    return false;
+  }
+}
 
 /**
  * Panel color cycle for hardware tiles:
