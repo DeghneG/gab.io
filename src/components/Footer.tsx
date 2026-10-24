@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Link from "next/link";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -11,10 +12,12 @@ if (typeof window !== "undefined") {
 }
 
 const FOOTER_LINKS = [
-  { label: "Projects", href: "#projects" },
-  { label: "Technology Stack", href: "#skills" },
-  { label: "Experience", href: "#experience" },
-  { label: "Contact", href: "#contact" },
+  { label: "About", href: "/#hero" },
+  { label: "Setup", href: "/#setup" },
+  { label: "Projects", href: "/#projects" },
+  { label: "Technology Stack", href: "/#skills" },
+  { label: "Experience", href: "/#experience" },
+  { label: "Contact", href: "/#contact" },
 ] as const;
 
 const LETTERS = [
@@ -212,14 +215,14 @@ export default function Footer() {
             aria-label="Footer navigation"
           >
             {FOOTER_LINKS.map((link) => (
-              <a
+              <Link
                 key={link.label}
                 href={link.href}
                 className="nav-link relative text-sm md:text-base text-cream uppercase tracking-wide font-medium py-1 outline-none focus-visible:ring-2 focus-visible:ring-mustard rounded-sm"
                 style={{ fontFamily: "var(--font-body)" }}
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </nav>
 

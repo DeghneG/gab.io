@@ -1,16 +1,20 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { contact } from "@/data/content";
 
 /* ───────────────────────────────────────────────────
-   NAV LINKS — only links to sections that exist
+   NAV LINKS — includes About and Setup routes
    ─────────────────────────────────────────────────── */
 const NAV_LINKS = [
-  { label: "Projects", href: "#projects" },
-  { label: "Tech Stack", href: "#skills" },
-  { label: "Experience", href: "#experience" },
-  { label: "Contact", href: "#contact" },
+  { label: "About", href: "/#hero", sectionId: "hero" },
+  { label: "Setup", href: "/#setup", sectionId: "setup" },
+  { label: "Projects", href: "/#projects", sectionId: "projects" },
+  { label: "Tech Stack", href: "/#skills", sectionId: "skills" },
+  { label: "Experience", href: "/#experience", sectionId: "experience" },
+  { label: "Contact", href: "/#contact", sectionId: "contact" },
 ] as const;
 
 /* ───────────────────────────────────────────────────
@@ -142,6 +146,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeHash, setActiveHash] = useState("");
+  const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -155,12 +160,12 @@ export default function Navbar() {
 
   /* Track which section is in view for active state */
   useEffect(() => {
-    const sectionIds = NAV_LINKS.map((l) => l.href.replace("#", ""));
+    const sectionIds = ["hero", "projects", "skills", "experience", "setup", "contact"];
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            setActiveHash(`#${entry.target.id}`);
+            setActiveHash(entry.target.id === "hero" ? "/#hero" : `/#${entry.target.id}`);
           }
         }
       },
@@ -172,7 +177,7 @@ export default function Navbar() {
       if (el) observer.observe(el);
     }
     return () => observer.disconnect();
-  }, []);
+  }, [pathname]);
 
   /* Close mobile menu on Escape */
   useEffect(() => {
@@ -207,6 +212,10 @@ export default function Navbar() {
   const handleLinkClick = useCallback(() => {
     setMobileOpen(false);
   }, []);
+
+  const isLinkActive = (href: string) => {
+    return activeHash === href || (href === "/#hero" && (activeHash === "#hero" || activeHash === "/#hero")) || (href === "/#setup" && (activeHash === "#setup" || activeHash === "/#setup"));
+  };
 
   /* Build social icons array — skip missing URLs */
   const socials = [
@@ -248,29 +257,32 @@ export default function Navbar() {
         aria-label="Main navigation"
       >
         {/* ── Wordmark ─────────────────────────────── */}
-        <a
-          href="#hero"
+        <Link
+          href={pathname === "/" ? "#hero" : "/"}
           className="text-xl text-wine outline-none focus-visible:ring-4 focus-visible:ring-teal rounded-sm"
           style={{ fontFamily: "var(--font-display)" }}
         >
           gab.io
-        </a>
+        </Link>
 
         {/* ── Desktop links ────────────────────────── */}
         <div className="hidden md:flex items-center gap-6">
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={handleLinkClick}
-              className={`relative text-sm uppercase tracking-[0.15em] text-wine outline-none focus-visible:ring-4 focus-visible:ring-teal rounded-sm py-1 transition-colors duration-200 ${
-                activeHash === link.href ? "nav-link-active" : "nav-link"
-              }`}
-              style={{ fontFamily: "var(--font-body)" }}
-            >
-              {link.label}
-            </a>
-          ))}
+          {NAV_LINKS.map((link) => {
+            const active = isLinkActive(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={handleLinkClick}
+                className={`relative text-sm uppercase tracking-[0.15em] text-wine outline-none focus-visible:ring-4 focus-visible:ring-teal rounded-sm py-1 transition-colors duration-200 ${
+                  active ? "nav-link-active" : "nav-link"
+                }`}
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
 
           {/* Social icons — desktop */}
           <div className="flex items-center gap-2 ml-2 pl-4 border-l-[3px] border-wine/20">
@@ -318,22 +330,23 @@ export default function Navbar() {
               : "bg-mint/85 backdrop-blur-md"
           }`}
         >
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              role="menuitem"
-              onClick={handleLinkClick}
-              className={`block text-sm uppercase tracking-[0.15em] text-wine py-3 px-2 min-h-[44px] flex items-center rounded-md outline-none focus-visible:ring-4 focus-visible:ring-teal transition-colors duration-200 hover:bg-wine/5 ${
-                activeHash === link.href
-                  ? "border-l-[3px] border-orange pl-4"
-                  : ""
-              }`}
-              style={{ fontFamily: "var(--font-body)" }}
-            >
-              {link.label}
-            </a>
-          ))}
+          {NAV_LINKS.map((link) => {
+            const active = isLinkActive(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                role="menuitem"
+                onClick={handleLinkClick}
+                className={`block text-sm uppercase tracking-[0.15em] text-wine py-3 px-2 min-h-[44px] flex items-center rounded-md outline-none focus-visible:ring-4 focus-visible:ring-teal transition-colors duration-200 hover:bg-wine/5 ${
+                  active ? "border-l-[3px] border-orange pl-4 font-bold" : ""
+                }`}
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
 
           {/* Social icons — mobile */}
           <div className="flex items-center gap-3 mt-3 pt-4 border-t-[3px] border-wine/20">
