@@ -273,7 +273,8 @@ function CompactPegboardItem({
     item.category === "Keyboard" ||
     item.category === "Monitor" ||
     item.category === "Mousepad" ||
-    item.category === "RAM";
+    item.category === "RAM" ||
+    item.category === "GPU";
 
   /* Individual hover physics for dual monitor setup */
   const handleLeftMonitorEnter = (e: React.MouseEvent) => {
@@ -439,10 +440,10 @@ function CompactPegboardItem({
         }
         className={`relative flex items-center justify-center transition-opacity duration-300 ${
           item.dualImages
-            ? "w-48 h-28 sm:w-56 sm:h-32 md:w-64 md:h-36"
+            ? "w-48 h-28 sm:w-56 sm:h-34 md:w-64 md:h-44"
             : isWide
-            ? "w-40 h-24 sm:w-48 sm:h-28 md:w-56 md:h-36"
-            : "w-32 h-28 sm:w-36 sm:h-32 md:w-44 md:h-36"
+            ? "w-40 h-28 sm:w-50 sm:h-34 md:w-56 md:h-44"
+            : "w-32 h-28 sm:w-38 sm:h-34 md:w-48 md:h-44"
         }`}
         style={{
           transformOrigin: "50% 0%",
