@@ -266,6 +266,11 @@ function CompactPegboardItem({
   const formattedNo = `No. ${String(item.id).padStart(2, "0")}`;
   const isFirstRow = index < 4;
 
+  const isWide =
+    item.category === "Keyboard" ||
+    item.category === "Monitor" ||
+    item.category === "Mousepad";
+
   const handleMouseEnter = () => {
     const prefersReduced =
       typeof window !== "undefined" &&
@@ -363,7 +368,11 @@ function CompactPegboardItem({
               }
             : gearRef
         }
-        className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 flex items-center justify-center -mt-0.5 transition-opacity duration-300"
+        className={`relative flex items-center justify-center -mt-0.5 transition-opacity duration-300 ${
+          isWide
+            ? "w-36 h-20 sm:w-48 sm:h-28 md:w-56 md:h-32"
+            : "w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32"
+        }`}
         style={{
           transformOrigin: "50% 0%",
           filter: "drop-shadow(0 6px 8px rgba(140, 0, 39, 0.18))",
@@ -383,13 +392,21 @@ function CompactPegboardItem({
         />
 
         {item.image && !imageFailed ? (
-          <div className="relative w-full h-full p-2 flex items-center justify-center">
+          <div
+            className={`relative w-full h-full flex items-center justify-center ${
+              isWide ? "p-0.5" : "p-1"
+            }`}
+          >
             <Image
               src={item.image}
               alt={item.name}
               fill
-              sizes="(max-width: 480px) 100px, (max-width: 768px) 120px, 140px"
-              className="object-contain p-1"
+              sizes={
+                isWide
+                  ? "(max-width: 480px) 160px, (max-width: 768px) 200px, 240px"
+                  : "(max-width: 480px) 120px, (max-width: 768px) 140px, 160px"
+              }
+              className="object-contain"
               priority={isFirstRow}
               loading={isFirstRow ? undefined : "lazy"}
               onError={() => setImageFailed(true)}

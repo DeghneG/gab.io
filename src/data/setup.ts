@@ -12,7 +12,7 @@ export interface SetupItem {
  * Master feature toggle for 3D hardware canvas over the setup board.
  * Set to false to immediately fall back to standard 2D layout.
  */
-export const ENABLE_3D = true;
+export const ENABLE_3D = false;
 
 /**
  * Hostnames allowlist for remote images.
@@ -87,26 +87,26 @@ export const setupItems: SetupItem[] = [
   {
     id: 4,
     category: "Monitor",
-    name: "Monitor Model Name",
-    specs: ["Size and resolution", "Refresh rate"],
-    image: "/setup/monitor.png",
+    name: "Dual AOC Displays",
+    specs: ["27″ AOC 27G11ZE2 · 240Hz", "24″ AOC 24G42E · 180Hz"],
+    image: "/setup/monitors.png",
     source: "own",
     url: "",
   },
   {
     id: 5,
     category: "Keyboard",
-    name: "Keyboard Model Name",
-    specs: ["Layout", "Switch type"],
-    image: "/setup/keyboard.png",
+    name: "ASUS TUF Gaming K3",
+    specs: ["Mechanical Switches", "Detachable Wrist Rest"],
+    image: "/setup/k3.png",
     source: "own",
     url: "",
   },
   {
     id: 6,
     category: "Mouse",
-    name: "Mouse Model Name",
-    specs: ["Sensor DPI", "Weight"],
+    name: "Razer DeathAdder V3 HyperSpeed",
+    specs: ["Focus X 26K Sensor", "55g Ergonomic Design"],
     image: "/setup/mouse.png",
     source: "own",
     url: "",
@@ -114,18 +114,18 @@ export const setupItems: SetupItem[] = [
   {
     id: 7,
     category: "Headphones",
-    name: "Headphones Model Name",
-    specs: ["Type", "Connection"],
-    image: "/setup/headphones.png",
+    name: "HyperX Cloud III",
+    specs: ["53mm Angled Drivers", "DTS Headphone:X Spatial Audio"],
+    image: "/setup/headset.png",
     source: "own",
     url: "",
   },
   {
     id: 8,
     category: "Mousepad",
-    name: "Mousepad Model Name",
-    specs: ["Size", "Surface"],
-    image: "/setup/mousepad.png",
+    name: "Pulsar ParaControl XL",
+    specs: ["460 × 410 × 4 mm (XL)", "Textured Control Surface"],
+    image: "/setup/pad.png",
     source: "own",
     url: "",
   },
