@@ -694,10 +694,22 @@ export default function Setup() {
       id="setup"
       ref={containerRef}
       aria-labelledby="setup-section-heading"
-      className="relative z-30 w-full px-6 md:px-8 pt-2 pb-6 md:pt-3 md:pb-10 overflow-x-clip"
+      className="relative z-30 w-full px-6 md:px-8 pt-4 pb-6 md:pt-6 md:pb-10 overflow-x-clip"
     >
       {/* Floating Workshop Tool Margin Art (Concept 2 - Desktop Gutters) */}
       <SetupMarginArt />
+
+      {/* Subtle Architectural Datum / Guide Line */}
+      <div
+        aria-hidden="true"
+        className="relative mx-auto max-w-5xl w-full mb-6 md:mb-8 pointer-events-none select-none flex items-center gap-3 px-2"
+      >
+        <div className="flex-1 border-t-2 border-dashed border-wine/25" />
+        <span className="text-xs font-mono text-wine/35 select-none font-bold">
+          +
+        </span>
+        <div className="flex-1 border-t-2 border-dashed border-wine/25" />
+      </div>
 
       <div className="relative mx-auto max-w-5xl w-full">
         {/* ── Slim Perforated Pegboard Surface (Low-profile, no giant card) ── */}
