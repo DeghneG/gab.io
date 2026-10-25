@@ -10,10 +10,10 @@ import { contact } from "@/data/content";
    ─────────────────────────────────────────────────── */
 const NAV_LINKS = [
   { label: "About", href: "/#hero", sectionId: "hero" },
-  { label: "Setup", href: "/#setup", sectionId: "setup" },
   { label: "Projects", href: "/#projects", sectionId: "projects" },
   { label: "Tech Stack", href: "/#skills", sectionId: "skills" },
   { label: "Experience", href: "/#experience", sectionId: "experience" },
+  { label: "Setup", href: "/#setup", sectionId: "setup" },
   { label: "Contact", href: "/#contact", sectionId: "contact" },
 ] as const;
 
@@ -209,12 +209,35 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", onClick);
   }, [mobileOpen]);
 
-  const handleLinkClick = useCallback(() => {
-    setMobileOpen(false);
-  }, []);
+  const handleLinkClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+      setMobileOpen(false);
+      const hash = href.startsWith("/#") ? href.slice(1) : href.startsWith("#") ? href : null;
+      if (hash && pathname === "/") {
+        try {
+          const targetElement = document.querySelector(hash);
+          if (targetElement) {
+            e.preventDefault();
+            const lenis = (window as unknown as { lenis?: { scrollTo: (el: HTMLElement, opts?: any) => void } }).lenis;
+            if (lenis) {
+              lenis.scrollTo(targetElement as HTMLElement, { offset: -80, duration: 1.2 });
+            } else {
+              targetElement.scrollIntoView({ behavior: "smooth" });
+            }
+            window.history.pushState(null, "", hash);
+          }
+        } catch {
+          // ignore
+        }
+      }
+    },
+    [pathname]
+  );
 
   const isLinkActive = (href: string) => {
-    return activeHash === href || (href === "/#hero" && (activeHash === "#hero" || activeHash === "/#hero")) || (href === "/#setup" && (activeHash === "#setup" || activeHash === "/#setup"));
+    const rawActive = activeHash.startsWith("/") ? activeHash.slice(1) : activeHash;
+    const rawHref = href.startsWith("/") ? href.slice(1) : href;
+    return rawActive === rawHref;
   };
 
   /* Build social icons array — skip missing URLs */
@@ -273,7 +296,7 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                onClick={handleLinkClick}
+                onClick={(e) => handleLinkClick(e, link.href)}
                 className={`relative text-sm uppercase tracking-[0.15em] text-wine outline-none focus-visible:ring-4 focus-visible:ring-teal rounded-sm py-1 transition-colors duration-200 ${
                   active ? "nav-link-active" : "nav-link"
                 }`}
@@ -337,7 +360,7 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 role="menuitem"
-                onClick={handleLinkClick}
+                onClick={(e) => handleLinkClick(e, link.href)}
                 className={`block text-sm uppercase tracking-[0.15em] text-wine py-3 px-2 min-h-[44px] flex items-center rounded-md outline-none focus-visible:ring-4 focus-visible:ring-teal transition-colors duration-200 hover:bg-wine/5 ${
                   active ? "border-l-[3px] border-orange pl-4 font-bold" : ""
                 }`}
