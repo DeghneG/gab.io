@@ -26,97 +26,83 @@ export const SQUARES_CONFIG = {
 interface SquareDef {
   id: string;
   side: "left" | "right";
-  size: 56 | 80 | 112;
+  size: number;
   top: number;              // vertical distance in px from section top
   offsetFromCenter: number; // outer edge distance from screen center
   fillColor?: string;       // defined for filled squares; undefined for outline
 }
 
-// 11 squares: 7 outlines, exactly 4 filled (2 mustard, 1 orange, 1 teal)
+// Squares clustered alongside the card (max bottom: 270px so none are ever clipped by section boundary)
 export const SQUARES: SquareDef[] = [
   // ── LEFT MARGIN CLUSTER ─────────────────────────────
   {
     id: "l1",
     side: "left",
-    size: 112,
-    top: 30,
-    offsetFromCenter: 736, // Column -5 (center x=-680)
+    size: 96,
+    top: 24,
+    offsetFromCenter: 736,
   },
   {
     id: "l2",
     side: "left",
-    size: 80,
-    top: 44,
-    offsetFromCenter: 856, // Column -6 (center x=-816)
-    fillColor: SQUARES_CONFIG.mustardColor, // Filled Mustard #1
+    size: 72,
+    top: 36,
+    offsetFromCenter: 856,
+    fillColor: SQUARES_CONFIG.mustardColor, // Filled Mustard
   },
   {
     id: "l3",
     side: "left",
     size: 56,
-    top: 176,
-    offsetFromCenter: 708, // Column -5 (center x=-680)
+    top: 136,
+    offsetFromCenter: 708,
   },
   {
     id: "l4",
     side: "left",
-    size: 112,
-    top: 162,
-    offsetFromCenter: 1008, // Column -7 (center x=-952, crops at 1920px edge)
+    size: 96,
+    top: 124,
+    offsetFromCenter: 980,
   },
   {
     id: "l5",
     side: "left",
-    size: 80,
-    top: 310,
-    offsetFromCenter: 856, // Column -6 (center x=-816)
+    size: 64,
+    top: 198,
+    offsetFromCenter: 836,
     fillColor: SQUARES_CONFIG.tealColor, // Filled Teal
-  },
-  {
-    id: "l6",
-    side: "left",
-    size: 80,
-    top: 420,
-    offsetFromCenter: 720, // Column -5 (center x=-680)
   },
 
   // ── RIGHT MARGIN CLUSTER ────────────────────────────
   {
     id: "r1",
     side: "right",
-    size: 80,
-    top: 34,
-    offsetFromCenter: 720, // Column +5 (center x=+680)
+    size: 72,
+    top: 24,
+    offsetFromCenter: 720,
   },
   {
     id: "r2",
     side: "right",
-    size: 112,
-    top: 150,
-    offsetFromCenter: 872, // Column +6 (center x=+816)
-    fillColor: SQUARES_CONFIG.mustardColor, // Filled Mustard #2
+    size: 96,
+    top: 96,
+    offsetFromCenter: 872,
+    fillColor: SQUARES_CONFIG.mustardColor, // Filled Mustard
   },
   {
     id: "r3",
     side: "right",
     size: 56,
-    top: 296,
-    offsetFromCenter: 708, // Column +5 (center x=+680)
+    top: 168,
+    offsetFromCenter: 708,
     fillColor: SQUARES_CONFIG.orangeColor, // Filled Orange
   },
   {
     id: "r4",
     side: "right",
-    size: 80,
-    top: 286,
-    offsetFromCenter: 992, // Column +7 (center x=+952, crops at 1920px edge)
-  },
-  {
-    id: "r5",
-    side: "right",
-    size: 112,
-    top: 414,
-    offsetFromCenter: 872, // Column +6 (center x=+816)
+    size: 72,
+    top: 184,
+    offsetFromCenter: 960,
   },
 ];
 
@@ -125,7 +111,7 @@ export default function GiantContributionSquares() {
 
   return (
     <div
-      className="hidden lg:block absolute inset-0 pointer-events-none select-none z-0 overflow-hidden"
+      className="hidden lg:block absolute inset-0 pointer-events-none select-none z-0 overflow-x-clip"
       aria-hidden="true"
     >
       {SQUARES.map((sq) => {

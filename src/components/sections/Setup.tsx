@@ -7,6 +7,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { setupItems, SetupItem } from "@/data/setup";
 import Setup3DLayer from "@/components/setup-3d/Setup3DLayer";
+import SetupMarginArt from "@/components/setup-margin-art";
 
 
 if (typeof window !== "undefined") {
@@ -693,8 +694,11 @@ export default function Setup() {
       id="setup"
       ref={containerRef}
       aria-labelledby="setup-section-heading"
-      className="relative z-30 w-full px-6 md:px-8 py-6 md:py-10 overflow-x-clip"
+      className="relative z-30 w-full px-6 md:px-8 pt-2 pb-6 md:pt-3 md:pb-10 overflow-x-clip"
     >
+      {/* Floating Workshop Tool Margin Art (Concept 2 - Desktop Gutters) */}
+      <SetupMarginArt />
+
       <div className="relative mx-auto max-w-5xl w-full">
         {/* ── Slim Perforated Pegboard Surface (Low-profile, no giant card) ── */}
         <div

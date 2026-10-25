@@ -32,7 +32,7 @@ export default async function ContributionGraph() {
     <section
       id="github-contributions"
       aria-label="GitHub Contributions"
-      className="relative z-30 w-full px-6 md:px-8 py-10 md:py-16 overflow-x-clip"
+      className="relative z-30 w-full px-6 md:px-8 pt-10 pb-2 md:pt-16 md:pb-3 overflow-x-clip"
     >
       {/* Giant Contribution Squares in margins (1024px+) */}
       <GiantContributionSquares />
