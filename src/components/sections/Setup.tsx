@@ -272,7 +272,8 @@ function CompactPegboardItem({
   const isWide =
     item.category === "Keyboard" ||
     item.category === "Monitor" ||
-    item.category === "Mousepad";
+    item.category === "Mousepad" ||
+    item.category === "RAM";
 
   /* Individual hover physics for dual monitor setup */
   const handleLeftMonitorEnter = (e: React.MouseEvent) => {
@@ -438,10 +439,10 @@ function CompactPegboardItem({
         }
         className={`relative flex items-center justify-center transition-opacity duration-300 ${
           item.dualImages
-            ? "w-48 h-24 sm:w-56 sm:h-28 md:w-64 md:h-32"
+            ? "w-48 h-28 sm:w-56 sm:h-32 md:w-64 md:h-36"
             : isWide
-            ? "w-36 h-20 sm:w-48 sm:h-28 md:w-56 md:h-32"
-            : "w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32"
+            ? "w-40 h-24 sm:w-48 sm:h-28 md:w-56 md:h-36"
+            : "w-32 h-28 sm:w-36 sm:h-32 md:w-44 md:h-36"
         }`}
         style={{
           transformOrigin: "50% 0%",
@@ -517,19 +518,15 @@ function CompactPegboardItem({
             </div>
           </div>
         ) : item.image && !imageFailed ? (
-          <div
-            className={`relative w-full h-full flex items-center justify-center ${
-              isWide ? "p-0.5" : "p-1"
-            }`}
-          >
+          <div className="relative w-full h-full flex items-center justify-center p-0.5">
             <Image
               src={item.image}
               alt={item.name}
               fill
               sizes={
                 isWide
-                  ? "(max-width: 480px) 160px, (max-width: 768px) 200px, 240px"
-                  : "(max-width: 480px) 120px, (max-width: 768px) 140px, 160px"
+                  ? "(max-width: 480px) 180px, (max-width: 768px) 220px, 250px"
+                  : "(max-width: 480px) 140px, (max-width: 768px) 165px, 190px"
               }
               className="object-contain"
               priority={isFirstRow}

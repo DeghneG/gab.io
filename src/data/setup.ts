@@ -84,8 +84,8 @@ export const setupItems: SetupItem[] = [
   {
     id: 3,
     category: "RAM",
-    name: "RAM Model Name",
-    specs: ["Capacity", "Speed"],
+    name: "Kingston FURY Beast",
+    specs: ["32GB Total Capacity", "High-Performance DDR4"],
     image: "/setup/ram.png",
     source: "own",
     url: "",
