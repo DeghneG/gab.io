@@ -554,10 +554,10 @@ function CompactPegboardItem({
       <div
         ref={tagRef}
         className="
-          relative w-full max-w-[140px] sm:max-w-[160px]
+          relative w-full max-w-[170px] sm:max-w-[195px] md:max-w-[215px]
           bg-[#FBF8F0] border-2 border-wine
           shadow-[3px_3px_0_0_#8C0027]
-          px-2.5 py-2 text-left
+          px-3 py-2 text-left
           transition-transform duration-200
         "
         style={{
@@ -573,7 +573,7 @@ function CompactPegboardItem({
         </div>
 
         {/* Tag Header */}
-        <div className="flex items-center justify-between gap-1 pb-1 border-b border-dashed border-wine/25 mb-1">
+        <div className="flex items-center justify-between gap-1 pb-1 border-b border-dashed border-wine/25 mb-1.5">
           <span
             className="text-[9px] font-bold text-wine/75 font-mono"
             style={{ fontFamily: "var(--font-body)" }}
@@ -590,7 +590,7 @@ function CompactPegboardItem({
 
         {/* Model Name */}
         <h3
-          className="text-xs sm:text-sm text-wine font-normal leading-tight line-clamp-1"
+          className="text-xs sm:text-sm text-wine font-normal leading-tight line-clamp-2 min-h-[2.1rem] sm:min-h-[2.3rem] flex items-center"
           style={{ fontFamily: "var(--font-display)" }}
           title={item.name}
         >
@@ -599,13 +599,13 @@ function CompactPegboardItem({
 
         {/* Specs List */}
         <ul
-          className="mt-1 pt-1 border-t border-dashed border-wine/20 text-[10px] space-y-0.5 text-wine/80 font-medium"
+          className="mt-1.5 pt-1.5 border-t border-dashed border-wine/20 text-[10px] space-y-1 text-wine/80 font-medium"
           style={{ fontFamily: "var(--font-body)" }}
         >
           {item.specs.map((spec, sIdx) => (
-            <li key={sIdx} className="leading-tight flex items-start gap-1">
+            <li key={sIdx} className="leading-snug flex items-start gap-1">
               <span className="text-teal font-bold select-none">•</span>
-              <span className="line-clamp-1">{spec}</span>
+              <span className="break-words">{spec}</span>
             </li>
           ))}
         </ul>

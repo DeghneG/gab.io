@@ -66,8 +66,8 @@ export const setupItems: SetupItem[] = [
   {
     id: 1,
     category: "CPU",
-    name: "CPU Model Name",
-    specs: ["Cores and threads", "Clock speed"],
+    name: "AMD Ryzen 5 5600G",
+    specs: ["6 Cores · 12 Threads", "Up to 4.4 GHz Boost"],
     image: "/setup/cpu.png",
     source: "own",
     url: "",
@@ -75,8 +75,8 @@ export const setupItems: SetupItem[] = [
   {
     id: 2,
     category: "GPU",
-    name: "GPU Model Name",
-    specs: ["Memory", "Series"],
+    name: "Palit RTX 5060 Infinity 3",
+    specs: ["8GB VRAM · DLSS 4", "Triple Fan Infinity 3"],
     image: "/setup/gpu.png",
     source: "own",
     url: "",
