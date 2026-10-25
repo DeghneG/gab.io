@@ -4,6 +4,12 @@ export interface SetupItem {
   name: string;
   specs: string[];
   image: string;
+  dualImages?: {
+    left: string;
+    right: string;
+    leftAlt?: string;
+    rightAlt?: string;
+  };
   source: "own" | "manufacturer";
   url: string;
 }
@@ -90,6 +96,12 @@ export const setupItems: SetupItem[] = [
     name: "Dual AOC Displays",
     specs: ["27″ AOC 27G11ZE2 · 240Hz", "24″ AOC 24G42E · 180Hz"],
     image: "/setup/monitors.png",
+    dualImages: {
+      left: "/setup/left monitor.png",
+      right: "/setup/right monitor.png",
+      leftAlt: "AOC 24G42E (24″ 180Hz)",
+      rightAlt: "AOC 27G11ZE2 (27″ 240Hz)",
+    },
     source: "own",
     url: "",
   },

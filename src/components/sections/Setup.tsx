@@ -263,6 +263,9 @@ function CompactPegboardItem({
   const gearRef = useRef<HTMLDivElement>(null);
   const tagRef = useRef<HTMLDivElement>(null);
 
+  const leftMonitorRef = useRef<HTMLDivElement>(null);
+  const rightMonitorRef = useRef<HTMLDivElement>(null);
+
   const formattedNo = `No. ${String(item.id).padStart(2, "0")}`;
   const isFirstRow = index < 4;
 
@@ -271,17 +274,79 @@ function CompactPegboardItem({
     item.category === "Monitor" ||
     item.category === "Mousepad";
 
+  /* Individual hover physics for dual monitor setup */
+  const handleLeftMonitorEnter = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (leftMonitorRef.current) {
+      gsap.killTweensOf(leftMonitorRef.current);
+      gsap.to(leftMonitorRef.current, {
+        y: -7,
+        scale: 1.05,
+        rotation: -2,
+        filter: "drop-shadow(0 10px 14px rgba(140, 0, 39, 0.28))",
+        duration: 0.2,
+        ease: "power2.out",
+      });
+    }
+  };
+
+  const handleLeftMonitorLeave = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (leftMonitorRef.current) {
+      gsap.killTweensOf(leftMonitorRef.current);
+      gsap.to(leftMonitorRef.current, {
+        y: 0,
+        scale: 1,
+        rotation: 0,
+        filter: "drop-shadow(0 4px 6px rgba(140, 0, 39, 0.16))",
+        duration: 0.25,
+        ease: "power3.out",
+      });
+    }
+  };
+
+  const handleRightMonitorEnter = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (rightMonitorRef.current) {
+      gsap.killTweensOf(rightMonitorRef.current);
+      gsap.to(rightMonitorRef.current, {
+        y: -7,
+        scale: 1.05,
+        rotation: 2,
+        filter: "drop-shadow(0 10px 14px rgba(140, 0, 39, 0.28))",
+        duration: 0.2,
+        ease: "power2.out",
+      });
+    }
+  };
+
+  const handleRightMonitorLeave = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (rightMonitorRef.current) {
+      gsap.killTweensOf(rightMonitorRef.current);
+      gsap.to(rightMonitorRef.current, {
+        y: 0,
+        scale: 1,
+        rotation: 0,
+        filter: "drop-shadow(0 4px 6px rgba(140, 0, 39, 0.16))",
+        duration: 0.25,
+        ease: "power3.out",
+      });
+    }
+  };
+
   const handleMouseEnter = () => {
     const prefersReduced =
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (prefersReduced) {
-      if (gearRef.current) gsap.to(gearRef.current, { y: -3, duration: 0.2 });
+      if (!item.dualImages && gearRef.current) gsap.to(gearRef.current, { y: -3, duration: 0.2 });
       return;
     }
 
-    if (gearRef.current) {
+    // If dualImages, don't move both monitors together — they lift 1-at-a-time on direct monitor hover!
+    if (!item.dualImages && gearRef.current) {
       gsap.killTweensOf(gearRef.current);
       gsap
         .timeline()
@@ -317,7 +382,7 @@ function CompactPegboardItem({
   };
 
   const handleMouseLeave = () => {
-    if (gearRef.current) {
+    if (!item.dualImages && gearRef.current) {
       gsap.killTweensOf(gearRef.current);
       gsap.to(gearRef.current, {
         rotation: 0,
@@ -354,8 +419,11 @@ function CompactPegboardItem({
         <div className="w-2.5 h-2.5 rounded-full bg-wine border border-wine/80 shadow-[inset_0_1px_1px_rgba(0,0,0,0.4)] flex items-center justify-center">
           <div className="w-0.5 h-0.5 rounded-full bg-mustard" />
         </div>
-        <div className="w-[2px] h-2 bg-wine/80 rounded-b-sm" />
+        <div className="w-[2px] h-3 bg-wine/80 rounded-b-sm" />
       </div>
+
+      {/* Twine between pin and gear with proper vertical breathing room */}
+      <div className="w-[1px] h-2.5 border-l border-dashed border-wine/50 my-0.5" />
 
       {/* ── 2. Floating Hardware Gear (Compact Silhouette) ── */}
       <div
@@ -368,14 +436,16 @@ function CompactPegboardItem({
               }
             : gearRef
         }
-        className={`relative flex items-center justify-center -mt-0.5 transition-opacity duration-300 ${
-          isWide
+        className={`relative flex items-center justify-center transition-opacity duration-300 ${
+          item.dualImages
+            ? "w-48 h-24 sm:w-56 sm:h-28 md:w-64 md:h-32"
+            : isWide
             ? "w-36 h-20 sm:w-48 sm:h-28 md:w-56 md:h-32"
             : "w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32"
         }`}
         style={{
           transformOrigin: "50% 0%",
-          filter: "drop-shadow(0 6px 8px rgba(140, 0, 39, 0.18))",
+          filter: item.dualImages ? "none" : "drop-shadow(0 6px 8px rgba(140, 0, 39, 0.18))",
           willChange: "transform, filter",
           opacity: isMouseSlot && hideIcon ? 0 : 1,
           pointerEvents: isMouseSlot && hideIcon ? "none" : undefined,
@@ -391,7 +461,62 @@ function CompactPegboardItem({
           }}
         />
 
-        {item.image && !imageFailed ? (
+        {item.dualImages ? (
+          /* Dual Independent Monitors — side-by-side with individual 1-at-a-time hover physics */
+          <div className="relative w-full h-full flex items-center justify-center gap-2 sm:gap-3 px-1">
+            {/* Left Monitor */}
+            <div
+              ref={leftMonitorRef}
+              onMouseEnter={handleLeftMonitorEnter}
+              onMouseLeave={handleLeftMonitorLeave}
+              className="relative flex-1 h-full flex items-center justify-center cursor-pointer select-none transition-transform"
+              style={{
+                transformOrigin: "50% 100%",
+                filter: "drop-shadow(0 4px 6px rgba(140, 0, 39, 0.16))",
+                willChange: "transform, filter",
+              }}
+              title={item.dualImages.leftAlt || "AOC 24G42E 180Hz (Left)"}
+            >
+              <div className="relative w-full h-full p-0.5">
+                <Image
+                  src={item.dualImages.left}
+                  alt={item.dualImages.leftAlt || "AOC 24G42E 180Hz"}
+                  fill
+                  sizes="(max-width: 480px) 95px, (max-width: 768px) 115px, 135px"
+                  className="object-contain"
+                  priority={isFirstRow}
+                  loading={isFirstRow ? undefined : "lazy"}
+                />
+              </div>
+            </div>
+
+            {/* Right Monitor */}
+            <div
+              ref={rightMonitorRef}
+              onMouseEnter={handleRightMonitorEnter}
+              onMouseLeave={handleRightMonitorLeave}
+              className="relative flex-1 h-full flex items-center justify-center cursor-pointer select-none transition-transform"
+              style={{
+                transformOrigin: "50% 100%",
+                filter: "drop-shadow(0 4px 6px rgba(140, 0, 39, 0.16))",
+                willChange: "transform, filter",
+              }}
+              title={item.dualImages.rightAlt || "AOC 27G11ZE2 240Hz (Right)"}
+            >
+              <div className="relative w-full h-full p-0.5">
+                <Image
+                  src={item.dualImages.right}
+                  alt={item.dualImages.rightAlt || "AOC 27G11ZE2 240Hz"}
+                  fill
+                  sizes="(max-width: 480px) 95px, (max-width: 768px) 115px, 135px"
+                  className="object-contain"
+                  priority={isFirstRow}
+                  loading={isFirstRow ? undefined : "lazy"}
+                />
+              </div>
+            </div>
+          </div>
+        ) : item.image && !imageFailed ? (
           <div
             className={`relative w-full h-full flex items-center justify-center ${
               isWide ? "p-0.5" : "p-1"
@@ -422,8 +547,8 @@ function CompactPegboardItem({
         )}
       </div>
 
-      {/* ── 3. Short Twine String ── */}
-      <div className="w-[1px] h-2 border-l border-dashed border-wine/50 -mt-0.5 mb-0.5" />
+      {/* ── 3. Short Twine String with clean vertical breathing room ── */}
+      <div className="w-[1px] h-3 border-l border-dashed border-wine/50 my-1" />
 
       {/* ── 4. Compact Workshop Tag ── */}
       <div
