@@ -854,6 +854,48 @@ export default function Contact() {
           Type your message on the typewriter below.
         </p>
 
+        {/* How-to steps: follows the typewriter's field order, highlights the current one */}
+        <ol
+          aria-label="How to send a message"
+          className="mb-8 md:mb-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3"
+          style={{ fontFamily: "var(--font-body)" }}
+        >
+          {(
+            [
+              { field: "from", title: "Your email", hint: "Type it on the paper, then press Enter." },
+              { field: "topic", title: "Subject", hint: "What is it about? Press Enter to continue." },
+              { field: "message", title: "Message", hint: "Write freely. Shift + Enter starts a new line, Enter moves on." },
+              { field: "name", title: "Your name", hint: "Sign off with your name." },
+              { field: "send", title: "Send", hint: "Press the SEND key to mail the letter." },
+            ] as const
+          ).map((step, i) => {
+            const isCurrent = step.field === activeField;
+            return (
+              <li
+                key={step.field}
+                aria-current={isCurrent ? "step" : undefined}
+                className={`flex items-start gap-3 rounded-xl border-2 px-4 py-3 transition-colors ${
+                  isCurrent
+                    ? "border-mustard bg-cream/15 text-cream"
+                    : "border-cream/20 bg-cream/5 text-cream/70"
+                }`}
+              >
+                <span
+                  className={`shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold ${
+                    isCurrent ? "bg-mustard text-wine" : "bg-cream/20 text-cream"
+                  }`}
+                >
+                  {i + 1}
+                </span>
+                <span className="text-sm leading-snug">
+                  <span className="block font-bold">{step.title}</span>
+                  <span className="block text-cream/70">{step.hint}</span>
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+
         {/* Anti-Bot Honeypot trap (Invisible to humans, catches automated bots) */}
         <input
           type="text"

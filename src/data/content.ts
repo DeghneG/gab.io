@@ -42,6 +42,32 @@ export const projects: Project[] = [
     image: "/projects/itsa.png",
   },
   {
+    slug: "pray-for-us",
+    title: "Pray For Us",
+    type: "E-Commerce",
+    year: 2026,
+    description:
+      "A storefront for a Filipino hip-hop streetwear brand, with a dark, gothic look, a shop, a bag, and ordering through Messenger.",
+    tech: ["React", "Next.js", "Tailwind CSS"],
+    liveUrl: "#",
+    repoUrl: "https://github.com/DeghneG/Pray-For-Us",
+    image: "/projects/pray-for-us.png",
+    imageAlt: "Screenshot of the Pray For Us streetwear homepage hero",
+  },
+  {
+    slug: "urban-city-cuts",
+    title: "Urban City Cuts",
+    type: "Web Dev",
+    year: 2026,
+    description:
+      "A website for a three-branch barbershop, with a gallery, prices, branch info, online booking, and a franchise page.",
+    tech: ["React", "Next.js", "Tailwind CSS"],
+    liveUrl: "#",
+    repoUrl: "https://github.com/DeghneG/Urban-City-Cuts",
+    image: "/projects/urban-city-cuts.png",
+    imageAlt: "Screenshot of the Urban City Cuts homepage hero",
+  },
+  {
     slug: "fragrance-vault",
     title: "FragranceVault",
     type: "Personal Project",
