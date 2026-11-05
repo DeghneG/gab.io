@@ -3,6 +3,7 @@ import { Shrikhand, Special_Elite } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Loader from "@/components/Loader";
 import SiteTour from "@/components/SiteTour";
+import ScrollProgress from "@/components/ScrollProgress";
 import SmoothScrollProvider from "@/components/smooth-scroll-provider";
 import "./globals.css";
 
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Navbar />
           {children}
           <SiteTour />
+          <ScrollProgress />
         </SmoothScrollProvider>
       </body>
     </html>

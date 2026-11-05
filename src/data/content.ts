@@ -205,6 +205,8 @@ export const certifications: Certification[] = [
 export const contact = {
   email: "deghneagana@gmail.com",
   github: "https://github.com/DeghneG",
+  facebook: "https://www.facebook.com/deghne.agana/",
+  instagram: "https://www.instagram.com/deghne.gbrl/",
   phone: [
     { label: "Globe", number: "0977 024 8366" },
     { label: "Smart", number: "0961 776 8196" },

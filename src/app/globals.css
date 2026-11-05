@@ -94,7 +94,13 @@
 
   html {
     @apply font-body;
-    scrollbar-gutter: stable;
+    /* Native scrollbar hidden: the page uses the ScrollProgress bar instead */
+    scrollbar-width: none;
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    display: none;
   }
 
   body {

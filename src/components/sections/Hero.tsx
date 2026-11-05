@@ -43,7 +43,22 @@ export default function Hero() {
   const photoTimelineRef = useRef<gsap.core.Timeline | null>(null);
   const hoverCueRef = useRef<HTMLDivElement>(null);
 
-  /* ── No sunburst rotation — fully static ────────── */
+  /* ── Sunburst: slow, endless rotation ──
+     Runs even with "reduce motion" on (like the site's smooth scroll): it is a very slow,
+     low-contrast spin, and OS animation settings otherwise freeze it for many visitors. */
+  const sunburstRef = useRef<HTMLDivElement>(null);
+  const SUN_SPIN_SECONDS = 90; // time for one full turn; raise to slow down
+
+  useGSAP(() => {
+    if (!sunburstRef.current) return;
+    gsap.to(sunburstRef.current, {
+      rotation: 360,
+      duration: SUN_SPIN_SECONDS,
+      ease: "none",
+      repeat: -1,
+      transformOrigin: "50% 50%",
+    });
+  }, []);
 
   useGSAP(() => {
     const prefersReduced = window.matchMedia(
@@ -297,7 +312,7 @@ export default function Hero() {
           bottom: "4vh",
         }}
       >
-        <div className="sunburst w-full h-full rounded-full" />
+        <div ref={sunburstRef} className="sunburst w-full h-full rounded-full will-change-transform" />
       </div>
 
       {/* ── LAYER 4: Mountains ───────────────────────── */}

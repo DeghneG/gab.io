@@ -481,18 +481,6 @@ export const CONTACT_FRAMES_CONFIG = {
 };
 
 /**
- * ───────────────────────────────────────────────────────────
- * REGISTRATION MARKS CONFIGURATION
- * ───────────────────────────────────────────────────────────
- */
-export const REGISTRATION_MARKS_CONFIG = {
-  size: 16, // 16px marks
-  strokeWidth: 1.5, // 1.5px strokes
-  opacity: 0.2, // 20% wine opacity
-  inset: 24, // 24px inset from corners
-};
-
-/**
  * Large margin shapes:
  * - Left: 460px teal circle (~60% cropped) + offset 4px wine ring.
  * - Right: 3 concentric arc bands (teal, mustard, orange) entering from top-right corner.
@@ -636,66 +624,6 @@ function ContactSheetFrames() {
 }
 
 /**
- * Registration Marks: Small crosshair-in-circle marks in the 4 corners of the section.
- */
-function RegistrationMarks() {
-  const { size, strokeWidth, opacity, inset } = REGISTRATION_MARKS_CONFIG;
-  const half = size / 2;
-  const radius = half - 2;
-
-  const corners = [
-    { style: { top: `${inset}px`, left: `${inset}px` } },
-    { style: { top: `${inset}px`, right: `${inset}px` } },
-    { style: { bottom: `${inset}px`, left: `${inset}px` } },
-    { style: { bottom: `${inset}px`, right: `${inset}px` } },
-  ];
-
-  return (
-    <div
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-0 z-[12] hidden xl:block select-none"
-    >
-      {corners.map((corner, idx) => (
-        <svg
-          key={idx}
-          className="absolute"
-          style={{ width: `${size}px`, height: `${size}px`, ...corner.style }}
-          viewBox={`0 0 ${size} ${size}`}
-        >
-          <circle
-            cx={half}
-            cy={half}
-            r={radius}
-            stroke="#8C0027"
-            strokeOpacity={opacity}
-            strokeWidth={strokeWidth}
-            fill="none"
-          />
-          <line
-            x1="1"
-            y1={half}
-            x2={size - 1}
-            y2={half}
-            stroke="#8C0027"
-            strokeOpacity={opacity}
-            strokeWidth={strokeWidth}
-          />
-          <line
-            x1={half}
-            y1="1"
-            x2={half}
-            y2={size - 1}
-            stroke="#8C0027"
-            strokeOpacity={opacity}
-            strokeWidth={strokeWidth}
-          />
-        </svg>
-      ))}
-    </div>
-  );
-}
-
-/**
  * Projects section.
  * Each project is a "polaroid" card with a flip interaction on hover.
  * Front: image + title. Back: description, tech stack, links.
@@ -760,9 +688,6 @@ export default function Projects() {
 
       {/* ── 2. Contact-sheet frames (z-[3]) ───────── */}
       <ContactSheetFrames />
-
-      {/* ── 3. Registration marks (z-[12]) ────────── */}
-      <RegistrationMarks />
 
       <div className="relative z-30 mx-auto max-w-6xl w-full px-6 md:px-8">
         {/* Section heading */}
