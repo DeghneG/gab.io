@@ -400,6 +400,96 @@ export default function Chatbot() {
   const bursting = useRef(false);
   const burstTl = useRef<gsap.core.Timeline | null>(null);
   const [outfit, setOutfit] = useState<Outfit>("suit");
+
+  /* Draggable character. The offset lives in a ref and is written straight to the DOM,
+     so dragging never re-renders the chat (smooth, no snapping back). */
+  const rootRef = useRef<HTMLDivElement>(null);
+  const posRef = useRef({ x: 0, y: 0 });
+  const [dragging, setDragging] = useState(false);
+  const [place, setPlace] = useState({ below: false, left: false });
+  const drag = useRef<{ sx: number; sy: number; ox: number; oy: number; moved: boolean } | null>(null);
+  const justDragged = useRef(false);
+
+  const applyPos = useCallback((x: number, y: number) => {
+    const el = rootRef.current;
+    if (!el) return;
+    const btn = el.querySelector<HTMLElement>("[data-char]");
+    if (btn) {
+      // keep the whole character on screen
+      const r = btn.getBoundingClientRect();
+      const baseL = r.left - posRef.current.x;
+      const baseT = r.top - posRef.current.y;
+      x = Math.min(window.innerWidth - r.width - baseL - 4, Math.max(-baseL + 4, x));
+      y = Math.min(window.innerHeight - r.height - baseT - 4, Math.max(-baseT + 4, y));
+    }
+    posRef.current = { x, y };
+    el.style.transform = `translate(${x}px, ${y}px)`;
+  }, []);
+
+  /** Open the chat window / bubble on whichever side has room. */
+  const updatePlace = useCallback(() => {
+    const btn = rootRef.current?.querySelector<HTMLElement>("[data-char]");
+    if (!btn) return;
+    const r = btn.getBoundingClientRect();
+    const below = r.top < 480 + 16 && window.innerHeight - r.bottom > r.top;
+    const left = r.right < 360 + 16;
+    setPlace((p) => (p.below === below && p.left === left ? p : { below, left }));
+  }, []);
+
+  const onPointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
+    if (e.button !== 0) return;
+    drag.current = { sx: e.clientX, sy: e.clientY, ox: posRef.current.x, oy: posRef.current.y, moved: false };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+  const onPointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {
+    const d = drag.current;
+    if (!d) return;
+    const dx = e.clientX - d.sx;
+    const dy = e.clientY - d.sy;
+    if (!d.moved && Math.hypot(dx, dy) < 6) return;
+    if (!d.moved) {
+      d.moved = true;
+      setDragging(true);
+    }
+    applyPos(d.ox + dx, d.oy + dy);
+  };
+  const onPointerUp = (e: React.PointerEvent<HTMLButtonElement>) => {
+    const d = drag.current;
+    drag.current = null;
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId);
+    if (d?.moved) {
+      justDragged.current = true;
+      setTimeout(() => (justDragged.current = false), 0);
+      setDragging(false);
+      updatePlace();
+      try {
+        localStorage.setItem("gab-chat-pos", JSON.stringify(posRef.current));
+      } catch {}
+    }
+  };
+
+  /* Restore the saved spot once; keep the character on screen when the window resizes. */
+  useEffect(() => {
+    const t = setTimeout(() => {
+      try {
+        const raw = localStorage.getItem("gab-chat-pos");
+        if (raw) {
+          const v = JSON.parse(raw) as { x: number; y: number };
+          if (Number.isFinite(v.x) && Number.isFinite(v.y)) applyPos(v.x, v.y);
+        }
+      } catch {}
+      updatePlace();
+    }, 0);
+    const onResize = () => {
+      applyPos(posRef.current.x, posRef.current.y);
+      updatePlace();
+    };
+    window.addEventListener("resize", onResize);
+    return () => {
+      clearTimeout(t);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [applyPos, updatePlace]);
   const head = CHARACTERS[outfit].head;
 
   const nextId = () => ++idRef.current;
@@ -564,11 +654,14 @@ export default function Chatbot() {
     // links are real <a> elements and handled by the browser
   };
 
+  const visW = `(var(--char-h) * ${CHARACTERS[outfit].width / CHARACTERS[outfit].height})`;
+
   const actionClass =
     "px-3 py-1.5 rounded-full border-2 border-wine bg-cream text-wine text-xs font-bold cursor-pointer transition-transform hover:-translate-y-0.5 hover:bg-mustard active:scale-95";
 
   return (
     <div
+      ref={rootRef}
       className="fixed bottom-0 right-3 sm:right-5 z-[88]"
       style={
         {
@@ -583,8 +676,12 @@ export default function Chatbot() {
         <div
           role="dialog"
           aria-label="Chat with Gab"
-          style={{ bottom: "calc(var(--char-h) + 4px)", height: "min(480px, calc(100dvh - var(--char-h) - 72px))" }}
-          className="absolute right-0 w-[min(360px,calc(100vw-1.5rem))] flex flex-col bg-cream text-wine border-4 border-wine rounded-2xl overflow-hidden shadow-[6px_6px_0_0_#F1A512]"
+          style={{
+            ...(place.below ? { top: "calc(var(--char-h) + 4px)" } : { bottom: "calc(var(--char-h) + 4px)" }),
+            ...(place.left ? { left: 0 } : { right: 0 }),
+            height: "min(480px, calc(100dvh - var(--char-h) - 72px))",
+          }}
+          className="absolute w-[min(360px,calc(100vw-1.5rem))] flex flex-col bg-cream text-wine border-4 border-wine rounded-2xl overflow-hidden shadow-[6px_6px_0_0_#F1A512]"
         >
           {/* Header */}
           <div className="flex items-center gap-3 px-4 py-3 bg-wine text-cream">
@@ -700,7 +797,7 @@ export default function Chatbot() {
 
       {/* ── Speech bubble nudge ── */}
       {!open && showBubble && (
-        <div style={{ right: "calc(var(--char-w) + 6px)", bottom: "calc(var(--char-h) - 56px)" }} className="absolute px-3 py-2 rounded-2xl rounded-br-sm bg-cream text-wine border-2 border-wine text-sm font-bold shadow-[3px_3px_0_0_#8C0027] whitespace-nowrap animate-fadeIn pointer-events-none">
+        <div style={{ ...(place.left ? { left: `calc((var(--char-w) + ${visW}) / 2 + 6px)` } : { right: `calc((var(--char-w) + ${visW}) / 2 + 6px)` }), bottom: "calc(var(--char-h) - 56px)" }} className={`absolute px-3 py-2 rounded-2xl ${place.left ? "rounded-bl-sm" : "rounded-br-sm"} bg-cream text-wine border-2 border-wine text-sm font-bold shadow-[3px_3px_0_0_#8C0027] whitespace-nowrap animate-fadeIn pointer-events-none`}>
           Ask me anything!
         </div>
       )}
@@ -708,10 +805,19 @@ export default function Chatbot() {
       {/* ── The character: full body, so props in future outfits stay visible ── */}
       <button
         type="button"
-        onClick={toggle}
+        data-char
+        onClick={() => {
+          if (justDragged.current) return;
+          toggle();
+        }}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
         aria-label={open ? "Close chat" : "Chat with Gab"}
         aria-expanded={open}
-        className="relative block cursor-pointer outline-none focus-visible:ring-4 focus-visible:ring-mustard rounded-2xl"
+        title="Drag me anywhere!"
+        className={`relative block outline-none focus-visible:ring-4 focus-visible:ring-mustard rounded-2xl touch-none select-none ${dragging ? "cursor-grabbing" : "cursor-grab"}`}
         style={{ height: "var(--char-h)", width: "var(--char-w)" }}
       >
         <div ref={characterRef} className="absolute inset-0 will-change-transform">
@@ -723,6 +829,7 @@ export default function Chatbot() {
               width={CHARACTERS[o].width}
               height={CHARACTERS[o].height}
               sizes="100px"
+              draggable={false}
               priority={o === "suit"}
               className="absolute inset-0 w-full h-full object-contain object-bottom drop-shadow-[3px_3px_0_rgba(140,0,39,0.45)]"
               style={{ opacity: outfit === o ? 1 : 0 }}
