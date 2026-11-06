@@ -202,6 +202,49 @@ export const certifications: Certification[] = [
   },
 ];
 
+export interface Hobby {
+  slug: string;
+  name: string;
+  /** Favorite things for this hobby (the chatbot lists these). */
+  favorites?: string[];
+  /** One-line note shown by the chatbot. */
+  note?: string;
+}
+
+/** Add more hobbies here; the chatbot picks them up. */
+export const hobbies: Hobby[] = [
+  {
+    slug: "cooking",
+    name: "Cooking",
+    favorites: ["Sinabawang isda", "Grilled Bangus", "Spring Fried Chicken"],
+  },
+  {
+    slug: "basketball",
+    name: "Basketball",
+    note: "Golden State Warriors fan",
+  },
+  {
+    slug: "gaming",
+    name: "Gaming",
+    favorites: ["Valorant", "Mobile Legends", "GTA V"],
+  },
+  {
+    slug: "series",
+    name: "TV series",
+    favorites: ["The 100", "Game of Thrones", "The Walking Dead", "Alice in Borderland"],
+  },
+  {
+    slug: "anime",
+    name: "Anime",
+    favorites: ["Naruto", "Black Clover", "One Piece"],
+  },
+  {
+    slug: "dogs",
+    name: "Dogs",
+    note: "Dog lover",
+  },
+];
+
 export const contact = {
   email: "deghneagana@gmail.com",
   github: "https://github.com/DeghneG",
