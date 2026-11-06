@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Loader from "@/components/Loader";
 import SiteTour from "@/components/SiteTour";
 import ScrollProgress from "@/components/ScrollProgress";
+import Chatbot from "@/components/Chatbot";
 import SmoothScrollProvider from "@/components/smooth-scroll-provider";
 import "./globals.css";
 
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
           <SiteTour />
           <ScrollProgress />
+          <Chatbot />
         </SmoothScrollProvider>
       </body>
     </html>
