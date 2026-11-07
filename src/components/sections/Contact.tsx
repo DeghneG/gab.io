@@ -634,36 +634,21 @@ export default function Contact() {
       });
     }
 
-    // 3. Dispatch to API endpoint
-    try {
-      const response = await fetch("/api/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fromEmail,
-          topic,
-          message,
-          fullName,
-          website: honeypot,
-        }),
-      });
-
+    // 3. Dispatch to the API in the background: the flight animation starts right away
+    //    instead of waiting for the server, and only holds before the slot if the server is slow.
+    let delivered = false;
+    const request = fetch("/api/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fromEmail, topic, message, fullName, website: honeypot }),
+    }).then(async (response) => {
       const result = await response.json();
-      if (!response.ok) {
-        throw new Error(result.error || "Failed to dispatch email");
-      }
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Error sending email";
-      setErrorMessage(msg);
-      setFormState("error");
-      setIsStamped(false);
-      getSound()?.playBellDing?.();
-      return;
-    }
+      if (!response.ok) throw new Error(result.error || "Failed to dispatch email");
+    });
 
     // 4. Flight sequence timeline (runs after successful dispatch)
     const tl = gsap.timeline({
-      delay: 0.35, // Wait for carriage to return to center & stamp to be visible
+      delay: 0.2, // let the stamp land and the carriage start back
       onStart: () => {
         // Measure coordinates with the carriage now at exact center
         const contentRect = contentEl.getBoundingClientRect();
@@ -764,6 +749,11 @@ export default function Contact() {
       },
     });
 
+    // Hold the folded letter at the slot until the server has accepted it
+    tl.call(() => {
+      if (!delivered) tl.pause();
+    });
+
     // 5. Letter drops straight down into the slot aperture
     tl.to(flyingEl, {
       y: "+=44",
@@ -809,6 +799,24 @@ export default function Contact() {
             paperRef.current.style.transform = "none";
           }
         },
+      }
+    );
+
+    request.then(
+      () => {
+        delivered = true;
+        if (tl.paused()) tl.resume();
+      },
+      (err: unknown) => {
+        // Server said no: undo the animation and show the error
+        tl.kill();
+        gsap.set(flyingEl, { display: "none" });
+        gsap.set(flapEl, { rotateX: 0 });
+        gsap.set(paperEl, { opacity: 1, clearProps: "transform" });
+        setErrorMessage(err instanceof Error ? err.message : "Error sending email");
+        setFormState("error");
+        setIsStamped(false);
+        getSound()?.playBellDing?.();
       }
     );
   }
