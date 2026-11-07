@@ -135,7 +135,7 @@ export default function SuitRig({ active }: { active: boolean }) {
       return tl;
     };
 
-    /* ── Scheduler: a gesture about every 7s (pause after each one), alternating ── */
+    /* ── Scheduler: a gesture back to back (1s pause after each one), alternating ── */
     let current: gsap.core.Timeline | null = null;
     let timer: ReturnType<typeof setTimeout>;
     let next = 0;
@@ -146,7 +146,7 @@ export default function SuitRig({ active }: { active: boolean }) {
           schedule();
         };
         current = (next++ % 2 === 0 ? wave : fixTie)(done);
-      }, first ? 2500 : gsap.utils.random(3000, 4200));
+      }, first ? 2000 : 1000);
     };
     schedule(true);
 
