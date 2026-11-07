@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { X, Send } from "lucide-react";
+import SuitRig from "@/components/SuitRig";
 import {
   siteConfig,
   projects,
@@ -821,7 +822,11 @@ export default function Chatbot() {
         style={{ height: "var(--char-h)", width: "var(--char-w)" }}
       >
         <div ref={characterRef} className="absolute inset-0 will-change-transform">
-          {(Object.keys(CHARACTERS) as Outfit[]).map((o) => (
+          {/* Formal suit: layered, so he can wave and fix his tie */}
+          <div className="absolute inset-0" style={{ opacity: outfit === "suit" ? 1 : 0 }}>
+            <SuitRig active={outfit === "suit"} />
+          </div>
+          {(Object.keys(CHARACTERS) as Outfit[]).filter((o) => o !== "suit").map((o) => (
             <Image
               key={o}
               src={CHARACTERS[o].src}
@@ -830,7 +835,6 @@ export default function Chatbot() {
               height={CHARACTERS[o].height}
               sizes="100px"
               draggable={false}
-              priority={o === "suit"}
               className="absolute inset-0 w-full h-full object-contain object-bottom drop-shadow-[3px_3px_0_rgba(140,0,39,0.45)]"
               style={{ opacity: outfit === o ? 1 : 0 }}
             />
