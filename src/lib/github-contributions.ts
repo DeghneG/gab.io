@@ -109,8 +109,8 @@ async function fetchPublicGitHubContributions(): Promise<ContributionCalendarDat
     }
 
     // Check header for total, or use calculated total
-    const totalMatch = html.match(/(\d+)\s+contributions\s+in\s+the\s+last\s+year/i);
-    const totalContributions = totalMatch ? parseInt(totalMatch[1], 10) : calculatedTotal;
+    const totalMatch = html.match(/([\d,]+)\s+contributions\s+in\s+the\s+last\s+year/i);
+    const totalContributions = totalMatch ? parseInt(totalMatch[1].replace(/,/g, ""), 10) : calculatedTotal;
 
     return {
       totalContributions,
