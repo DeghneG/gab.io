@@ -7,6 +7,7 @@ import { gsap } from "gsap";
 import HeroMountains from "@/components/hero-mountains";
 import ContourBackground from "@/components/contour-background";
 import HeroHeadline from "@/components/HeroHeadline";
+import BirdFlock from "@/components/BirdFlock";
 import { siteConfig } from "@/data/content";
 
 /**
@@ -289,6 +290,9 @@ export default function Hero() {
 
       {/* ── LAYER 4: Mountains ───────────────────────── */}
       <HeroMountains />
+
+      {/* ── Hand-drawn birds gliding across the sky ─── */}
+      <BirdFlock />
 
       {/* ── LAYER 5: Hero grain (above shapes, below content) */}
       {/* GRAIN_OPACITY — change opacity to adjust grain strength */}
