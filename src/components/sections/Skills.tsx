@@ -276,13 +276,110 @@ function NodejsIcon({ className }: { className?: string }) {
   );
 }
 
+function HtmlIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z" />
+    </svg>
+  );
+}
+
+function CssIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M1.5 0h21l-1.91 21.563L11.966 24l-8.564-2.438L1.5 0zm17.09 4.413L5.41 4.41l.213 2.622 10.125.002-.255 2.716h-6.64l.24 2.573h6.182l-.366 3.523-2.91.804-2.956-.81-.188-2.11h-2.61l.29 3.855L12 19.288l5.373-1.53L18.59 4.414z" />
+    </svg>
+  );
+}
+
+function JavaScriptIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z" />
+    </svg>
+  );
+}
+
+function ViteIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M13.6 1.5 4.2 13.4h6.3l-1.9 9.1 10.6-13.2h-6.7l1.1-7.8z" />
+    </svg>
+  );
+}
+
+function CapCutIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <circle cx="6.5" cy="17.5" r="3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="6.5" cy="6.5" r="3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9 8.5 21 19M9 15.5 21 5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function AntigravityIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M2.5 20.5C6 12 9.5 3.5 12 3.5s6 8.5 9.5 17" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M8 14.5h8" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ReactRouterIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <circle cx="5.5" cy="6.5" r="2.7" />
+      <circle cx="18.5" cy="17.5" r="2.7" />
+      <path d="M8 6.5h5.5a3.5 3.5 0 0 1 3.5 3.5v5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ReactThreeFiberIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M12 2.5 20.5 7.2v9.6L12 21.5 3.5 16.8V7.2L12 2.5z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3.8 7.4 12 12l8.2-4.6M12 12v9.2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ClaudeCodeIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <rect x="2.5" y="4" width="19" height="16" rx="3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="m7.5 9.5 3 2.5-3 2.5M13 15h4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function SkillIcon({ name, className }: { name: string; className?: string }) {
   const n = name.toLowerCase();
   switch (n) {
     case "github":
       return <GitHubIcon className={className} />;
+    case "html":
+      return <HtmlIcon className={className} />;
+    case "css":
+      return <CssIcon className={className} />;
+    case "javascript":
+      return <JavaScriptIcon className={className} />;
     case "react":
       return <ReactIcon className={className} />;
+    case "react router":
+      return <ReactRouterIcon className={className} />;
+    case "react three fiber":
+      return <ReactThreeFiberIcon className={className} />;
+    case "vite":
+      return <ViteIcon className={className} />;
+    case "capcut":
+      return <CapCutIcon className={className} />;
+    case "antigravity":
+      return <AntigravityIcon className={className} />;
+    case "claude code":
+      return <ClaudeCodeIcon className={className} />;
     case "next.js":
       return <NextjsIcon className={className} />;
     case "typescript":
@@ -456,7 +553,7 @@ function VinylSkillItem({
 
       {/* Skill name label */}
       <span
-        className="text-base text-cream select-none text-center mt-2.5 font-normal leading-tight tracking-wide whitespace-nowrap"
+        className="text-base text-cream select-none text-center mt-2.5 font-normal leading-tight tracking-wide max-w-[7rem]"
         style={{ fontFamily: "var(--font-body)" }}
       >
         {skill.name}
@@ -739,7 +836,7 @@ export default function Skills() {
                   flex-1
                   bg-white/[0.04] border-[3px] border-cream/30 rounded-3xl
                   shadow-[6px_6px_0_0_#5A0019]
-                  p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6
+                  p-6 md:p-8 flex flex-col gap-5
                 "
               >
                 {/* Heading (left ~30% width) */}
@@ -758,7 +855,7 @@ export default function Skills() {
                 </div>
 
                 {/* 3 discs in one evenly spaced row (right ~70% width) */}
-                <ul className="flex-1 flex items-center justify-evenly gap-2 sm:gap-4 my-auto">
+                <ul className="flex-1 flex flex-wrap items-start justify-start gap-x-3 sm:gap-x-6 gap-y-5">
                   {backend.skills.map((skill) => (
                     <VinylSkillItem
                       key={skill.name}
@@ -781,7 +878,7 @@ export default function Skills() {
                   flex-1
                   bg-white/[0.04] border-[3px] border-cream/30 rounded-3xl
                   shadow-[6px_6px_0_0_#5A0019]
-                  p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6
+                  p-6 md:p-8 flex flex-col gap-5
                 "
               >
                 {/* Heading (left ~30% width) - shortened to 'Tools' to never wrap or clip */}
@@ -800,7 +897,7 @@ export default function Skills() {
                 </div>
 
                 {/* 3 discs in one evenly spaced row (right ~70% width) */}
-                <ul className="flex-1 flex items-center justify-evenly gap-2 sm:gap-4 my-auto">
+                <ul className="flex-1 flex flex-wrap items-start justify-start gap-x-3 sm:gap-x-6 gap-y-5">
                   {tools.skills.map((skill) => (
                     <VinylSkillItem
                       key={skill.name}
@@ -823,7 +920,7 @@ export default function Skills() {
                   flex-1
                   bg-white/[0.04] border-[3px] border-cream/30 rounded-3xl
                   shadow-[6px_6px_0_0_#5A0019]
-                  p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6
+                  p-6 md:p-8 flex flex-col gap-5
                 "
               >
                 {/* Heading (left ~30% width) */}
@@ -842,7 +939,7 @@ export default function Skills() {
                 </div>
 
                 {/* 3 discs in one evenly spaced row (right ~70% width) */}
-                <ul className="flex-1 flex items-center justify-evenly gap-2 sm:gap-4 my-auto">
+                <ul className="flex-1 flex flex-wrap items-start justify-start gap-x-3 sm:gap-x-6 gap-y-5">
                   {ais.skills.map((skill) => (
                     <VinylSkillItem
                       key={skill.name}
