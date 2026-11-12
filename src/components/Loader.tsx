@@ -330,6 +330,8 @@ export default function Loader({ onComplete }: LoaderProps) {
 
       // Brief hold for recognition
       tl.to({}, { duration: LOADER_CONFIG.holdDuration });
+      // Tell the page the shutters are about to open (the hero headline starts then)
+      tl.call(() => window.dispatchEvent(new Event("loader:open")));
 
       // ── Step 4: Cassette Door "EJECT" Split Wipe Reveal ────────
       // Housing fades slightly and pulls back

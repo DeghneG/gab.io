@@ -1,24 +1,20 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import Image from "next/image";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
-import { TextPlugin } from "gsap/TextPlugin";
 import HeroMountains from "@/components/hero-mountains";
 import ContourBackground from "@/components/contour-background";
+import HeroHeadline from "@/components/HeroHeadline";
 import { siteConfig } from "@/data/content";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(TextPlugin);
-}
 
 /**
  * Hero / About section.
  *
  * Layout: left-aligned, asymmetric (DESIGN_VARIANCE > 4).
  * Static sunburst disc sits partly behind the mountains.
- * Intro line types out with GSAP TextPlugin.
+ * Headline animation lives in HeroHeadline (GSAP).
  * Content is always visible; animation is progressive enhancement.
  *
  * TUNABLES (search these tokens to adjust):
@@ -29,10 +25,8 @@ if (typeof window !== "undefined") {
  *   SUN_POSITION      — sunburst right/bottom offsets & mountain overlap
  */
 export default function Hero() {
-  const introRef = useRef<HTMLSpanElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const halfCircleRef = useRef<HTMLDivElement>(null);
-  const [hasAnimated, setHasAnimated] = useState(false);
 
   /* ── Interactive Photo Hover Transition ──────────── */
   const photoFrameRef = useRef<HTMLDivElement>(null);
@@ -195,14 +189,7 @@ export default function Hero() {
       }
     }
 
-    if (prefersReduced || !introRef.current) {
-      /* Show full text immediately */
-      if (introRef.current) {
-        introRef.current.textContent = "Designing interfaces that move.";
-      }
-      setHasAnimated(true);
-      return;
-    }
+    if (prefersReduced) return;
 
     /* Half-circle fade in — synced with the entrance sequence */
     if (halfCircleRef.current) {
@@ -231,21 +218,6 @@ export default function Hero() {
           delay: 0.15,
         }
       );
-    }
-
-    /* Typewriter effect for the headline */
-    if (introRef.current) {
-      introRef.current.textContent = "";
-      gsap.to(introRef.current, {
-        duration: 2.5,
-        text: {
-          value: "Designing interfaces that move.",
-          delimiter: "",
-        },
-        ease: "none",
-        delay: 0.9,
-        onComplete: () => setHasAnimated(true),
-      });
     }
   }, []);
 
@@ -604,15 +576,7 @@ export default function Hero() {
         {/* Text content */}
         <div className="flex flex-col max-w-xl text-left">
           {/* 1. Headline */}
-          <h1
-            className="text-4xl md:text-5xl lg:text-6xl text-wine leading-[1.1] tracking-tight min-h-[4rem] md:min-h-[5rem]"
-            style={{ fontFamily: "var(--font-display)" }}
-            aria-label="Designing interfaces that move."
-          >
-            <span ref={introRef} className={hasAnimated ? "" : "typewriter-cursor"}>
-              Designing interfaces that move.
-            </span>
-          </h1>
+          <HeroHeadline />
 
           {/* 2. Intro paragraph */}
           <p
