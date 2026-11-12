@@ -11,6 +11,8 @@ import { gsap } from "gsap";
  */
 
 const INK = "#1a0810";
+/** Overall bird size (1 = the original, much larger look) */
+const SCALE = 0.62;
 
 /** Asymmetric wave: faster downstroke, slower upstroke. Output -1 (down) .. 1 (up). */
 export const stroke = (phase: number) => Math.sin(phase - 0.4 * Math.sin(phase));
@@ -37,27 +39,58 @@ function wing(side: number, up: number, tip: number, len: number) {
     nrm.push([-dy / d, dx / d]);
   }
   const thick = (u: number) => 0.8 + 6.4 * Math.pow(1 - u, 0.9); // fat at the shoulder, fine at the tip
-  const top: string[] = [];
-  const bot: string[] = [];
+  const top: P[] = [];
+  const bot: P[] = [];
   pts.forEach(([x, y], i) => {
     const th = thick(i / N);
     const n = nrm[i];
-    top.push(`${(x - n[0] * th * side).toFixed(1)} ${(y - n[1] * th * side).toFixed(1)}`);
-    bot.push(`${(x + n[0] * th * 0.7 * side).toFixed(1)} ${(y + n[1] * th * 0.7 * side).toFixed(1)}`);
+    top.push([x - n[0] * th * side, y - n[1] * th * side]);
+    bot.push([x + n[0] * th * 0.7 * side, y + n[1] * th * 0.7 * side]);
   });
-  return `M${top.join("L")}L${bot.reverse().join("L")}Z`;
+  const f = (q: P) => `${q[0].toFixed(1)} ${q[1].toFixed(1)}`;
+  const d = `M${top.map(f).join("L")}L${[...bot].reverse().map(f).join("L")}Z`;
+  return { d, top, bot };
 }
 
-/** Whole bird for a flap phase and amplitude (amp 0 = gliding, 1 = full flapping). */
-export function birdPath(phase: number, amp: number) {
-  const glideUp = 0.6; // gliding: arms swept up, hands drooping (classic gull shape)
-  const glideTip = -0.32;
+/** Convex hull (monotone chain) so the shoulder area can be filled solid. */
+function hull(points: P[]): P[] {
+  const p = [...points].sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const cross = (o: P, a: P, b: P) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  const lower: P[] = [];
+  for (const q of p) {
+    while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], q) <= 0) lower.pop();
+    lower.push(q);
+  }
+  const upper: P[] = [];
+  for (const q of [...p].reverse()) {
+    while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], q) <= 0) upper.pop();
+    upper.push(q);
+  }
+  return [...lower.slice(0, -1), ...upper.slice(0, -1)];
+}
+
+/** Both wings for a flap phase and amplitude (amp 0 = gliding, 1 = full flapping). */
+function wings(phase: number, amp: number) {
+  const glideUp = 0.95; // gliding: arms swept up, hands drooping (classic gull shape)
+  const glideTip = -0.55;
   const rUp = glideUp + amp * (0.2 + 0.95 * stroke(phase) - glideUp);
   const rTip = glideTip + amp * (0.05 + 1.1 * stroke(phase - 0.75) - glideTip);
   // the far wing is a touch shorter and a hair behind (perspective)
   const lUp = glideUp + amp * (0.2 + 0.9 * stroke(phase - 0.18) - glideUp);
   const lTip = glideTip + amp * (0.05 + 1.0 * stroke(phase - 0.93) - glideTip);
-  return `${wing(1, rUp, rTip, 1)} ${wing(-1, lUp, lTip, 0.86)}`;
+  return { r: wing(1, rUp, rTip, 1), l: wing(-1, lUp, lTip, 0.86) };
+}
+
+export function birdPath(phase: number, amp: number) {
+  const { r, l } = wings(phase, amp);
+  return `${r.d} ${l.d}`;
+}
+
+/** Solid filler between the two wing roots, so no gap shows at the shoulders however the wings are held. */
+export function birdBridge(phase: number, amp: number) {
+  const { r, l } = wings(phase, amp);
+  const h = hull([...r.top.slice(0, 5), ...l.top.slice(0, 5), ...r.bot.slice(0, 4), ...l.bot.slice(0, 4)]);
+  return `M${h.map((q) => `${q[0].toFixed(1)} ${q[1].toFixed(1)}`).join("L")}Z`;
 }
 
 /** [distance behind the leader, height offset, size] */
@@ -83,7 +116,8 @@ export default function BirdFlock() {
 
       /* flapping: one little state machine per bird (flap a few beats, then glide) */
       const states = birds.map((el, i) => ({
-        path: el.querySelector("path")!,
+        path: el.querySelector<SVGPathElement>("[data-wings]")!,
+        bridge: el.querySelector<SVGPathElement>("[data-bridge]")!,
         phase: Math.random() * 6.28,
         amp: 1,
         flapping: true,
@@ -91,7 +125,11 @@ export default function BirdFlock() {
         beats: 3 + Math.random() * 4,
         rate: 6.5 + (i % 3) * 0.9 - i * 0.35, // radians per second (~1 flap/s for the big ones, a little quicker for small)
       }));
-      states.forEach((s) => s.path.setAttribute("d", birdPath(s.phase, s.amp)));
+      const paint = (s: (typeof states)[number]) => {
+        s.path.setAttribute("d", birdPath(s.phase, s.amp));
+        s.bridge.setAttribute("d", birdBridge(s.phase, s.amp));
+      };
+      states.forEach(paint);
 
       const tick = () => {
         const dt = Math.min(0.05, gsap.ticker.deltaRatio(60) / 60);
@@ -111,7 +149,7 @@ export default function BirdFlock() {
           }
           // ease between flapping and gliding so the wings never snap
           s.amp += ((s.flapping ? 1 : 0) - s.amp) * Math.min(1, dt * 5);
-          s.path.setAttribute("d", birdPath(s.phase, s.amp));
+          paint(s);
         }
       };
       gsap.ticker.add(tick);
@@ -175,13 +213,14 @@ export default function BirdFlock() {
             key={i}
             data-bird=""
             className="absolute"
-            style={{ left: -back, top: dy, width: 130 * size, height: 90 * size, marginLeft: -65 * size, marginTop: -55 * size }}
+            style={{ left: -back, top: dy, width: 130 * size * SCALE, height: 90 * size * SCALE, marginLeft: -65 * size * SCALE, marginTop: -55 * size * SCALE }}
           >
             <div className="w-full h-full will-change-transform">
               <svg viewBox="-65 -60 130 90" className="w-full h-full overflow-visible" style={{ filter: "url(#brush-rough)" }}>
                 <ellipse cx="0" cy="3" rx="6.5" ry="6" fill={INK} />
                 <circle cx="0" cy="-0.5" r="6.5" fill={INK} />
-                <path d={birdPath(0, 0)} fill={INK} stroke={INK} strokeWidth="1.6" strokeLinejoin="round" />
+                <path data-bridge="" d={birdBridge(0, 0)} fill={INK} stroke={INK} strokeWidth="1.6" strokeLinejoin="round" />
+                <path data-wings="" d={birdPath(0, 0)} fill={INK} stroke={INK} strokeWidth="1.6" strokeLinejoin="round" />
               </svg>
             </div>
           </div>

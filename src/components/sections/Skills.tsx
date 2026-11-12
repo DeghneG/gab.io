@@ -464,7 +464,7 @@ function VinylSkillItem({
 
   return (
     <li
-      className={`list-none flex flex-col items-center justify-center p-2 rounded-2xl cursor-pointer group outline-none focus-visible:ring-2 focus-visible:ring-cream focus-visible:ring-offset-2 focus-visible:ring-offset-wine min-h-[44px] min-w-[44px] transition-colors duration-150 hover:bg-white/[0.04] ${className}`}
+      className={`list-none flex flex-col items-center justify-start p-2 rounded-2xl cursor-pointer group outline-none focus-visible:ring-2 focus-visible:ring-cream focus-visible:ring-offset-2 focus-visible:ring-offset-wine min-h-[44px] min-w-[44px] transition-colors duration-150 hover:bg-white/[0.04] ${className}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onFocus={handleMouseEnter}
@@ -553,7 +553,7 @@ function VinylSkillItem({
 
       {/* Skill name label */}
       <span
-        className="text-base text-cream select-none text-center mt-2.5 font-normal leading-tight tracking-wide max-w-[7rem]"
+        className="text-sm sm:text-[0.95rem] text-cream select-none text-center mt-2.5 font-normal leading-tight tracking-wide max-w-[7rem]"
         style={{ fontFamily: "var(--font-body)" }}
       >
         {skill.name}
@@ -813,7 +813,8 @@ export default function Skills() {
                     skill={skill}
                     labelColor={skill.color}
                     className={
-                      index === frontend.skills.length - 1
+                      // a lone last disc is centred; otherwise rows fill normally
+                      index === frontend.skills.length - 1 && frontend.skills.length % 3 === 1
                         ? "col-span-2 sm:col-span-3 justify-self-center"
                         : ""
                     }
@@ -855,7 +856,7 @@ export default function Skills() {
                 </div>
 
                 {/* 3 discs in one evenly spaced row (right ~70% width) */}
-                <ul className="flex-1 flex flex-wrap items-start justify-start gap-x-3 sm:gap-x-6 gap-y-5">
+                <ul className="flex-1 grid grid-cols-3 sm:grid-cols-[repeat(auto-fit,minmax(5.6rem,1fr))] items-start justify-items-center gap-x-1 gap-y-5">
                   {backend.skills.map((skill) => (
                     <VinylSkillItem
                       key={skill.name}
@@ -897,7 +898,7 @@ export default function Skills() {
                 </div>
 
                 {/* 3 discs in one evenly spaced row (right ~70% width) */}
-                <ul className="flex-1 flex flex-wrap items-start justify-start gap-x-3 sm:gap-x-6 gap-y-5">
+                <ul className="flex-1 grid grid-cols-3 sm:grid-cols-[repeat(auto-fit,minmax(5.6rem,1fr))] items-start justify-items-center gap-x-1 gap-y-5">
                   {tools.skills.map((skill) => (
                     <VinylSkillItem
                       key={skill.name}
@@ -939,7 +940,7 @@ export default function Skills() {
                 </div>
 
                 {/* 3 discs in one evenly spaced row (right ~70% width) */}
-                <ul className="flex-1 flex flex-wrap items-start justify-start gap-x-3 sm:gap-x-6 gap-y-5">
+                <ul className="flex-1 grid grid-cols-3 sm:grid-cols-[repeat(auto-fit,minmax(5.6rem,1fr))] items-start justify-items-center gap-x-1 gap-y-5">
                   {ais.skills.map((skill) => (
                     <VinylSkillItem
                       key={skill.name}
