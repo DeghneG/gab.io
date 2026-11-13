@@ -6,7 +6,6 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { X, Send } from "lucide-react";
 import SuitRig from "@/components/SuitRig";
-import { isLowPower } from "@/lib/device";
 import {
   siteConfig,
   projects,
@@ -357,33 +356,34 @@ const CHARACTERS = {
 const BOX_ASPECT = Math.max(...Object.values(CHARACTERS).map((c) => c.width / c.height));
 
 /**
- * Comic cloud puffs for the outfit-change burst (same look as the hero clouds:
- * cream fill, wine outline, hard wine shadow, swirl marks).
- * [x%, y%, width % of the character box, shape 0|1, tilt in degrees]
+ * One big comic cloud for the outfit-change burst (same look as the hero clouds: cream fill,
+ * wine outline, hard wine shadow, swirl marks). The outline is a ring of round bumps around an
+ * ellipse, so it can be made any size: just big enough to hide the whole character.
  */
-/** Overall cloud size (1 = the original, much bigger burst) and how far the clouds spread from the middle */
-const PUFF_SIZE = 0.46;
-const PUFF_SPREAD_X = 0.5; // the character is tall and narrow, so the clouds hug the middle column
-const PUFF_SPREAD_Y = 0.86;
-
-const PUFFS: [number, number, number, 0 | 1, number][] = [
-  [50, 8, 105, 0, -6], [18, 16, 95, 1, 10], [82, 16, 100, 0, -12], [50, 30, 115, 1, 5],
-  [14, 42, 100, 0, -8], [86, 42, 105, 1, 9], [50, 52, 120, 0, -4], [16, 64, 100, 1, 12],
-  [84, 64, 100, 0, -10], [50, 74, 115, 1, 6], [20, 88, 100, 0, -9], [80, 88, 105, 1, 8], [50, 96, 110, 0, 3],
-];
-
-const PUFF_SHAPES = [
-  {
-    viewBox: "0 0 100 70",
-    body: "M 22 52 C 10 52, 4 42, 10 30 C 5 18, 18 10, 32 14 C 40 4, 62 4, 72 14 C 84 8, 96 18, 92 32 C 100 42, 92 54, 80 52 C 78 62, 66 68, 52 64 C 40 68, 26 64, 22 52 Z",
-    swirls: ["M 28 34 C 34 28, 44 28, 48 34", "M 58 36 C 64 30, 72 32, 76 38"],
-  },
-  {
-    viewBox: "0 0 85 65",
-    body: "M 18 48 C 8 48, 4 36, 12 26 C 8 14, 22 8, 34 12 C 44 4, 64 6, 70 18 C 82 20, 84 34, 76 44 C 78 52, 68 60, 56 58 C 45 62, 30 60, 24 52 C 20 52, 18 50, 18 48 Z",
-    swirls: ["M 30 30 C 36 26, 46 26, 50 32"],
-  },
-] as const;
+function cloudShape(w: number, h: number) {
+  const r = Math.min(w, h) * 0.2; // bump size
+  const rx = w / 2 - r * 0.75;
+  const ry = h / 2 - r * 0.75;
+  const n = Math.max(9, Math.round((Math.PI * (rx + ry)) / (r * 1.55)));
+  const cx = w / 2;
+  const cy = h / 2;
+  const pt = (i: number) => {
+    const a = (i / n) * Math.PI * 2 - Math.PI / 2;
+    return [cx + Math.cos(a) * rx, cy + Math.sin(a) * ry];
+  };
+  const start = pt(0);
+  let body = `M ${start[0].toFixed(1)} ${start[1].toFixed(1)}`;
+  for (let i = 1; i <= n; i++) {
+    const q = pt(i % n);
+    body += ` A ${r.toFixed(1)} ${r.toFixed(1)} 0 0 1 ${q[0].toFixed(1)} ${q[1].toFixed(1)}`;
+  }
+  body += " Z";
+  // little curved swirl marks inside, like the hero clouds
+  const sw = (x: number, y: number, k: number) =>
+    `M ${(cx + x * w).toFixed(1)} ${(cy + y * h).toFixed(1)} q ${(0.06 * w * k).toFixed(1)} ${(-0.045 * h).toFixed(1)} ${(0.13 * w * k).toFixed(1)} 0`;
+  const swirls = [sw(-0.2, -0.16, 1), sw(0.04, -0.02, 1), sw(-0.16, 0.2, 0.9), sw(0.06, 0.28, 0.8)];
+  return { body, swirls };
+}
 
 /**
  * How big the full-body character is. Height scales with the screen between MIN and MAX
@@ -526,67 +526,45 @@ export default function Chatbot() {
    */
   const changeOutfit = (to: Outfit) => {
     const box = cloudRef.current;
-    const allPuffs = gsap.utils.toArray<HTMLElement>(".cloud-puff", box ?? undefined);
-    // small or slow devices get every other cloud, so the burst stays smooth
-    const low = isLowPower();
-    const keep = allPuffs.map((_, i) => i).filter((i) => !low || i % 2 === 0);
-    const puffs = keep.map((i) => allPuffs[i]);
-    if (!box || !puffs.length) {
+    const cloud = box?.querySelector<SVGSVGElement>("[data-cloud]");
+    if (!box || !cloud) {
       setOutfit(to);
       return;
     }
     if (bursting.current) return;
     bursting.current = true;
-    gsap.killTweensOf(puffs);
+    gsap.killTweensOf(cloud);
 
-    // Each puff starts at the middle of the character and is thrown out to its spot.
-    const { width: W, height: H } = box.getBoundingClientRect();
-    const spots = keep.map((k) => PUFFS[k]).map(([x, y]) => ({ dx: ((x - 50) / 100) * W * PUFF_SPREAD_X, dy: ((y - 50) / 100) * H * PUFF_SPREAD_Y }));
-    gsap.set(puffs, {
-      xPercent: -50,
-      yPercent: -50,
-      x: 0,
-      y: 0,
-      scale: 0.05,
-      opacity: 1,
-      rotation: (i) => PUFFS[keep[i]][4] + gsap.utils.random(-40, 40),
-    });
+    // size the cloud to hide the widest of the two outfits, with a little margin
+    const { height: H } = box.getBoundingClientRect();
+    const aspect = (o: Outfit) => CHARACTERS[o].width / CHARACTERS[o].height;
+    const w = Math.max(H * 0.72, Math.max(aspect(outfit), aspect(to)) * H * 1.2);
+    const h = H * 1.22;
+    const base = H * 0.04; // sit a little low so the shoes are covered too
+    const { body, swirls } = cloudShape(w, h);
+    cloud.setAttribute("width", String(w));
+    cloud.setAttribute("height", String(h));
+    cloud.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    cloud.querySelector("[data-body]")?.setAttribute("d", body);
+    cloud.querySelectorAll("[data-swirl]").forEach((el, i) => el.setAttribute("d", swirls[i] ?? ""));
+
+    gsap.set(cloud, { xPercent: -50, yPercent: -50, x: 0, y: base, scale: 0.08, rotation: gsap.utils.random(-6, 6), opacity: 1 });
 
     burstTl.current = gsap
       .timeline({
         onComplete: () => {
           bursting.current = false;
-          gsap.set(puffs, { opacity: 0 });
+          gsap.set(cloud, { opacity: 0 });
         },
       })
-      // BOOM: the smoke explodes outward from the middle, fast, with overshoot
-      .to(puffs, {
-        x: (i) => spots[i].dx,
-        y: (i) => spots[i].dy,
-        scale: 1.05,
-        rotation: (i) => PUFFS[keep[i]][4],
-        duration: 0.22,
-        ease: "power3.out",
-        stagger: { each: 0.006, from: "center" },
-      })
-      // swap outfits while the smoke hides him
+      // POOF: the cloud bursts out of the middle and covers him
+      .to(cloud, { scale: 1.06, rotation: 0, duration: 0.22, ease: "back.out(2.2)" })
+      // swap outfits while the cloud hides him
       .call(() => setOutfit(to))
-      // smoke billows and drifts up for a beat
-      .to(puffs, {
-        scale: 1.15,
-        y: (i) => spots[i].dy - 8,
-        duration: 0.22,
-        ease: "sine.out",
-      })
+      // it puffs up and drifts for a beat
+      .to(cloud, { scale: 1.1, y: base - 6, duration: 0.2, ease: "sine.out" })
       // then thins out fast, rising and growing as it fades
-      .to(puffs, {
-        opacity: 0,
-        scale: 1.35,
-        y: (i) => spots[i].dy - 26,
-        duration: 0.3,
-        ease: "power2.in",
-        stagger: { each: 0.012, from: "edges" },
-      });
+      .to(cloud, { opacity: 0, scale: 1.3, y: base - 22, duration: 0.3, ease: "power2.in" });
   };
 
   /* Speech bubble nudge a few seconds after load, only until first open. */
@@ -856,25 +834,19 @@ export default function Chatbot() {
             />
           ))}
 
-          {/* Comic cloud puffs for the outfit-change burst */}
+          {/* The comic cloud for the outfit-change burst (sized and drawn when it fires) */}
           <div ref={cloudRef} aria-hidden="true" className="pointer-events-none absolute inset-0">
-            {PUFFS.map(([x, y, w, shape], i) => {
-              const sh = PUFF_SHAPES[shape];
-              return (
-                <div
-                  key={i}
-                  className="cloud-puff absolute opacity-0 will-change-transform"
-                  style={{ left: `${x}%`, top: `${y}%`, width: `${w * PUFF_SIZE}%`, filter: "drop-shadow(2px 2px 0 #8C0027)" }}
-                >
-                  <svg viewBox={sh.viewBox} fill="none" className="w-full h-auto">
-                    <path d={sh.body} fill="#F5F0E8" stroke="#8C0027" strokeWidth="3.5" strokeLinejoin="round" />
-                    {sh.swirls.map((d) => (
-                      <path key={d} d={d} fill="none" stroke="#8C0027" strokeWidth="2.5" strokeLinecap="round" />
-                    ))}
-                  </svg>
-                </div>
-              );
-            })}
+            <svg
+              data-cloud=""
+              fill="none"
+              className="absolute left-1/2 top-1/2 overflow-visible opacity-0 will-change-transform"
+              style={{ filter: "drop-shadow(3px 3px 0 #8C0027)" }}
+            >
+              <path data-body="" fill="#F5F0E8" stroke="#8C0027" strokeWidth="3.5" strokeLinejoin="round" />
+              {[0, 1, 2, 3].map((i) => (
+                <path key={i} data-swirl="" fill="none" stroke="#8C0027" strokeWidth="2.5" strokeLinecap="round" />
+              ))}
+            </svg>
           </div>
         </div>
       </button>
