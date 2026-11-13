@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { gsap } from "gsap";
+import { isLowPower } from "@/lib/device";
 
 /**
  * The formal-suit character, split into layers (body, both arms, tie) so GSAP can
@@ -139,6 +140,7 @@ export default function SuitRig({ active }: { active: boolean }) {
     let current: gsap.core.Timeline | null = null;
     let timer: ReturnType<typeof setTimeout>;
     let next = 0;
+    const lowPower = isLowPower();
     const schedule = (first = false) => {
       timer = setTimeout(() => {
         const done = () => {
@@ -146,7 +148,7 @@ export default function SuitRig({ active }: { active: boolean }) {
           schedule();
         };
         current = (next++ % 2 === 0 ? wave : fixTie)(done);
-      }, first ? 2000 : 1000);
+      }, first ? 2000 : lowPower ? 3500 : 1000); // slower cadence on phones
     };
     schedule(true);
 

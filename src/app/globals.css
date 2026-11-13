@@ -361,3 +361,16 @@ html.lenis,
     scroll-behavior: auto !important;
   }
 }
+/* Chatbot sizes: compact on phones, roomier from 640px up */
+.chat-root {
+  --char-h: clamp(92px, 15dvh, 124px);
+  --chat-w: min(300px, calc(100vw - 1.25rem));
+  --chat-h: min(400px, calc(100dvh - var(--char-h) - 64px));
+}
+@media (min-width: 640px) {
+  .chat-root {
+    --char-h: clamp(130px, 24dvh, 200px);
+    --chat-w: min(360px, calc(100vw - 1.5rem));
+    --chat-h: min(480px, calc(100dvh - var(--char-h) - 72px));
+  }
+}

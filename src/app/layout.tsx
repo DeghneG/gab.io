@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import { Shrikhand, Special_Elite } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Loader from "@/components/Loader";
-import SiteTour from "@/components/SiteTour";
-import ScrollProgress from "@/components/ScrollProgress";
-import Chatbot from "@/components/Chatbot";
+import LazyExtras from "@/components/LazyExtras";
 import SmoothScrollProvider from "@/components/smooth-scroll-provider";
 import "./globals.css";
 
@@ -43,9 +41,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Loader />
           <Navbar />
           {children}
-          <SiteTour />
-          <ScrollProgress />
-          <Chatbot />
+          <LazyExtras />
         </SmoothScrollProvider>
       </body>
     </html>

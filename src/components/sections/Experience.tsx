@@ -117,13 +117,13 @@ function CertificationTicket({
 
         {/* Title, Issuer & Category Below */}
         <div className="p-4 sm:p-5 flex flex-col flex-1">
-          <h4
+          <h3
             className="text-lg text-wine font-bold leading-snug line-clamp-3"
             style={{ fontFamily: "var(--font-display)" }}
             title={cert.title}
           >
             {cert.title}
-          </h4>
+          </h3>
           <p
             className="text-xs text-wine/75 font-medium mt-1.5"
             style={{ fontFamily: "var(--font-body)" }}
@@ -485,7 +485,7 @@ export default function Experience() {
           <a
             href={siteConfig.resumeUrl}
             download
-            className="group relative inline-flex items-center justify-center px-7 py-3 bg-orange text-cream text-base rounded-2xl border-4 border-wine outline-none focus-visible:ring-4 focus-visible:ring-mustard transition-transform active:scale-[0.97] shrink-0 w-fit"
+            className="group relative inline-flex items-center justify-center px-7 py-3 bg-[#B8340C] text-cream text-base rounded-2xl border-4 border-wine outline-none focus-visible:ring-4 focus-visible:ring-mustard transition-transform active:scale-[0.97] shrink-0 w-fit"
             style={{
               fontFamily: "var(--font-display)",
               boxShadow: "4px 4px 0 0 #8C0027",
@@ -598,12 +598,12 @@ export default function Experience() {
                   "
                 >
                   <div>
-                    <h4
+                    <h3
                       className="text-lg md:text-xl text-wine mb-1"
                       style={{ fontFamily: "var(--font-display)" }}
                     >
                       {entry.title}
-                    </h4>
+                    </h3>
                     <p
                       className="text-sm text-wine/80 mb-2"
                       style={{ fontFamily: "var(--font-body)" }}

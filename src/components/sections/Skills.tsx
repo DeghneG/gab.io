@@ -463,8 +463,9 @@ function VinylSkillItem({
   };
 
   return (
-    <li
-      className={`list-none flex flex-col items-center justify-start p-2 rounded-2xl cursor-pointer group outline-none focus-visible:ring-2 focus-visible:ring-cream focus-visible:ring-offset-2 focus-visible:ring-offset-wine min-h-[44px] min-w-[44px] transition-colors duration-150 hover:bg-white/[0.04] ${className}`}
+    <li className={`list-none flex justify-center ${className}`}>
+    <div
+      className="flex flex-col items-center justify-start p-2 rounded-2xl cursor-pointer group outline-none focus-visible:ring-2 focus-visible:ring-cream focus-visible:ring-offset-2 focus-visible:ring-offset-wine min-h-[44px] min-w-[44px] transition-colors duration-150 hover:bg-white/[0.04]"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onFocus={handleMouseEnter}
@@ -558,6 +559,7 @@ function VinylSkillItem({
       >
         {skill.name}
       </span>
+    </div>
     </li>
   );
 }

@@ -7,7 +7,9 @@ import { gsap } from "gsap";
 import HeroMountains from "@/components/hero-mountains";
 import ContourBackground from "@/components/contour-background";
 import HeroHeadline from "@/components/HeroHeadline";
-import BirdFlock from "@/components/BirdFlock";
+import dynamic from "next/dynamic";
+
+const BirdFlock = dynamic(() => import("@/components/BirdFlock"), { ssr: false });
 import { siteConfig } from "@/data/content";
 
 /**
@@ -321,7 +323,7 @@ export default function Hero() {
           onClick={handlePhotoClick}
           role="button"
           tabIndex={0}
-          aria-label="Portrait photo of Gabriel - hover to reveal casual photo"
+          aria-label="Hover me: portrait photo of Gabriel, reveals a casual photo"
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
@@ -515,6 +517,7 @@ export default function Hero() {
                 alt={`${siteConfig.name} - Formal`}
                 fill
                 priority
+                fetchPriority="high"
                 sizes="(max-width: 768px) 176px, 224px"
                 className="object-cover object-[center_12%]"
               />
@@ -529,7 +532,7 @@ export default function Hero() {
                 src={siteConfig.casualPhoto}
                 alt={`${siteConfig.name} - Casual`}
                 fill
-                priority
+                loading="lazy"
                 sizes="(max-width: 768px) 176px, 224px"
                 className="object-cover object-[center_18%]"
               />

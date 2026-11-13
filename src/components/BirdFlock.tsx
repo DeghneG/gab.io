@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { isLowPower } from "@/lib/device";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 
@@ -105,6 +106,9 @@ const FLOCK: [number, number, number][] = [
 
 export default function BirdFlock() {
   const ref = useRef<HTMLDivElement>(null);
+  // phones and slow devices: fewer birds, no blur/roughen filter, flapping drawn at half rate
+  const [lite] = useState(() => isLowPower());
+  const flockList = lite ? FLOCK.slice(0, 3) : FLOCK;
 
   useGSAP(
     () => {
@@ -113,6 +117,10 @@ export default function BirdFlock() {
       const flock = root.querySelector<HTMLElement>("[data-flock]")!;
       const birds = gsap.utils.toArray<HTMLElement>("[data-bird]", root);
       let dead = false;
+      let onScreen = true;
+      let frame = 0;
+      const io = new IntersectionObserver(([e]) => (onScreen = e.isIntersecting));
+      io.observe(root);
 
       /* flapping: one little state machine per bird (flap a few beats, then glide) */
       const states = birds.map((el, i) => ({
@@ -132,7 +140,10 @@ export default function BirdFlock() {
       states.forEach(paint);
 
       const tick = () => {
-        const dt = Math.min(0.05, gsap.ticker.deltaRatio(60) / 60);
+        if (!onScreen || document.hidden) return; // nothing to draw while the hero is off-screen
+        frame++;
+        if (lite && frame % 2) return;
+        const dt = Math.min(0.05, (gsap.ticker.deltaRatio(60) / 60) * (lite ? 2 : 1));
         for (const s of states) {
           s.timer += dt;
           if (s.flapping) {
@@ -188,14 +199,26 @@ export default function BirdFlock() {
         );
         gsap.fromTo(flock, { y: 0 }, { y: gsap.utils.random(-30, 30), duration: dur, ease: "sine.inOut", yoyo: true, repeat: 1 });
       };
-      gsap.delayedCall(2.2, fly);
+      // wait for the loader's shutters (if it is showing), then take off
+      let started = false;
+      const start = () => {
+        if (started) return;
+        started = true;
+        gsap.delayedCall(1.2, fly);
+      };
+      const fallback = setTimeout(start, 6000);
+      if (document.querySelector('[aria-label="Loading portfolio"]')) window.addEventListener("loader:open", start, { once: true });
+      else start();
 
       return () => {
         dead = true;
+        clearTimeout(fallback);
+        window.removeEventListener("loader:open", start);
+        io.disconnect();
         gsap.ticker.remove(tick);
       };
     },
-    { scope: ref }
+    { scope: ref, dependencies: [lite] }
   );
 
   return (
@@ -208,7 +231,7 @@ export default function BirdFlock() {
         </filter>
       </svg>
       <div data-flock="" className="absolute left-0 will-change-transform" style={{ top: "10%" }}>
-        {FLOCK.map(([back, dy, size], i) => (
+        {flockList.map(([back, dy, size], i) => (
           <div
             key={i}
             data-bird=""
@@ -216,7 +239,7 @@ export default function BirdFlock() {
             style={{ left: -back, top: dy, width: 130 * size * SCALE, height: 90 * size * SCALE, marginLeft: -65 * size * SCALE, marginTop: -55 * size * SCALE }}
           >
             <div className="w-full h-full will-change-transform">
-              <svg viewBox="-65 -60 130 90" className="w-full h-full overflow-visible" style={{ filter: "url(#brush-rough)" }}>
+              <svg viewBox="-65 -60 130 90" className="w-full h-full overflow-visible" style={lite ? undefined : { filter: "url(#brush-rough)" }}>
                 <ellipse cx="0" cy="3" rx="6.5" ry="6" fill={INK} />
                 <circle cx="0" cy="-0.5" r="6.5" fill={INK} />
                 <path data-bridge="" d={birdBridge(0, 0)} fill={INK} stroke={INK} strokeWidth="1.6" strokeLinejoin="round" />

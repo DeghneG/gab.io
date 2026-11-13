@@ -6,6 +6,7 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { X, Send } from "lucide-react";
 import SuitRig from "@/components/SuitRig";
+import { isLowPower } from "@/lib/device";
 import {
   siteConfig,
   projects,
@@ -360,6 +361,11 @@ const BOX_ASPECT = Math.max(...Object.values(CHARACTERS).map((c) => c.width / c.
  * cream fill, wine outline, hard wine shadow, swirl marks).
  * [x%, y%, width % of the character box, shape 0|1, tilt in degrees]
  */
+/** Overall cloud size (1 = the original, much bigger burst) and how far the clouds spread from the middle */
+const PUFF_SIZE = 0.46;
+const PUFF_SPREAD_X = 0.5; // the character is tall and narrow, so the clouds hug the middle column
+const PUFF_SPREAD_Y = 0.86;
+
 const PUFFS: [number, number, number, 0 | 1, number][] = [
   [50, 8, 105, 0, -6], [18, 16, 95, 1, 10], [82, 16, 100, 0, -12], [50, 30, 115, 1, 5],
   [14, 42, 100, 0, -8], [86, 42, 105, 1, 9], [50, 52, 120, 0, -4], [16, 64, 100, 1, 12],
@@ -383,7 +389,6 @@ const PUFF_SHAPES = [
  * How big the full-body character is. Height scales with the screen between MIN and MAX
  * (in px / dvh); width follows the image ratio. Raise MAX_PX to make him bigger.
  */
-const CHAR_SIZE = { minPx: 130, vh: 24, maxPx: 200 };
 
 export default function Chatbot() {
   const [open, setOpen] = useState(false);
@@ -393,6 +398,7 @@ export default function Chatbot() {
   const [showBubble, setShowBubble] = useState(false);
 
   const idRef = useRef(0);
+  const greeted = useRef(false);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const listRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -401,6 +407,7 @@ export default function Chatbot() {
   const bursting = useRef(false);
   const burstTl = useRef<gsap.core.Timeline | null>(null);
   const [outfit, setOutfit] = useState<Outfit>("suit");
+  const [everOpened, setEverOpened] = useState(false);
 
   /* Draggable character. The offset lives in a ref and is written straight to the DOM,
      so dragging never re-renders the chat (smooth, no snapping back). */
@@ -432,8 +439,11 @@ export default function Chatbot() {
     const btn = rootRef.current?.querySelector<HTMLElement>("[data-char]");
     if (!btn) return;
     const r = btn.getBoundingClientRect();
-    const below = r.top < 480 + 16 && window.innerHeight - r.bottom > r.top;
-    const left = r.right < 360 + 16;
+    const small = window.innerWidth < 640;
+    const chatH = small ? Math.min(400, window.innerHeight - 64 - r.height) : 480;
+    const chatW = small ? 300 : 360;
+    const below = r.top < chatH + 16 && window.innerHeight - r.bottom > r.top;
+    const left = r.right < chatW + 16;
     setPlace((p) => (p.below === below && p.left === left ? p : { below, left }));
   }, []);
 
@@ -516,7 +526,11 @@ export default function Chatbot() {
    */
   const changeOutfit = (to: Outfit) => {
     const box = cloudRef.current;
-    const puffs = gsap.utils.toArray<HTMLElement>(".cloud-puff", box ?? undefined);
+    const allPuffs = gsap.utils.toArray<HTMLElement>(".cloud-puff", box ?? undefined);
+    // small or slow devices get every other cloud, so the burst stays smooth
+    const low = isLowPower();
+    const keep = allPuffs.map((_, i) => i).filter((i) => !low || i % 2 === 0);
+    const puffs = keep.map((i) => allPuffs[i]);
     if (!box || !puffs.length) {
       setOutfit(to);
       return;
@@ -527,7 +541,7 @@ export default function Chatbot() {
 
     // Each puff starts at the middle of the character and is thrown out to its spot.
     const { width: W, height: H } = box.getBoundingClientRect();
-    const spots = PUFFS.map(([x, y]) => ({ dx: ((x - 50) / 100) * W, dy: ((y - 50) / 100) * H }));
+    const spots = keep.map((k) => PUFFS[k]).map(([x, y]) => ({ dx: ((x - 50) / 100) * W * PUFF_SPREAD_X, dy: ((y - 50) / 100) * H * PUFF_SPREAD_Y }));
     gsap.set(puffs, {
       xPercent: -50,
       yPercent: -50,
@@ -535,7 +549,7 @@ export default function Chatbot() {
       y: 0,
       scale: 0.05,
       opacity: 1,
-      rotation: (i) => PUFFS[i][4] + gsap.utils.random(-40, 40),
+      rotation: (i) => PUFFS[keep[i]][4] + gsap.utils.random(-40, 40),
     });
 
     burstTl.current = gsap
@@ -549,8 +563,8 @@ export default function Chatbot() {
       .to(puffs, {
         x: (i) => spots[i].dx,
         y: (i) => spots[i].dy,
-        scale: 1.15,
-        rotation: (i) => PUFFS[i][4],
+        scale: 1.05,
+        rotation: (i) => PUFFS[keep[i]][4],
         duration: 0.22,
         ease: "power3.out",
         stagger: { each: 0.006, from: "center" },
@@ -559,7 +573,7 @@ export default function Chatbot() {
       .call(() => setOutfit(to))
       // smoke billows and drifts up for a beat
       .to(puffs, {
-        scale: 1.28,
+        scale: 1.15,
         y: (i) => spots[i].dy - 8,
         duration: 0.22,
         ease: "sine.out",
@@ -567,7 +581,7 @@ export default function Chatbot() {
       // then thins out fast, rising and growing as it fades
       .to(puffs, {
         opacity: 0,
-        scale: 1.6,
+        scale: 1.35,
         y: (i) => spots[i].dy - 26,
         duration: 0.3,
         ease: "power2.in",
@@ -622,12 +636,15 @@ export default function Chatbot() {
 
   const toggle = () => {
     setShowBubble(false);
-    setOpen((o) => {
-      const next = !o;
-      if (next && messages.length === 0) botSay("greeting");
-      if (next) setTimeout(() => inputRef.current?.focus(), 50);
-      return next;
-    });
+    // side effects live outside the state updater (React runs updaters twice in dev, which doubled the greeting)
+    const next = !open;
+    setOpen(next);
+    if (next) setEverOpened(true);
+    if (next && !greeted.current && messages.length === 0) {
+      greeted.current = true;
+      botSay("greeting");
+    }
+    if (next) setTimeout(() => inputRef.current?.focus(), 50);
   };
 
   const ask = (label: string, topic: string) => {
@@ -658,16 +675,15 @@ export default function Chatbot() {
   const visW = `(var(--char-h) * ${CHARACTERS[outfit].width / CHARACTERS[outfit].height})`;
 
   const actionClass =
-    "px-3 py-1.5 rounded-full border-2 border-wine bg-cream text-wine text-xs font-bold cursor-pointer transition-transform hover:-translate-y-0.5 hover:bg-mustard active:scale-95";
+    "px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full border-2 border-wine bg-cream text-wine text-[11px] sm:text-xs font-bold cursor-pointer transition-transform hover:-translate-y-0.5 hover:bg-mustard active:scale-95";
 
   return (
     <div
       ref={rootRef}
-      className="fixed bottom-0 right-3 sm:right-5 z-[88]"
+      className="chat-root fixed bottom-0 right-3 sm:right-5 z-[88]"
       style={
         {
           fontFamily: "var(--font-body)",
-          "--char-h": `clamp(${CHAR_SIZE.minPx}px, ${CHAR_SIZE.vh}dvh, ${CHAR_SIZE.maxPx}px)`,
           "--char-w": `calc(var(--char-h) * ${BOX_ASPECT})`,
         } as React.CSSProperties
       }
@@ -680,13 +696,13 @@ export default function Chatbot() {
           style={{
             ...(place.below ? { top: "calc(var(--char-h) + 4px)" } : { bottom: "calc(var(--char-h) + 4px)" }),
             ...(place.left ? { left: 0 } : { right: 0 }),
-            height: "min(480px, calc(100dvh - var(--char-h) - 72px))",
+            height: "var(--chat-h)",
           }}
-          className="absolute w-[min(360px,calc(100vw-1.5rem))] flex flex-col bg-cream text-wine border-4 border-wine rounded-2xl overflow-hidden shadow-[6px_6px_0_0_#F1A512]"
+          className="absolute w-[var(--chat-w)] flex flex-col bg-cream text-wine border-4 border-wine rounded-2xl overflow-hidden shadow-[6px_6px_0_0_#F1A512]"
         >
           {/* Header */}
-          <div className="flex items-center gap-3 px-4 py-3 bg-wine text-cream">
-            <div className="relative w-11 h-11 rounded-full bg-mustard border-2 border-cream overflow-hidden shrink-0">
+          <div className="flex items-center gap-2.5 px-3 py-2 sm:gap-3 sm:px-4 sm:py-3 bg-wine text-cream">
+            <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-mustard border-2 border-cream overflow-hidden shrink-0">
               <Image src={head} alt="" fill sizes="44px" className="object-cover" />
             </div>
             <div className="leading-tight">
@@ -710,7 +726,7 @@ export default function Chatbot() {
             ref={listRef}
             role="log"
             aria-live="polite"
-            className="flex-1 overflow-y-auto px-3 py-3 space-y-3 bg-mint/40"
+            className="flex-1 overflow-y-auto px-2.5 py-2.5 sm:px-3 sm:py-3 space-y-2.5 sm:space-y-3 bg-mint/40"
             data-lenis-prevent
           >
             {messages.map((m) => (
@@ -722,7 +738,7 @@ export default function Chatbot() {
                 )}
                 <div className={`max-w-[80%] ${m.from === "user" ? "" : "space-y-2"}`}>
                   <div
-                    className={`px-3 py-2 rounded-2xl text-sm leading-snug whitespace-pre-line border-2 ${
+                    className={`px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-2xl text-[13px] sm:text-sm leading-snug whitespace-pre-line border-2 ${
                       m.from === "user"
                         ? "bg-wine text-cream border-wine rounded-br-sm"
                         : "bg-cream text-wine border-wine/30 rounded-bl-sm"
@@ -782,7 +798,7 @@ export default function Chatbot() {
               placeholder="Ask about my work…"
               maxLength={200}
               aria-label="Type your question"
-              className="flex-1 min-w-0 px-3 py-2 rounded-full border-2 border-wine/40 bg-white/70 text-sm text-wine placeholder:text-wine/50 outline-none focus:border-wine"
+              className="flex-1 min-w-0 px-3 py-2 rounded-full border-2 border-wine/40 bg-white/70 text-base sm:text-sm text-wine placeholder:text-wine/50 outline-none focus:border-wine"
             />
             <button
               type="submit"
@@ -798,7 +814,7 @@ export default function Chatbot() {
 
       {/* ── Speech bubble nudge ── */}
       {!open && showBubble && (
-        <div style={{ ...(place.left ? { left: `calc((var(--char-w) + ${visW}) / 2 + 6px)` } : { right: `calc((var(--char-w) + ${visW}) / 2 + 6px)` }), bottom: "calc(var(--char-h) - 56px)" }} className={`absolute px-3 py-2 rounded-2xl ${place.left ? "rounded-bl-sm" : "rounded-br-sm"} bg-cream text-wine border-2 border-wine text-sm font-bold shadow-[3px_3px_0_0_#8C0027] whitespace-nowrap animate-fadeIn pointer-events-none`}>
+        <div style={{ ...(place.left ? { left: `calc((var(--char-w) + ${visW}) / 2 + 6px)` } : { right: `calc((var(--char-w) + ${visW}) / 2 + 6px)` }), bottom: "calc(var(--char-h) - 56px)" }} className={`absolute px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-2xl ${place.left ? "rounded-bl-sm" : "rounded-br-sm"} bg-cream text-wine border-2 border-wine text-xs sm:text-sm font-bold shadow-[3px_3px_0_0_#8C0027] whitespace-nowrap animate-fadeIn pointer-events-none`}>
           Ask me anything!
         </div>
       )}
@@ -826,7 +842,7 @@ export default function Chatbot() {
           <div className="absolute inset-0" style={{ opacity: outfit === "suit" ? 1 : 0 }}>
             <SuitRig active={outfit === "suit"} />
           </div>
-          {(Object.keys(CHARACTERS) as Outfit[]).filter((o) => o !== "suit").map((o) => (
+          {(Object.keys(CHARACTERS) as Outfit[]).filter((o) => o !== "suit" && (everOpened || outfit === o)).map((o) => (
             <Image
               key={o}
               src={CHARACTERS[o].src}
@@ -848,7 +864,7 @@ export default function Chatbot() {
                 <div
                   key={i}
                   className="cloud-puff absolute opacity-0 will-change-transform"
-                  style={{ left: `${x}%`, top: `${y}%`, width: `${w}%`, filter: "drop-shadow(3px 3px 0 #8C0027)" }}
+                  style={{ left: `${x}%`, top: `${y}%`, width: `${w * PUFF_SIZE}%`, filter: "drop-shadow(2px 2px 0 #8C0027)" }}
                 >
                   <svg viewBox={sh.viewBox} fill="none" className="w-full h-auto">
                     <path d={sh.body} fill="#F5F0E8" stroke="#8C0027" strokeWidth="3.5" strokeLinejoin="round" />

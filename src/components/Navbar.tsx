@@ -400,7 +400,6 @@ export default function Navbar() {
         className={`md:hidden overflow-hidden transition-all duration-300 ease-out ${
           mobileOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
         }`}
-        role="menu"
       >
         <div
           className={`mx-auto max-w-7xl px-8 pb-6 pt-2 flex flex-col gap-1 ${
@@ -415,7 +414,6 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                role="menuitem"
                 onClick={(e) => handleLinkClick(e, link.href)}
                 className={`block text-sm uppercase tracking-[0.15em] text-wine py-3 px-2 min-h-[44px] flex items-center rounded-md outline-none focus-visible:ring-4 focus-visible:ring-teal transition-colors duration-200 hover:bg-wine/5 ${
                   active ? "border-l-[3px] border-orange pl-4 font-bold" : ""

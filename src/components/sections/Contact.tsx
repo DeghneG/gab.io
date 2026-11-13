@@ -897,7 +897,7 @@ export default function Contact() {
                 </span>
                 <span className="text-sm leading-snug">
                   <span className="block font-bold">{step.title}</span>
-                  <span className="block text-cream/70">{step.hint}</span>
+                  <span className="block text-cream/90">{step.hint}</span>
                 </span>
               </li>
             );
@@ -1561,6 +1561,7 @@ export default function Contact() {
                           onClick={() => changeField("from")}
                           role="button"
                           tabIndex={0}
+                          aria-label="Edit your email address"
                         >
                           {fromEmail || (activeField !== "from" && (
                             <span style={{ color: "rgba(58,21,32,0.2)", fontStyle: "italic" }}>your email</span>
@@ -1576,6 +1577,7 @@ export default function Contact() {
                           onClick={() => changeField("topic")}
                           role="button"
                           tabIndex={0}
+                          aria-label="Edit the subject"
                         >
                           {topic || (activeField !== "topic" && (
                             <span style={{ color: "rgba(58,21,32,0.2)", fontStyle: "italic" }}>e.g. project inquiry, hello</span>
@@ -1591,6 +1593,7 @@ export default function Contact() {
                           onClick={() => changeField("message")}
                           role="button"
                           tabIndex={0}
+                          aria-label="Edit your message"
                         >
                           {message || (activeField !== "message" && (
                             <span style={{ color: "rgba(58,21,32,0.2)", fontStyle: "italic" }}>type here</span>
@@ -1608,6 +1611,7 @@ export default function Contact() {
                           onClick={() => changeField("name")}
                           role="button"
                           tabIndex={0}
+                          aria-label="Edit your name"
                         >
                           {fullName || (activeField !== "name" && (
                             <span style={{ color: "rgba(58,21,32,0.2)", fontStyle: "italic" }}>your full name</span>
@@ -1920,6 +1924,7 @@ export default function Contact() {
                   <button
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => handleKeyClick("BACK")}
+                    aria-label="Backspace"
                     className="typewriter-key relative"
                     style={{ outline: "none" }}
                   >
@@ -1955,6 +1960,7 @@ export default function Contact() {
                   <button
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => handleKeyClick("SPC")}
+                    aria-label="Space"
                     className="typewriter-key relative"
                     style={{ outline: "none" }}
                   >
@@ -2004,6 +2010,7 @@ export default function Contact() {
                   <button
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => handleKeyClick("RET")}
+                    aria-label="New line"
                     className="typewriter-key relative"
                     style={{ outline: "none" }}
                   >
@@ -2039,6 +2046,7 @@ export default function Contact() {
                   <button
                     onMouseDown={(e) => e.preventDefault()}
                     onClick={() => handleKeyClick("SEND")}
+                    aria-label="Send message"
                     className="typewriter-key relative"
                     style={{ outline: "none" }}
                   >
@@ -2233,6 +2241,7 @@ export default function Contact() {
                     onClick={() => handleSubmit()}
                     role="button"
                     tabIndex={0}
+                    aria-label="Send the letter"
                     title="Click to dispatch letter"
                     className="absolute inset-x-0 top-0 h-full origin-top flex items-center justify-center cursor-pointer transition-all hover:brightness-110 active:scale-95"
                     style={{
